@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ns="http://wsclientes.tcp.com.br" xmlns:ns1="http://wsclientes.tcp.com.br" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://wsclientes.tcp.com.br" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="RequestHeader">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="EmpresaSelecionada">
+          <xs:annotation>
+            <xs:documentation xml:lang="pt">Empresa</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string" />
+          </xs:simpleType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

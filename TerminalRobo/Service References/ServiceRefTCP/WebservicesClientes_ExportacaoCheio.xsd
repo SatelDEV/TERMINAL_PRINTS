@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ns="http://wsclientes.tcp.com.br" xmlns:ns1="http://wsclientes.tcp.com.br" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://wsclientes.tcp.com.br" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="RetornoValidacao">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element default="N" name="IndicadorErro">
+          <xs:annotation>
+            <xs:documentation xml:lang="pt">                                Indica se deu erro                                valores possiveis: (S)im ou (N)??o                            </xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="S" />
+              <xs:enumeration value="N" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element minOccurs="0" name="ListaMensagemRetornoWs">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="MensagemRetornoWs">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Codigo">
+                      <xs:annotation>
+                        <xs:documentation xml:lang="pt">                                                        Codigo da                                                        mensagem de retorno                                                    </xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Mensagem">
+                      <xs:annotation>
+                        <xs:documentation xml:lang="pt">                                                        Mensagem de                                                        retorno                                                    </xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConsultarMovimentacaoExpoCheioTcpRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="DataInicio" type="xs:date">
+          <xs:annotation>
+            <xs:documentation xml:lang="pt">                                Data inicial de                                movimentacao                            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="DataFim" type="xs:date">
+          <xs:annotation>
+            <xs:documentation xml:lang="pt">                                Data final de                                movimentacao                            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConsultarMovimentacaoExpoCheioTcpResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="Movimentacao">
+          <xs:annotation>
+            <xs:documentation xml:lang="pt">Movimentacoes</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="Navio" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Navio</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="NavioViagem" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Visita de Navio e Viagem no Terminal</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Viagem" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Viagem de saida do Navio</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="AtracacaoNavio" nillable="true" type="xs:dateTime">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Data da Atracacao do Navio no Terminal</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Cliente" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Cliente</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Destinatario" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Destinat??rio da carga</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Destino" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Porto de Destino da Carga</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Armador" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Armador</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Booking" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Booking</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="DeadlineCarga" nillable="true" type="xs:dateTime">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Data de Deadline da carga</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Conteiner" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Conteiner</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Iso" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Iso do Cont??iner</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="DataChegada" nillable="true" type="xs:dateTime">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Chegada no Terminal</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="RecepcaoCct" nillable="true" type="xs:dateTime">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Data de Recep????o atrav??s do CCT (Chegada no Terminal)</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="OrdemDeEmbarque" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Ordem de Embarque do Conteiner</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="DataEmbarque" nillable="true" type="xs:dateTime">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Embarque</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="EntregaCct" nillable="true" type="xs:dateTime">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Embarque atrav??s do CCT</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="DdeDue" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Documento de Exporta????o vinculado (DDE ou DUE)</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Tara" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Tara do Cont??iner</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="LacreArmador" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Lacre do Armador do Cont??iner</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="LacreSif" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Lacre Sif do Cont??iner</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="NumeroSif" nillable="true" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">N??mero Sif do Cont??iner</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="NotasFiscais">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="NotaFiscal" type="ns1:NotaFiscalType" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ns1:RetornoValidacao" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="NotaFiscalType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Numero" nillable="true" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="pt">N??mero da Nota Fiscal</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="Serie" nillable="true" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="pt">S??rie da Nota Fiscal</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="NCM" nillable="true" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="pt">C??digo NCM vinculado a Nota Fiscal</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConsultarDueTcpRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="NumeroDue">
+          <xs:annotation>
+            <xs:documentation xml:lang="pt">N??mero da Declara????o ??nica de Exporta????o</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:length value="14" />
+              <xs:pattern value="\d{2}[BR]{2}\d{10}" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConsultarDueTcpResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Due">
+          <xs:annotation>
+            <xs:documentation xml:lang="pt">Due</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="NumeroDUE" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Numero da DUE para solicita????o de embarque</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="NumeroRUC" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Numero da RUC para solicita????o de embarque</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Exportador" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Nome do Exportador</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Situacao" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Descri????o da Situacao da DUE na Receita Federal do Brasil??</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Conteineres">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Conteiner" type="ns1:ConteinerType" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" name="TermoAvarias">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" name="Conteudo" nillable="true" type="xs:string">
+                      <xs:annotation>
+                        <xs:documentation xml:lang="pt">Descri????o do termo de avarias</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="ConteinerAvaria" nillable="true" type="xs:string">
+                      <xs:annotation>
+                        <xs:documentation xml:lang="pt">Descri????o da avaria individual do conteiner</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element minOccurs="0" ref="ns1:RetornoValidacao" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="ConteinerType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Conteiner" nillable="true">
+        <xs:annotation>
+          <xs:documentation xml:lang="pt">C??digo da unidade</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string" />
+        </xs:simpleType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Cliente" nillable="true">
+        <xs:annotation>
+          <xs:documentation xml:lang="pt">Nome do cliente exportador</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string" />
+        </xs:simpleType>
+      </xs:element>
+      <xs:element minOccurs="0" name="LacreArmador" nillable="true">
+        <xs:annotation>
+          <xs:documentation xml:lang="pt">Descri????o do lacre do armador</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string" />
+        </xs:simpleType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Navio" nillable="true">
+        <xs:annotation>
+          <xs:documentation xml:lang="pt">Nome do navio para embarque</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string" />
+        </xs:simpleType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Deadline" nillable="true">
+        <xs:annotation>
+          <xs:documentation xml:lang="pt">Deadline para solicita????o de embarque no navio</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:dateTime" />
+        </xs:simpleType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Eventos" nillable="true">
+        <xs:annotation>
+          <xs:documentation xml:lang="pt">Tipo do Conteiner da Carga</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string" />
+        </xs:simpleType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Avarias" nillable="true">
+        <xs:annotation>
+          <xs:documentation xml:lang="pt">Descri????o das avarias encontradas </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string" />
+        </xs:simpleType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Impeditivo" nillable="true">
+        <xs:annotation>
+          <xs:documentation xml:lang="pt">Indicativo de impeditivos para embarque</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string" />
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SolicitarOrdemEmbarqueDueTcpRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="NumeroDue">
+          <xs:annotation>
+            <xs:documentation xml:lang="pt">N??mero da Declara????o ??nica de Exporta????o</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:length value="14" />
+              <xs:pattern value="\d{2}[BR]{2}\d{10}" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="AceiteAvarias" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation xml:lang="pt">Aceite do Termo de Avaria</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Conteineres">
+          <xs:annotation>
+            <xs:documentation xml:lang="pt">Lista de Cont??ineres</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="Conteiner">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">N??mero do cont??iner</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:length value="11" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SolicitarOrdemEmbarqueDueTcpResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="OrdemEmbarqueDue">
+          <xs:annotation>
+            <xs:documentation xml:lang="pt">Due</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Protocolo" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Protocolo da DUE para solicita????o de embarque</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="NumeroDUE" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Numero da DUE para solicita????o de embarque</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="NumeroRUC" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Numero da RUC para solicita????o de embarque</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Exportador" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Nome do Exportador</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="DataInclusao" type="xs:dateTime">
+                <xs:annotation>
+                  <xs:documentation xml:lang="pt">Data Inclus??o</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Conteineres">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Conteiner" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element minOccurs="0" ref="ns1:RetornoValidacao" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

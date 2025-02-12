@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.minervafoods.com" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://www.minervafoods.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.minervafoods.com">
+      <s:element name="StatusOrdem">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="autenticacao" type="tns:Autenticacao" />
+            <s:element minOccurs="0" maxOccurs="1" name="ordens" type="tns:Ordem" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Autenticacao">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="usuario" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="senha" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Ordem">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="CodEmpresa" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Ordens" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Num_LPCO" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ChaveAcesso" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DUE" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RUC" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaRegistro" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaDesembaraco" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaEmbarque" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Num_BL" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumControleSatel" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TerminalEmbarque" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaEntradaTerminal" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="TerminalArmazenagem" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaEntradaArmazenagem" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaSaidaNavio" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaDespacho" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaCSI" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaDraft" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaDocsProntos" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Courier" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NrCourier" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaEnvioCourier" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Observacoes" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaCargaExpTotal" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="CertificadoSanitario" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DtaLiberacaoBL" nillable="true" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="StatusOrdemResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="StatusOrdemResult" type="tns:RetornoPadrao" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="RetornoPadrao">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Retorno" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="MsgRetorno" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="StatusOrdemSoapIn">
+    <wsdl:part name="parameters" element="tns:StatusOrdem" />
+  </wsdl:message>
+  <wsdl:message name="StatusOrdemSoapOut">
+    <wsdl:part name="parameters" element="tns:StatusOrdemResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WSIntegraSatelSoap">
+    <wsdl:operation name="StatusOrdem">
+      <wsdl:input message="tns:StatusOrdemSoapIn" />
+      <wsdl:output message="tns:StatusOrdemSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WSIntegraSatelSoap" type="tns:WSIntegraSatelSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="StatusOrdem">
+      <soap:operation soapAction="http://www.minervafoods.com/StatusOrdem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WSIntegraSatelSoap12" type="tns:WSIntegraSatelSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="StatusOrdem">
+      <soap12:operation soapAction="http://www.minervafoods.com/StatusOrdem" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WSIntegraSatel">
+    <wsdl:port name="WSIntegraSatelSoap" binding="tns:WSIntegraSatelSoap">
+      <soap:address location="http://200.210.24.135:8084/WSIntegraSatel.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WSIntegraSatelSoap12" binding="tns:WSIntegraSatelSoap12">
+      <soap12:address location="http://200.210.24.135:8084/WSIntegraSatel.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
