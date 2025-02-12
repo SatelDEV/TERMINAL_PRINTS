@@ -1044,13 +1044,26 @@ namespace TerminalRobo.Models
                     //{
                     //    string[] aStatus = cdStatus.Split('_');
                     //    UpdateProcessoStatus((int)processoreservacontainer.CD_PROCESSORESERVACONTAINER, int.Parse(aStatus[0]), "campoStatusEmbarque", 1);
-                        //SELECIONAR OS PROCESSOS QUE SÃO MINERVA PARA ENVIAR VIA WS OS DADOS DO PROCESSO COM A SAÍDA DO NAVIO.
-                        var _processos = (from p in db.PROCESSOS
-                                          join ge in db.GRUPOCLI_ENTIDADE on p.CD_CLIENTE equals ge.CD_ENTIDADE
-                                          join g in db.GRUPOCLI on ge.CD_GRUPOCLI equals g.CD_GRUPOCLI
-                                          where p.CD_PROCESSO == cdProcesso && g.CD_GRUPOCLI == 1
-                                          select new { p.CD_PROCESSO }).ToList();
-                        if (_processos.Count > 0)
+                    //SELECIONAR OS PROCESSOS QUE SÃO MINERVA PARA ENVIAR VIA WS OS DADOS DO PROCESSO COM A SAÍDA DO NAVIO.
+                    var _processos = (from p in db.PROCESSOS
+                                      join ge in db.GRUPOCLI_ENTIDADE on p.CD_CLIENTE equals ge.CD_ENTIDADE
+                                      join g in db.GRUPOCLI on ge.CD_GRUPOCLI equals g.CD_GRUPOCLI
+                                      where p.CD_PROCESSO == cdProcesso && g.CD_GRUPOCLI == 1
+                                      select new { p.CD_PROCESSO }).ToList();
+
+                    int? cdStatus2 = (from prc in db.PROCESSORESERVACONTAINER
+                                    where prc.CD_PROCESSORESERVACONTAINER == cdProcessoReservaContainer
+                                    select prc.CD_STATUS_CONTAINER2).FirstOrDefault();
+
+                    if (cdStatus2 == 11)
+                    {
+                        PROCESSORESERVACONTAINER editarProcessoRC = db.PROCESSORESERVACONTAINER.Single(x => x.CD_PROCESSORESERVACONTAINER == cdProcessoReservaContainer);
+
+                        editarProcessoRC.CD_STATUS_CONTAINER2 = null;
+                        db.SaveChanges();
+                    }
+
+                    if (_processos.Count > 0)
                         {
                             try
                             {
