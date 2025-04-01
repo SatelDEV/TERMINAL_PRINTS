@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="879ac56ceea1457282ffd671649ec0f4" Name="Diagram1" ZoomLevel="10">
+        <EntityTypeShape EntityType="WEBSATELModel.PROCESSORESERVA" Width="1.5" PointX="3" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WEBSATELModel.PROCESSOS" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSORESERVA_PROCESSOS" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="WEBSATELModel.RESERVAS" Width="1.5" PointX="1.5098554815677252" PointY="21.794858346597692" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSORESERVA_RESERVAS" />
+        <EntityTypeShape EntityType="WEBSATELModel.CONTAINER" Width="1.5" PointX="1.6346033297640288" PointY="3.7911842334043162" />
+        <EntityTypeShape EntityType="WEBSATELModel.LOCAIS" Width="1.5" PointX="2.596144500466131" PointY="25.028569322558386" />
+        <EntityTypeShape EntityType="WEBSATELModel.NAVIOS" Width="1.5" PointX="1.9784779874507703" PointY="20.699406171543249" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_LOCAIS" />
+        <EntityTypeShape EntityType="WEBSATELModel.STATUS_PROCESSO" Width="1.5" PointX="7.0494751218005431" PointY="8.81153391711951" />
+        <EntityTypeShape EntityType="WEBSATELModel.PROCESSOEVENTO" Width="1.5" PointX="7.1900481540663392" PointY="16.166900567788119" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOEVENTO_PROCESSOS" />
+        <EntityTypeShape EntityType="WEBSATELModel.PARAMETRO" Width="1.5" PointX="8.8143830321796166" PointY="19.811298200772747" />
+        <EntityTypeShape EntityType="WEBSATELModel.HIST_CONSULTA_DEPOSITO" Width="1.5" PointX="7.155497038343686" PointY="6.7369837941308433" />
+        <EntityTypeShape EntityType="WEBSATELModel.GRUPOCLI" Width="1.5" PointX="2.77970259207287" PointY="7.7809560335152579" />
+        <EntityTypeShape EntityType="WEBSATELModel.USUARIO_CA" Width="1.5" PointX="0.1692249980611843" PointY="5.1616927409366209" />
+        <AssociationConnector Association="WEBSATELModel.FK_USUARIO_CA_USUARIO_CA" />
+        <AssociationConnector Association="WEBSATELModel.FK_USUARIO_CA_USUARIO_CA1" />
+        <AssociationConnector Association="WEBSATELModel.FK_USUARIO_CA_USUARIO_CA2" />
+        <EntityTypeShape EntityType="WEBSATELModel.GRUPOCLI_ENTIDADE" Width="1.5" PointX="8.839929139632698" PointY="14.540504998779159" />
+        <AssociationConnector Association="WEBSATELModel.FK_GRUPOCLI_ENTIDADE_GRUPOCLI" />
+        <EntityTypeShape EntityType="WEBSATELModel.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO" Width="1.5" PointX="5.5985911794000263" PointY="6.2086141138377666" />
+        <EntityTypeShape EntityType="WEBSATELModel.DUE" Width="1.5" PointX="9.15976181121532" PointY="9.8572907493716535" />
+        <AssociationConnector Association="WEBSATELModel.FK_DUE_PROCESSOS" />
+        <EntityTypeShape EntityType="WEBSATELModel.PROCESSO_LOTE" Width="1.5" PointX="0.0867573190884466" PointY="6.1293860106400153" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_DUE" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_PROCESSO_FILHO" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_PROCESSO_MASTER" />
+        <EntityTypeShape EntityType="WEBSATELModel.UNIDRF" Width="1.5" PointX="5.9729435266800888" PointY="25.6899127334775" />
+        <AssociationConnector Association="WEBSATELModel.FK_DUE_UNIDRF_DESPACHO" />
+        <AssociationConnector Association="WEBSATELModel.FK_DUE_UNIDRF_EMBARQUE" />
+        <EntityTypeShape EntityType="WEBSATELModel.RECIALFA" Width="1.5" PointX="6.2500473848777114" PointY="19.316098356301012" />
+        <AssociationConnector Association="WEBSATELModel.FK_DUE_RECINTO_DESPACHO" />
+        <AssociationConnector Association="WEBSATELModel.FK_DUE_RECINTO_EMBARQUE" />
+        <EntityTypeShape EntityType="WEBSATELModel.FORMA_EXPORTACAO_DUE" Width="1.5" PointX="11.401911254693713" PointY="27.283446324655529" />
+        <EntityTypeShape EntityType="WEBSATELModel.PRE_PROCESSOS" Width="1.5" PointX="1.8803499070370338" PointY="26.894603875882275" />
+        <EntityTypeShape EntityType="WEBSATELModel.AVISOS_PRE_PROCESSO" Width="1.5" PointX="11.279403905980011" PointY="17.916039728520456" />
+        <EntityTypeShape EntityType="WEBSATELModel.DDE" Width="1.5" PointX="7.9261440466745494" PointY="5.72126788167342" />
+        <AssociationConnector Association="WEBSATELModel.FK_DDE_PROCESSOS" />
+        <AssociationConnector Association="WEBSATELModel.FK_DDE_UNIDRF_DESPACHO" />
+        <AssociationConnector Association="WEBSATELModel.FK_DDE_UNIDRF_EMBARQUE" />
+        <AssociationConnector Association="WEBSATELModel.FK_DDE_UNIDRF_RECINTO" />
+        <EntityTypeShape EntityType="WEBSATELModel.VIAGEM" Width="1.5" PointX="3.6858804764625992" PointY="3.3971603379571627" />
+        <EntityTypeShape EntityType="WEBSATELModel.LOG_CONSULTA_TERMINAL" Width="1.5" PointX="7.7804909831753424" PointY="23.35528042509932" />
+        <EntityTypeShape EntityType="WEBSATELModel.PAIS" Width="1.5" PointX="9.6189670365392086" PointY="31.512553453218448" />
+        <EntityTypeShape EntityType="WEBSATELModel.VIAGEMARMADOR" Width="1.5" PointX="10.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WEBSATELModel.RELACIONAMENTOENTIDADE" Width="1.5" PointX="6.375" PointY="39.25" />
+        <EntityTypeShape EntityType="WEBSATELModel.ENTIDADE" Width="1.5" PointX="0.75" PointY="19" />
+        <AssociationConnector Association="WEBSATELModel.FK_DDE_EMPRESA" />
+        <AssociationConnector Association="WEBSATELModel.FK_DDE_EXPORTADOR" />
+        <AssociationConnector Association="WEBSATELModel.FK_DUE_EXPORTADOR" />
+        <AssociationConnector Association="WEBSATELModel.FK_GRUPOCLI_ENTIDADE_ENTIDADE" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_CAMARA_COMERCIO" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_CARTORIO" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_CLIENTE" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_CONSIGNATARIO" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_CONSULADO" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_EMBAIXADA" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_ENTIDADE" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_IMPORTADOR" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_NOTIFY" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_REPRESENTANTE_CAMBIO" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_TRADUTOR" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_UNIDADE_NEGOCIO" />
+        <AssociationConnector Association="WEBSATELModel.FK_RELACIONAMENTOENTIDADE_ENTIDADE" />
+        <AssociationConnector Association="WEBSATELModel.FK_USUARIO_CA_ENTIDADE" />
+        <EntityTypeShape EntityType="WEBSATELModel.LOG_NOTIFICACAO_RECINTO" Width="1.5" PointX="11.75" PointY="6.75" />
+        <EntityTypeShape EntityType="WEBSATELModel.DUE_NF_ITEM" Width="1.5" PointX="14.875" PointY="18.875" />
+        <EntityTypeShape EntityType="WEBSATELModel.LOG_ENVIO_MINERVA" Width="1.5" PointX="14.875" PointY="0.75" />
+        <AssociationConnector Association="WEBSATELModel.FK_DUE_NF_ITEM_DUE" />
+        <EntityTypeShape EntityType="WEBSATELModel.DUE_NF" Width="1.5" PointX="12.125" PointY="38.75" />
+        <AssociationConnector Association="WEBSATELModel.FK_DUE_NF_DUE" />
+        <AssociationConnector Association="WEBSATELModel.FK_DUE_NF_ITEM_NF" />
+        <EntityTypeShape EntityType="WEBSATELModel.LOG_CONSULTA_NAVIO" Width="1.5" PointX="6.875" PointY="0.75" />
+        <EntityTypeShape EntityType="WEBSATELModel.TMP_CONSULTA_NAVIO" Width="1.5" PointX="4.75" PointY="12.75" />
+        <EntityTypeShape EntityType="WEBSATELModel.RELAC_EXPORTADOR" Width="1.5" PointX="3.625" PointY="60.375" />
+        <AssociationConnector Association="WEBSATELModel.FK_RELAC_EXPORTADOR_ENTIDADE" />
+        <EntityTypeShape EntityType="WEBSATELModel.TMP_CONSULTA_EMBARQUE" Width="1.5" PointX="11.875" PointY="10.75" />
+        <EntityTypeShape EntityType="WEBSATELModel.PROCESSORESERVACONTAINER" Width="1.5" PointX="17.875" PointY="10" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSORESERVACONTAINER_CONTAINER" />
+        <AssociationConnector Association="WEBSATELModel.FK_PROCESSORESERVACONTAINER_PROCESSORESERVA" />
+        <EntityTypeShape EntityType="WEBSATELModel.LOG_DIVERGENCIA_LACRE" Width="1.5" PointX="14.75" PointY="8.75" />
+        <EntityTypeShape EntityType="WEBSATELModel.BTP_IMPORTAR_EXCEL" Width="1.5" PointX="15" PointY="13.75" />
+        <EntityTypeShape EntityType="WEBSATELModel.PARAMETRO_WEB" Width="1.5" PointX="17.375" PointY="0.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
