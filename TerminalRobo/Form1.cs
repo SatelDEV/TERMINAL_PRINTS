@@ -408,7 +408,15 @@ namespace TerminalRobo
 
         private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
         {
-          
+
+            string Grupo = ConfigurationManager.AppSettings["Grupo"].ToString();
+
+            string GrupoNao = ConfigurationManager.AppSettings["Grupo_Nao"].ToString();
+
+            string icrobo = ConfigurationManager.AppSettings["nrRobo"].ToString();
+
+
+            int nr_robo = int.Parse(icrobo);
 
             bool bCarregado = false;
             List<ListaDeCampos> lstConsulta = new List<ListaDeCampos>();
@@ -419,7 +427,7 @@ namespace TerminalRobo
             else
             {
                 if (confirmarEmbarque)
-                    lstConsulta = dados.ConsultaContainerEmbarcados(idBTP, txtContainer.Text == "" ? null : txtContainer.Text);
+                    lstConsulta = dados.ConsultaContainerEmbarcadosClientes(idBTP, txtContainer.Text == "" ? null : txtContainer.Text, Grupo, GrupoNao);
                 else
                 {
                     if (DivergenciaLacre)
@@ -429,9 +437,9 @@ namespace TerminalRobo
                     else
                     {
                         if (EmbarqueAntesPrevisto)
-                            lstConsulta = dados.ConsultaContainerTerminalEmbarque(idBTP, txtContainer.Text == "" ? null : txtContainer.Text);
+                            lstConsulta = dados.ConsultaContainerTerminalEmbarqueCliente(idBTP, txtContainer.Text == "" ? null : txtContainer.Text, Grupo, GrupoNao);
                         else
-                            lstConsulta = dados.ConsultaContainerDeadLineDia(idBTP, txtContainer.Text == "" ? null : txtContainer.Text);
+                            lstConsulta = dados.ConsultaContainerDeadLineDiaCliente(idBTP, txtContainer.Text == "" ? null : txtContainer.Text, Grupo, GrupoNao);
                     }
                 }
             }
@@ -442,7 +450,7 @@ namespace TerminalRobo
                     tsContainer.Text = "0 de " + lstConsulta.Count + " CONTAINERS";
                     //Loga na página
                     var xCarregado = navegar.EntrarPaginaBTP();
-                    if (true)
+                    if (xCarregado == true)
                     {
                         //Consulta o Container
                         bool bPrimeiraConsulta = false;
@@ -454,15 +462,15 @@ namespace TerminalRobo
                             Application.DoEvents();
                             if (DivergenciaLacre)
                             {
-                                if (!navegar.ConsultarLacreBTP(conteudo, !bPrimeiraConsulta))
-                                {
-                                    //Caso de algum erro na consulta tenta logar novamente no site
-                                    navegar.EntrarPaginaBTP();
-                                }
+                                //if (!navegar.ConsultarLacreBTP(conteudo, !bPrimeiraConsulta))
+                                //{
+                                //    //Caso de algum erro na consulta tenta logar novamente no site
+                                //    navegar.EntrarPaginaBTP();
+                                //}
                             }
                             else
                             {
-                                if (!navegar.ConsultarContainerBTP(conteudo, !bPrimeiraConsulta))
+                                if (!navegar.ConsultarContainerBTP2(conteudo, !bPrimeiraConsulta))
                                 {
                                     //Caso de algum erro na consulta tenta logar novamente no site
                                     navegar.EntrarPaginaBTP();
@@ -474,10 +482,24 @@ namespace TerminalRobo
                             i++;
                         }
                         tsContainer.Text = "AGUARDANDO";
-                        navegar.deslogandoBTP();
+                        //navegar.deslogandoBTP();
                         dados.EmbarqueConfirmado(lstVA);
                     }
+
+                  
+
+
                 }
+
+                if (icEnviarEmailAnalista == "S")
+                {
+                    //Verifica se existe divergências para enviar aos analistas do trafego
+                    navegar.GerarPlanilhaExcelCliente(nr_robo);
+                    //Antes de iniciar a consulta limpa a tabela temporária
+                    dados.LimparTabelatemporaria(true);
+                }
+
+
             }
             catch //(Exception ex)
             {

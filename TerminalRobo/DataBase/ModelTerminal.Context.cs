@@ -151,5 +151,81 @@ namespace TerminalRobo.DataBase
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_CONSULTA_DEPOSITO_USUARIO_Result>("SP_CONSULTA_DEPOSITO_USUARIO");
         }
+    
+        public virtual ObjectResult<SP_SELECT_CONSULTA_CONTAINERS_CLIENTE_Result> SP_SELECT_CONSULTA_CONTAINERS_CLIENTE(Nullable<int> cD_TERMINAL, string nR_CONTAINER, Nullable<bool> iC_CONFIRMACAO, string cD_GRUPO, string cD_GRUPO_NAO)
+        {
+            var cD_TERMINALParameter = cD_TERMINAL.HasValue ?
+                new ObjectParameter("CD_TERMINAL", cD_TERMINAL) :
+                new ObjectParameter("CD_TERMINAL", typeof(int));
+    
+            var nR_CONTAINERParameter = nR_CONTAINER != null ?
+                new ObjectParameter("NR_CONTAINER", nR_CONTAINER) :
+                new ObjectParameter("NR_CONTAINER", typeof(string));
+    
+            var iC_CONFIRMACAOParameter = iC_CONFIRMACAO.HasValue ?
+                new ObjectParameter("IC_CONFIRMACAO", iC_CONFIRMACAO) :
+                new ObjectParameter("IC_CONFIRMACAO", typeof(bool));
+    
+            var cD_GRUPOParameter = cD_GRUPO != null ?
+                new ObjectParameter("CD_GRUPO", cD_GRUPO) :
+                new ObjectParameter("CD_GRUPO", typeof(string));
+    
+            var cD_GRUPO_NAOParameter = cD_GRUPO_NAO != null ?
+                new ObjectParameter("CD_GRUPO_NAO", cD_GRUPO_NAO) :
+                new ObjectParameter("CD_GRUPO_NAO", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_SELECT_CONSULTA_CONTAINERS_CLIENTE_Result>("SP_SELECT_CONSULTA_CONTAINERS_CLIENTE", cD_TERMINALParameter, nR_CONTAINERParameter, iC_CONFIRMACAOParameter, cD_GRUPOParameter, cD_GRUPO_NAOParameter);
+        }
+    
+        public virtual ObjectResult<SP_SELECT_CONSULTA_CONTAINERS_EMBARQUE_CLIENTE_Result> SP_SELECT_CONSULTA_CONTAINERS_EMBARQUE_CLIENTE(Nullable<int> cD_TERMINAL, string nR_CONTAINER, string cD_GRUPO, string cD_GRUPO_NAO)
+        {
+            var cD_TERMINALParameter = cD_TERMINAL.HasValue ?
+                new ObjectParameter("CD_TERMINAL", cD_TERMINAL) :
+                new ObjectParameter("CD_TERMINAL", typeof(int));
+    
+            var nR_CONTAINERParameter = nR_CONTAINER != null ?
+                new ObjectParameter("NR_CONTAINER", nR_CONTAINER) :
+                new ObjectParameter("NR_CONTAINER", typeof(string));
+    
+            var cD_GRUPOParameter = cD_GRUPO != null ?
+                new ObjectParameter("CD_GRUPO", cD_GRUPO) :
+                new ObjectParameter("CD_GRUPO", typeof(string));
+    
+            var cD_GRUPO_NAOParameter = cD_GRUPO_NAO != null ?
+                new ObjectParameter("CD_GRUPO_NAO", cD_GRUPO_NAO) :
+                new ObjectParameter("CD_GRUPO_NAO", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_SELECT_CONSULTA_CONTAINERS_EMBARQUE_CLIENTE_Result>("SP_SELECT_CONSULTA_CONTAINERS_EMBARQUE_CLIENTE", cD_TERMINALParameter, nR_CONTAINERParameter, cD_GRUPOParameter, cD_GRUPO_NAOParameter);
+        }
+    
+        public virtual ObjectResult<SP_SELECT_CONSULTA_CONTAINERS_TERMINAL_CLIENTE_Result> SP_SELECT_CONSULTA_CONTAINERS_TERMINAL_CLIENTE(string nR_CONTAINER, Nullable<int> cD_TERMINAL, string cD_GRUPO, string cD_GRUPO_NAO)
+        {
+            var nR_CONTAINERParameter = nR_CONTAINER != null ?
+                new ObjectParameter("NR_CONTAINER", nR_CONTAINER) :
+                new ObjectParameter("NR_CONTAINER", typeof(string));
+    
+            var cD_TERMINALParameter = cD_TERMINAL.HasValue ?
+                new ObjectParameter("CD_TERMINAL", cD_TERMINAL) :
+                new ObjectParameter("CD_TERMINAL", typeof(int));
+    
+            var cD_GRUPOParameter = cD_GRUPO != null ?
+                new ObjectParameter("CD_GRUPO", cD_GRUPO) :
+                new ObjectParameter("CD_GRUPO", typeof(string));
+    
+            var cD_GRUPO_NAOParameter = cD_GRUPO_NAO != null ?
+                new ObjectParameter("CD_GRUPO_NAO", cD_GRUPO_NAO) :
+                new ObjectParameter("CD_GRUPO_NAO", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_SELECT_CONSULTA_CONTAINERS_TERMINAL_CLIENTE_Result>("SP_SELECT_CONSULTA_CONTAINERS_TERMINAL_CLIENTE", nR_CONTAINERParameter, cD_TERMINALParameter, cD_GRUPOParameter, cD_GRUPO_NAOParameter);
+        }
+    
+        public virtual ObjectResult<SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO_Result> SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO(Nullable<int> iC_ROBO)
+        {
+            var iC_ROBOParameter = iC_ROBO.HasValue ?
+                new ObjectParameter("IC_ROBO", iC_ROBO) :
+                new ObjectParameter("IC_ROBO", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO_Result>("SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO", iC_ROBOParameter);
+        }
     }
 }

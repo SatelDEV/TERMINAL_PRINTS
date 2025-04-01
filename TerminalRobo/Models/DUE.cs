@@ -1292,5 +1292,19 @@ namespace TerminalRobo.Models
 
         }
 
+
+        public string GetTokenBTP()
+        {
+            return  (from pa in db.PARAMETRO_WEB
+                         where pa.CD_PARAMETRO_WEB == 1
+                         select pa.VR_PARAMETRO_WEB
+                         ).FirstOrDefault();
+
+
+
+
+
+        }
+
     }
 }

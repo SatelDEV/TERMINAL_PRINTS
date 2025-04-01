@@ -490,6 +490,35 @@ namespace TerminalRobo.Models
             return lstProcesso.OrderByDescending(x=>x.NR_CONTAINER).ToList();
         }
 
+        public List<ListaDeCampos> ConsultaContainerDeadLineDiaCliente(int? idTerminal, string nrContainer, string grupo, string grupo_nao)
+        {
+            var lstProcesso = (from s in db.SP_SELECT_CONSULTA_CONTAINERS_CLIENTE(idTerminal, nrContainer, false, grupo, grupo_nao)
+                               select new ListaDeCampos
+                               {
+                                   CD_PROCESSO = s.CD_PROCESSO,
+                                   CD_CLIENTE = s.CD_CLIENTE,
+                                   DS_REFERENCIA_CLIENTE = s.DS_REFERENCIA_CLIENTE,
+                                   CD_PROCESSORESERVA = s.CD_PROCESSORESERVA,
+                                   CD_PROCESSORESERVACONTAINER = s.CD_PROCESSORESERVACONTAINER,
+                                   CD_NUMERO_PROCESSO = s.CD_NUMERO_PROCESSO,
+                                   NR_CONTAINER = s.CD_NUMERO_CONTAINER,
+                                   CD_TERMINAL_EMBARQUE = s.CD_TERMINAL_ATRACACAO,
+                                   NR_BOOKING = s.CD_NUMERO_RESERVA,
+                                   NM_NAVIO = s.NM_NAVIO,
+                                   DT_CONTAINER = s.DT_DEAD_LINE_CONTAINER,
+                                   NR_DUE = s.NR_DUE,
+                                   NM_PROCESSO_STATUS2 = s.NM_STATUS_PROCESSO2,
+                                   DT_ABERTURA = s.DT_ABERTURA_PROCESSO,
+                                   DT_DEPOSITO = s.DT_DEPOSITO_TERM_EMBARQUE,
+                                   IC_TIPO = s.IC_TIPO,
+                                   DT_ETA = s.DT_ETA,
+                                   DS_LACRE_AGENCIA = s.DS_LACRE_AGENCIA,
+                                   DS_LACRE_SIF = s.DS_LACRE_SIF
+                               });
+        
+            return lstProcesso.OrderByDescending(x => x.NR_CONTAINER).ToList();
+        }
+
         public List<ListaDeCampos> ConsultaContainerEmbarcados(int? idTerminal, string nrContainer)
         {
             var lstProcesso = (from s in db.SP_SELECT_CONSULTA_CONTAINERS(idTerminal, nrContainer, true)
@@ -516,91 +545,42 @@ namespace TerminalRobo.Models
                                    DS_LACRE_AGENCIA = s.DS_LACRE_AGENCIA,
                                    DS_LACRE_SIF = s.DS_LACRE_SIF
                                });
-            /*
-            int idgrupocliente = 0;
-
-            DateTime DATA = new DateTime(2022, 5, 11); // DIA QUE COMEÇOU
-
-            var lstProcesso = (from p in db.PROCESSOS
-
-                               join pr in db.PROCESSORESERVA on p.CD_PROCESSO equals pr.CD_PROCESSO
-                               join res in db.RESERVAS on pr.CD_RESERVA equals res.CD_RESERVA
-                               join prc in db.PROCESSORESERVACONTAINER on pr.CD_PROCESSORESERVA equals prc.CD_PROCESSORESERVA
-                               join c in db.CONTAINER on prc.CD_CONTAINER equals c.CD_CONTAINER
-                               join via in db.VIAGEMARMADOR on res.CD_VIAGEM_ARMADOR equals via.CD_VIAGEM_ARMADOR into viaLeft
-                               from viaOri in viaLeft.DefaultIfEmpty()
-                               join arm in db.ENTIDADE on viaOri.CD_ARMADOR equals arm.CD_ENTIDADE into armLeft
-                               from armOri in armLeft.DefaultIfEmpty()
-                               join term in db.ENTIDADE on viaOri.CD_TERMINAL_ATRACACAO equals term.CD_ENTIDADE into termLeft
-                               from termOri in termLeft.DefaultIfEmpty()
-                               join transp in db.ENTIDADE on prc.CD_TRANSPORTADORA equals transp.CD_ENTIDADE into transpLeft
-                               from transpOri in transpLeft.DefaultIfEmpty()
-                               join termR in db.ENTIDADE on prc.CD_TERMINAL_REDEX equals termR.CD_ENTIDADE into termRLeft
-                               from termROri in termRLeft.DefaultIfEmpty()
-                               join ArmR in db.ENTIDADE on prc.CD_ARMAZEM equals ArmR.CD_ENTIDADE into ArmRLeft
-                               from ArmROri in ArmRLeft.DefaultIfEmpty()
-                               join viagem in db.VIAGEM on viaOri.CD_VIAGEM equals viagem.CD_VIAGEM into viagemLeft
-                               from viagemOri in viagemLeft.DefaultIfEmpty()
-                               join nav in db.NAVIOS on viagemOri.CD_NAVIO equals nav.CD_NAVIO into navLeft
-                               from navOri in navLeft.DefaultIfEmpty()
-                               join portolocal in db.LOCAIS on res.CD_PORTO_ORIGEM equals portolocal.CD_LOCAL into portolocalLeft
-                               from portolocalOri in portolocalLeft.DefaultIfEmpty()
-                               join paisDestino in db.PAIS on p.CD_PAIS_RESERVA equals paisDestino.CD_PAIS into paisDestinoLeft
-                               from paisDestinoOri in paisDestinoLeft.DefaultIfEmpty()
-                               join portodestino in db.LOCAIS on res.CD_PORTO_DESTINO equals portodestino.CD_LOCAL into portodestinoLeft
-                               from portodestinoOri in portodestinoLeft.DefaultIfEmpty()
-                               join status in db.STATUS_PROCESSO on prc.CD_STATUS_CONTAINER equals status.CD_STATUS_PROCESSO into statusLeft
-                               from statusOri in statusLeft.DefaultIfEmpty()
-                               join status2 in db.STATUS_PROCESSO on prc.CD_STATUS_CONTAINER2 equals status2.CD_STATUS_PROCESSO into status2Left
-                               from status2Ori in status2Left.DefaultIfEmpty()
-                               where (p.IC_CANCELADO == false) && (p.CD_SERVICO_PROCESSO != 2) && (DATA < viaOri.DT_DESATRACACAO && (viaOri.IC_EMBARQUE_CONFIRMADO == false || viaOri.IC_EMBARQUE_CONFIRMADO == null) && prc.DT_EMBARQUE != null) &&
-
-                               //((prc.CD_STATUS_CONTAINER2 != 9 && prc.CD_STATUS_CONTAINER2 != 3 && prc.CD_STATUS_CONTAINER2 != 7) || prc.CD_STATUS_CONTAINER2 == null) &&
-                               (p.IC_ATIVO == true && (p.IC_ENCERRADO == false || p.IC_ENCERRADO == null))
-
-                               //&& (c.CD_NUMERO_CONTAINER == "TTNU8214748" || c.CD_NUMERO_CONTAINER == "MEDU9829628")
-
-                               select new ListaDeCampos
-                               {
-                                   CD_PROCESSO = p.CD_PROCESSO,
-                                   CD_CLIENTE = p.CD_CLIENTE,
-                                   CD_PROCESSORESERVA = pr.CD_PROCESSORESERVA,
-                                   CD_PROCESSORESERVACONTAINER = prc.CD_PROCESSORESERVACONTAINER,
-                                   CD_NUMERO_PROCESSO = p.CD_NUMERO_PROCESSO,
-                                   NR_CONTAINER = c.CD_NUMERO_CONTAINER,
-                                   CD_TERMINAL_EMBARQUE = viaOri.CD_TERMINAL_ATRACACAO,
-                                   NR_BOOKING = res.CD_NUMERO_RESERVA,
-                                   NM_NAVIO = navOri.NM_NAVIO,
-                                   DT_CONTAINER = viaOri.DT_DEAD_LINE_CONTAINER,
-                                   NR_DUE = FN_RETORNA_DUE_PROCESSO(p.CD_PROCESSO, prc.CD_PROCESSORESERVACONTAINER),
-                                   NM_PROCESSO_STATUS2 = status2Ori.NM_STATUS_PROCESSO,
-                                   DT_ABERTURA = p.DT_ABERTURA_PROCESSO,
-                                   DT_DEPOSITO = prc.DT_DEPOSITO_TERM_EMBARQUE,
-                                   IC_TIPO = "C",
-                                   CD_VIAGEM_ARMADOR = viaOri.CD_VIAGEM_ARMADOR
-                               });
-
-            if (idTerminal != null)
-            {
-                lstProcesso = lstProcesso.Where(x => x.CD_TERMINAL_EMBARQUE == idTerminal);
-            }
-            if (nrContainer != null)
-            {
-                lstProcesso = lstProcesso.Where(x => x.NR_CONTAINER == nrContainer);
-            }
-
-            if (idgrupocliente != null && idgrupocliente != 0)
-            {
-                List<int> lstCliente = (from gru in db.GRUPOCLI_ENTIDADE
-                                        where gru.CD_GRUPOCLI == idgrupocliente
-                                        select gru.CD_ENTIDADE).ToList();
-
-                lstProcesso = lstProcesso.Where(x => lstCliente.Contains(x.CD_CLIENTE));
-                //lstProcesso = lstProcesso.Where(x => x.CD_GRUPO_CLIENTE == idgrupocliente);
-            }*/
+           
 
             return lstProcesso.OrderByDescending(x => x.NR_CONTAINER).ToList();
         }
+
+        public List<ListaDeCampos> ConsultaContainerEmbarcadosClientes(int? idTerminal, string nrContainer,string grupo,string grupo_nao)
+        {
+            var lstProcesso = (from s in db.SP_SELECT_CONSULTA_CONTAINERS_CLIENTE(idTerminal, nrContainer, true,grupo,grupo_nao)
+                               select new ListaDeCampos
+                               {
+                                   CD_PROCESSO = s.CD_PROCESSO,
+                                   CD_CLIENTE = s.CD_CLIENTE,
+                                   DS_REFERENCIA_CLIENTE = s.DS_REFERENCIA_CLIENTE,
+                                   CD_PROCESSORESERVA = s.CD_PROCESSORESERVA,
+                                   CD_PROCESSORESERVACONTAINER = s.CD_PROCESSORESERVACONTAINER,
+                                   CD_NUMERO_PROCESSO = s.CD_NUMERO_PROCESSO,
+                                   NR_CONTAINER = s.CD_NUMERO_CONTAINER,
+                                   CD_TERMINAL_EMBARQUE = s.CD_TERMINAL_ATRACACAO,
+                                   NR_BOOKING = s.CD_NUMERO_RESERVA,
+                                   NM_NAVIO = s.NM_NAVIO,
+                                   DT_CONTAINER = s.DT_DEAD_LINE_CONTAINER,
+                                   NR_DUE = s.NR_DUE,
+                                   NM_PROCESSO_STATUS2 = s.NM_STATUS_PROCESSO2,
+                                   DT_ABERTURA = s.DT_ABERTURA_PROCESSO,
+                                   DT_DEPOSITO = s.DT_DEPOSITO_TERM_EMBARQUE,
+                                   IC_TIPO = "C",
+                                   CD_VIAGEM_ARMADOR = s.CD_VIAGEM_ARMADOR == null ? 0 : (int)s.CD_VIAGEM_ARMADOR,
+                                   DT_ETA = s.DT_ETA,
+                                   DS_LACRE_AGENCIA = s.DS_LACRE_AGENCIA,
+                                   DS_LACRE_SIF = s.DS_LACRE_SIF
+                               });
+           
+
+            return lstProcesso.OrderByDescending(x => x.NR_CONTAINER).ToList();
+        }
+
 
         public List<ListaDeCampos> ConsultaContainerTerminal(int? idTerminal, string nrContainer)
         {
@@ -635,6 +615,8 @@ namespace TerminalRobo.Models
             return lstProcesso.OrderByDescending(x => x.NR_CONTAINER).ToList();
         }
 
+
+        
         public List<ListaDeCampos> ConsultaContainerTerminalEmbarque(int? idTerminal, string nrContainer)
         {
             var lstProcesso = (from s in db.SP_SELECT_CONSULTA_CONTAINERS_EMBARQUE(idTerminal, nrContainer)
@@ -667,6 +649,40 @@ namespace TerminalRobo.Models
           }
             return lstProcesso.OrderByDescending(x => x.NR_CONTAINER).ToList();
         }
+
+        public List<ListaDeCampos> ConsultaContainerTerminalEmbarqueCliente(int? idTerminal, string nrContainer, string grupo, string grupo_nao)
+        {
+            var lstProcesso = (from s in db.SP_SELECT_CONSULTA_CONTAINERS_EMBARQUE_CLIENTE(idTerminal, nrContainer, grupo, grupo_nao)
+                               select new ListaDeCampos
+                               {
+                                   CD_PROCESSO = s.CD_PROCESSO,
+                                   CD_CLIENTE = s.CD_CLIENTE,
+                                   DS_REFERENCIA_CLIENTE = s.DS_REFERENCIA_CLIENTE,
+                                   CD_PROCESSORESERVA = s.CD_PROCESSORESERVA,
+                                   CD_PROCESSORESERVACONTAINER = s.CD_PROCESSORESERVACONTAINER,
+                                   CD_NUMERO_PROCESSO = s.CD_NUMERO_PROCESSO,
+                                   NR_CONTAINER = s.CD_NUMERO_CONTAINER,
+                                   CD_TERMINAL_EMBARQUE = s.CD_TERMINAL_ATRACACAO,
+                                   NR_BOOKING = s.CD_NUMERO_RESERVA,
+                                   NM_NAVIO = s.NM_NAVIO,
+                                   DT_CONTAINER = s.DT_DEAD_LINE_CONTAINER,
+                                   NR_DUE = s.NR_DUE,
+                                   NM_PROCESSO_STATUS2 = s.NM_STATUS_PROCESSO2,
+                                   DT_ABERTURA = s.DT_ABERTURA_PROCESSO,
+                                   DT_DEPOSITO = s.DT_DEPOSITO_TERM_EMBARQUE,
+                                   IC_TIPO = s.IC_TIPO,
+                                   DT_ETA = s.DT_ETA,
+                                   DS_LACRE_AGENCIA = s.DS_LACRE_AGENCIA,
+                                   DS_LACRE_SIF = s.DS_LACRE_SIF
+                               });
+
+            if (!string.IsNullOrEmpty(nrContainer))
+            {
+                lstProcesso = lstProcesso.Where(x => x.NR_CONTAINER == nrContainer);
+            }
+            return lstProcesso.OrderByDescending(x => x.NR_CONTAINER).ToList();
+        }
+
 
         public List<ListaDeCampos> ConsultaLacreTerminal(int? idTerminal, string nrContainer)
         {
@@ -753,6 +769,49 @@ namespace TerminalRobo.Models
                                });
 
             lstProcesso = lstProcesso.Where(x=> x.IC_ROBO == icRobo);
+
+            return lstProcesso.OrderBy(x => x.CD_USUARIO).ToList();
+        }
+
+        public List<InsereDados> ConsultaDivergenciaCliente(int ic_robo)
+        {
+
+
+            var lstProcesso = (from tmp in db.SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO(ic_robo)
+                               select new InsereDados
+                               {
+                                   CD_PROCESSO = tmp.CD_PROCESSO,
+                                   CD_USUARIO = tmp.IC_TIPO != "E" ? tmp.CD_USUARIO : tmp.CD_USUARIO_C,
+                                   DS_GRUPO = tmp.DS_GRUPOCLI,
+                                   CD_NUMERO_PROCESSO = tmp.CD_NUMERO_PROCESSO,
+                                   NR_CONTAINER = tmp.NR_CONTAINER,
+                                   NM_NAVIO = tmp.NM_NAVIO,
+                                   NM_NAVIO_TERMINAL = tmp.NM_NAVIO_TERMINAL,
+                                   NR_BOOKING = tmp.NR_BOOKING,
+                                   NR_BOOKING_TERMINAL = tmp.NR_BOOKING_TERMINAL,
+                                   DT_CONTAINER = tmp.DT_CONTAINER,
+                                   NR_DUE = tmp.NR_DUE,
+                                   DS_STATUS = tmp.DS_STATUS,
+                                   DT_PROTOCOLO = tmp.DT_PROTOCOLADO,
+                                   DT_CONSULTA = tmp.DT_CONSULTA,
+                                   DT_EMBARQUE = tmp.DT_EMBARQUE,
+                                   DT_DEPOSITO = tmp.DT_DEPOSITO,
+                                   NM_TERMINAL = tmp.NM_TERMINAL,
+                                   NM_CLIENTE = tmp.NM_FANTASIA_ENTIDADE,
+                                   CD_GRUPO = tmp.CD_GRUPOCLI,
+                                   NM_PROCESSO_STATUS2 = tmp.NM_PROCESSO_STATUS2,
+                                   IC_TIPO = tmp.IC_TIPO,
+                                   NM_TERMINAL_SISTEMA = tmp.NM_TERMINAL_SISTEMA,
+                                   DT_ETA = tmp.DT_ETA,
+                                   DS_REFERENCIA_CLIENTE = tmp.DS_REFERENCIA_CLIENTE,
+                                   DS_LACRE_AGENCIA = tmp.DS_LACRE_AGENCIA,
+                                   DS_LACRE_AGENCIA_TERMINAL = tmp.DS_LACRE_AGENCIA_TERMINAL,
+                                   DS_LACRE_SIF = tmp.DS_LACRE_SIF,
+                                   DS_LACRE_SIF_TERMINAL = tmp.DS_LACRE_SIF_TERMINAL,
+                                   IC_ROBO = tmp.IC_ROBO
+                               });
+
+            lstProcesso = lstProcesso.Where(x => x.IC_ROBO == icRobo);
 
             return lstProcesso.OrderBy(x => x.CD_USUARIO).ToList();
         }
@@ -1476,5 +1535,8 @@ namespace TerminalRobo.Models
 
 
         }
+
+
+
     }
 }

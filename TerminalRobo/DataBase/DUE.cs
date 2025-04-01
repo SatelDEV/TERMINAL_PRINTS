@@ -84,6 +84,7 @@ namespace TerminalRobo.DataBase
         public Nullable<System.DateTime> DT_ENVIO_EXTRATO_AVERBADA_SPED { get; set; }
         public Nullable<System.DateTime> DT_ENVIO_EXTRATO_REGISTRADA_FTP { get; set; }
         public Nullable<System.DateTime> DT_ENVIO_EXTRATO_AVERBADA_FTP { get; set; }
+        public Nullable<bool> IC_LOCAL_EMBARQUE_TRANSPOSICAO_FRONTEIRA { get; set; }
     
         public virtual PROCESSOS PROCESSOS { get; set; }
         public virtual ICollection<PROCESSO_LOTE> PROCESSO_LOTE { get; set; }

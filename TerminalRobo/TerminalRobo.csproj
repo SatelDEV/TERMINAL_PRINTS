@@ -22,6 +22,8 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>C:\Publicacao Geral\TerminalConsulta\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -37,8 +39,6 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -102,8 +102,7 @@
       <HintPath>packages\CefSharp.WinForms.131.3.50\lib\net462\CefSharp.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.WebServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.dll</HintPath>
@@ -154,6 +153,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -165,6 +165,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataBase\AVISOS_PRE_PROCESSO.cs">
+      <DependentUpon>ModelTerminal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\BTP_IMPORTAR_EXCEL.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\CONTAINER.cs">
@@ -242,6 +245,9 @@
     <Compile Include="DataBase\PARAMETRO.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
+    <Compile Include="DataBase\PARAMETRO_WEB.cs">
+      <DependentUpon>ModelTerminal.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataBase\PRE_PROCESSOS.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
@@ -272,13 +278,25 @@
     <Compile Include="DataBase\RESERVAS.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
+    <Compile Include="DataBase\SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO_Result.cs">
+      <DependentUpon>ModelTerminal.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataBase\SP_CONSULTA_DEPOSITO_USUARIO_Result.cs">
+      <DependentUpon>ModelTerminal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\SP_SELECT_CONSULTA_CONTAINERS_CLIENTE_Result.cs">
+      <DependentUpon>ModelTerminal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\SP_SELECT_CONSULTA_CONTAINERS_EMBARQUE_CLIENTE_Result.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\SP_SELECT_CONSULTA_CONTAINERS_EMBARQUE_Result.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\SP_SELECT_CONSULTA_CONTAINERS_Result.cs">
+      <DependentUpon>ModelTerminal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\SP_SELECT_CONSULTA_CONTAINERS_TERMINAL_CLIENTE_Result.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\SP_SELECT_CONSULTA_CONTAINERS_TERMINAL_Result.cs">
