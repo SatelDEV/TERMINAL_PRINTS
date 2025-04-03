@@ -615,8 +615,41 @@ namespace TerminalRobo.Models
             return lstProcesso.OrderByDescending(x => x.NR_CONTAINER).ToList();
         }
 
+        public List<ListaDeCampos> ConsultaContainerTerminalCliente(int? idTerminal, string nrContainer, string grupo , string gruponao)
+        {
+            var lstProcesso = (from s in db.SP_SELECT_CONSULTA_CONTAINERS_TERMINAL_CLIENTE(nrContainer, idTerminal, grupo, gruponao)
+                               select new ListaDeCampos
+                               {
+                                   CD_PROCESSO = s.CD_PROCESSO,
+                                   CD_CLIENTE = s.CD_CLIENTE,
+                                   DS_REFERENCIA_CLIENTE = s.DS_REFERENCIA_CLIENTE,
+                                   CD_PROCESSORESERVA = s.CD_PROCESSORESERVA,
+                                   CD_PROCESSORESERVACONTAINER = s.CD_PROCESSORESERVACONTAINER,
+                                   CD_NUMERO_PROCESSO = s.CD_NUMERO_PROCESSO,
+                                   NR_CONTAINER = s.CD_NUMERO_CONTAINER,
+                                   CD_TERMINAL_EMBARQUE = s.CD_TERMINAL_ATRACACAO,
+                                   NR_BOOKING = s.CD_NUMERO_RESERVA,
+                                   NM_NAVIO = s.NM_NAVIO,
+                                   DT_CONTAINER = s.DT_DEAD_LINE_CONTAINER,
+                                   NR_DUE = s.NR_DUE,
+                                   NM_PROCESSO_STATUS2 = s.NM_STATUS_PROCESSO2,
+                                   DT_ABERTURA = s.DT_ABERTURA_PROCESSO,
+                                   DT_DEPOSITO = s.DT_DEPOSITO_TERM_EMBARQUE,
+                                   IC_TIPO = s.IC_TIPO,
+                                   DT_ETA = s.DT_ETA,
+                                   DS_LACRE_AGENCIA = s.DS_LACRE_AGENCIA,
+                                   DS_LACRE_SIF = s.DS_LACRE_SIF
+                               });
 
-        
+            /* if (!string.IsNullOrEmpty(nrContainer))
+             {
+                 lstProcesso = lstProcesso.Where(x => x.NR_CONTAINER == nrContainer);
+             }*/
+            return lstProcesso.OrderByDescending(x => x.NR_CONTAINER).ToList();
+        }
+
+
+
         public List<ListaDeCampos> ConsultaContainerTerminalEmbarque(int? idTerminal, string nrContainer)
         {
             var lstProcesso = (from s in db.SP_SELECT_CONSULTA_CONTAINERS_EMBARQUE(idTerminal, nrContainer)
@@ -687,6 +720,34 @@ namespace TerminalRobo.Models
         public List<ListaDeCampos> ConsultaLacreTerminal(int? idTerminal, string nrContainer)
         {
             var lstProcesso = (from s in db.SP_SELECT_CONSULTA_LACRES_TERMINAL(idTerminal, nrContainer)
+                               select new ListaDeCampos
+                               {
+                                   CD_PROCESSO = s.CD_PROCESSO,
+                                   CD_CLIENTE = s.CD_CLIENTE,
+                                   DS_REFERENCIA_CLIENTE = s.DS_REFERENCIA_CLIENTE,
+                                   CD_PROCESSORESERVA = s.CD_PROCESSORESERVA,
+                                   CD_PROCESSORESERVACONTAINER = s.CD_PROCESSORESERVACONTAINER,
+                                   CD_NUMERO_PROCESSO = s.CD_NUMERO_PROCESSO,
+                                   NR_CONTAINER = s.CD_NUMERO_CONTAINER,
+                                   CD_TERMINAL_EMBARQUE = s.CD_TERMINAL_ATRACACAO,
+                                   NR_BOOKING = s.CD_NUMERO_RESERVA,
+                                   NM_NAVIO = s.NM_NAVIO,
+                                   DT_CONTAINER = s.DT_DEAD_LINE_CONTAINER,
+                                   NM_PROCESSO_STATUS2 = s.NM_STATUS_PROCESSO2,
+                                   DT_ABERTURA = s.DT_ABERTURA_PROCESSO,
+                                   DT_DEPOSITO = s.DT_DEPOSITO_TERM_EMBARQUE,
+                                   IC_TIPO = s.IC_TIPO,
+                                   DT_ETA = s.DT_ETA,
+                                   DS_LACRE_AGENCIA = s.DS_LACRE_AGENCIA,
+                                   DS_LACRE_SIF = s.DS_LACRE_SIF
+                               });
+
+            return lstProcesso.OrderByDescending(x => x.NR_CONTAINER).ToList();
+        }
+
+        public List<ListaDeCampos> ConsultaLacreTerminalCliente(int? idTerminal, string nrContainer, string grupo, string grupo_nao)
+        {
+            var lstProcesso = (from s in db.SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE(idTerminal, nrContainer, grupo, grupo_nao)
                                select new ListaDeCampos
                                {
                                    CD_PROCESSO = s.CD_PROCESSO,

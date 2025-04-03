@@ -406,7 +406,7 @@ namespace TerminalRobo
            
         }
 
-        private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
+        private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = true)
         {
 
             string Grupo = ConfigurationManager.AppSettings["Grupo"].ToString();
@@ -418,12 +418,12 @@ namespace TerminalRobo
 
             int nr_robo = int.Parse(icrobo);
 
-            bool bCarregado = false;
+             bool bCarregado = false;
             List<ListaDeCampos> lstConsulta = new List<ListaDeCampos>();
             List<int> lstVA = new List<int>();
 
             if (TerminalDivergencia)
-                lstConsulta = dados.ConsultaContainerTerminal(idBTP, txtContainer.Text == "" ? null : txtContainer.Text);
+                lstConsulta = dados.ConsultaContainerTerminalCliente(idBTP, txtContainer.Text == "" ? null : txtContainer.Text, Grupo, GrupoNao);
             else
             {
                 if (confirmarEmbarque)
@@ -432,7 +432,7 @@ namespace TerminalRobo
                 {
                     if (DivergenciaLacre)
                     {
-                        lstConsulta = dados.ConsultaLacreTerminal(idBTP, txtContainer.Text == "" ? null : txtContainer.Text);
+                        lstConsulta = dados.ConsultaLacreTerminalCliente(idBTP, txtContainer.Text == "" ? null : txtContainer.Text, Grupo, GrupoNao);
                     }
                     else
                     {
@@ -449,7 +449,7 @@ namespace TerminalRobo
                 {
                     tsContainer.Text = "0 de " + lstConsulta.Count + " CONTAINERS";
                     //Loga na página
-                    var xCarregado = navegar.EntrarPaginaBTP();
+                    var xCarregado = navegar.EntrarPaginaBTP(DivergenciaLacre);
                     if (xCarregado == true)
                     {
                         //Consulta o Container
@@ -462,18 +462,18 @@ namespace TerminalRobo
                             Application.DoEvents();
                             if (DivergenciaLacre)
                             {
-                                //if (!navegar.ConsultarLacreBTP(conteudo, !bPrimeiraConsulta))
-                                //{
-                                //    //Caso de algum erro na consulta tenta logar novamente no site
-                                //    navegar.EntrarPaginaBTP();
-                                //}
+                                if (!navegar.ConsultarLacreBTP2(conteudo, !bPrimeiraConsulta))
+                                {
+                                    //Caso de algum erro na consulta tenta logar novamente no site
+                                    navegar.EntrarPaginaBTP(DivergenciaLacre);
+                                }
                             }
                             else
                             {
                                 if (!navegar.ConsultarContainerBTP2(conteudo, !bPrimeiraConsulta))
                                 {
                                     //Caso de algum erro na consulta tenta logar novamente no site
-                                    navegar.EntrarPaginaBTP();
+                                    navegar.EntrarPaginaBTP(DivergenciaLacre);
                                 }
                                 if (confirmarEmbarque)
                                     lstVA.Add(conteudo.CD_VIAGEM_ARMADOR);

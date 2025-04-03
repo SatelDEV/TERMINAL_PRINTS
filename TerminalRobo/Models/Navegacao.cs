@@ -1089,12 +1089,13 @@ namespace TerminalRobo.Models
      
 
 
-        public bool EntrarPaginaBTP()
+        public bool EntrarPaginaBTP(bool lacre)
         {         
 
             int icontador = 0;
             bCarregado = false;
             string url = "";
+            
 
             string cookieValor = ConfigurationManager.AppSettings["CookieLoginBTP"].ToString();
 
@@ -1165,7 +1166,25 @@ namespace TerminalRobo.Models
             Thread.Sleep(3000);
             Application.DoEvents();
 
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(@"
+            string ConsultaSite = "";
+
+
+            if (lacre == true)
+            {
+                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(@"
+    const ContainerElement = Array.from(document.querySelectorAll('span.nav-link-title[translate=""no""]'))
+        .find(span => span.textContent.trim() === 'Container');
+    if (ContainerElement) {
+        ContainerElement.click();
+    }
+");
+                ConsultaSite = "https://novo-tas.btp.com.br/b2b/consultaconteiner";
+
+            }
+            else
+            {
+
+                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(@"
     const dueElement = Array.from(document.querySelectorAll('span.nav-link-title[translate=""no""]'))
         .find(span => span.textContent.trim() === 'Due');
     if (dueElement) {
@@ -1173,6 +1192,8 @@ namespace TerminalRobo.Models
     }
 ");
 
+                ConsultaSite = "https://novo-tas.btp.com.br/b2b/consultadue";
+            }
            
             Thread.Sleep(2000);
             Application.DoEvents();
@@ -1215,7 +1236,7 @@ namespace TerminalRobo.Models
 
 
             // Continuar a navegação
-            string ConsultaContainer = "https://novo-tas.btp.com.br/b2b/consultadue";
+            
 
             int icontadorX = 0;
             do
@@ -1231,7 +1252,7 @@ namespace TerminalRobo.Models
                 Application.DoEvents();
 
                 // Agora que a página em branco foi carregada, acessar a página ConsultaContainer
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync($"document.location = '{ConsultaContainer}';");
+                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync($"document.location = '{ConsultaSite}';");
 
                 // Aguarda a página ConsultaContainer carregar
                 bCarregado = AguardaPaginaCarregar();
@@ -1239,14 +1260,14 @@ namespace TerminalRobo.Models
                 url = chromeBrowser.Address;
                 icontadorX++;
 
-            } while (url != ConsultaContainer && !bCarregado && icontadorX < 3);
+            } while (url != ConsultaSite && !bCarregado && icontadorX < 3);
 
 
 
 
-            AguardaPaginaCarregar();
-            Thread.Sleep(5000);
-            Application.DoEvents();
+            //AguardaPaginaCarregar();
+            //Thread.Sleep(5000);
+            //Application.DoEvents();
 
  
 
@@ -1290,10 +1311,10 @@ namespace TerminalRobo.Models
                     {
                         
                     }
-                    else
-                    {
-                        EntrarPaginaBTP();
-                    }
+                    //else
+                    //{
+                    //    EntrarPaginaBTP(lacre);
+                    //}
                 }
             });
 
@@ -4787,6 +4808,155 @@ namespace TerminalRobo.Models
             }
         }
 
+
+        public bool ConsultarLacreBTP2(ListaDeCampos conteudo, bool bPrimeiraVez)
+        {
+            dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "INICIANDO CONSULTA", novoDado);
+            //if (bPrimeiraVez)
+            //{
+            bCarregado = false;
+            //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='https://tas.btp.com.br/b2b/consultaconteiner';");
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('SubMenu-2')[0].getElementsByTagName('a')[3].click();");
+            AguardaPaginaCarregar();
+            //}
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('ddlCategoria').value = 'E';");
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('txtNumeroConteiner').value = '" + conteudo.NR_CONTAINER + "';");
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('btnPesquisaConteinerTAS').click();");
+
+
+            VerificaJanelaAjaxCarregada("carregando-gif ico", "class-visible");
+
+            //Verifica se o container já está depositado
+            string sNaoEncontrou = "var janela = document.getElementsByClassName('jtable');";
+            sNaoEncontrou += "var tabela = janela[0];";
+            sNaoEncontrou += "var col = tabela.getElementsByTagName('td');";
+            sNaoEncontrou += "var linha = col[0].innerText;";
+            sNaoEncontrou += "linha == 'Não existem registros a listar!';";
+            var taskn = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sNaoEncontrou);
+            taskn.Wait();
+            var responsen = taskn.Result;
+            bool resultn = responsen.Success;
+            bool bNaoEncontrou = true;
+            if (resultn)
+            {
+                bNaoEncontrou = responsen.Result.ToString() == "True";
+
+            }
+            else
+                bNaoEncontrou = false;
+
+            if (!bNaoEncontrou)
+            {
+                //Verifica se já carregou os dados na tela
+                //=======================================================
+
+                string sJanelaCarregada = "function Carregou(listadue) { var h = 0; do { sleep(500); x++; } while(listadue[2] == null && x < 8) }";
+                sJanelaCarregada += "function sleep(milliseconds) {const date = Date.now();let currentDate = null;do{currentDate = Date.now();} while (currentDate - date < milliseconds);}";
+                sJanelaCarregada += "var bOk = false;";
+                sJanelaCarregada += "var janela = document.getElementsByClassName('jtable');";
+                sJanelaCarregada += " var x = janela[0].getElementsByTagName('tr');";
+                sJanelaCarregada += " var y = janela[2].getElementsByTagName('td');";
+                sJanelaCarregada += " for(var i=x.length - 1;i>0;i--){";
+                sJanelaCarregada += "   var k = x[i].getElementsByTagName('td');";
+                sJanelaCarregada += "   var sbooking = k[3].innerText;";
+                sJanelaCarregada += "   if (sbooking.trim().includes('" + conteudo.NR_BOOKING.Trim() + "')){";
+                sJanelaCarregada += "      var chek = k[0].getElementsByTagName('input'); ";
+                sJanelaCarregada += "      chek[0].click(); Carregou(y);";
+                sJanelaCarregada += "      if (y[2] != null) {bOk = true;} else {if (y[0].innerText == 'Não existem registros a listar!'){bOk = true;}} "; //DUE
+                sJanelaCarregada += "      break;";
+                sJanelaCarregada += "   }}";
+                sJanelaCarregada += "   bOk";
+                var taskx = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sJanelaCarregada);
+                taskx.Wait();
+                if (taskx.Result.Result.ToString().ToUpper() == "FALSE")
+                {
+                    dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "NÃO ENCONTROU CONTAINER", novoDado);
+                    return true;
+                }
+                //precisa verificar se é de entrada ou saída quando encontrar.
+                bool bOk = false;
+                int cont = 0;
+                do
+                {
+                    var task = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("var bretorno = []; bretorno[0] = false; bretorno[1] = false; if (y[2] != null) {bretorno[0] = true;} else {if (y[0].innerText == 'Não existem registros a listar!' || !bok){bretorno[0] = true;}} bretorno;"); task.Wait();
+                    var response = task.Result;
+                    bool result = response.Success;
+                    if (result)
+                    {
+                        if (((List<object>)response.Result)[1].ToString() == "True")
+                            return true;
+                        bOk = ((List<object>)response.Result)[0].ToString() == "True";
+
+                    }
+                    else
+                    {
+
+                    }
+                    Application.DoEvents();
+                    Thread.Sleep(700);
+                    cont++;
+                } while (!bOk && cont < tbmEsperaAjax);
+                //===========================================================
+                //AguardaPaginaCarregar(ref tsStatus);
+                //Verifica se puxou os dados.
+                //VerificaJanelaAjaxCarregada("txtConteiner", "input");
+                Thread.Sleep(1000);
+                Application.DoEvents();
+                //return true;
+
+
+
+                string sDataDeposito = "function retornaValor(){var janela = document.getElementsByClassName('jtable');";
+                sDataDeposito += " var x = janela[1].getElementsByTagName('tr');";
+                sDataDeposito += " var conteudo = [];";
+                sDataDeposito += " for(var i=1; i<x.length;i++){";
+                sDataDeposito += "   conteudo[i-1] = x[i].getElementsByTagName('td')[1].innerText;";
+                sDataDeposito += "   }";
+                sDataDeposito += " return conteudo} retornaValor(); ";
+                tentativa = 0;
+                try
+                {
+                    do
+                    {
+
+                        var task1 = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sDataDeposito);
+                        task1.Wait();
+                        var response1 = task1.Result;
+
+                        resultn = ValidarSituacaoLacre(conteudo, task1);
+
+                        bCarregado = false;
+
+                        Thread.Sleep(600);
+                        Application.DoEvents();
+                        tentativa++;
+                    } while (!resultn && tentativa < 20);
+                    //Caso ocorra algum erro na consulta, desloga do site e envia false para tentar novamente.
+                    if (tentativa >= 20)
+                    {
+                        dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "TENTATIVAS ESGOTADAS (20). TENTANDO NOVAMENTE.", novoDado);
+                        deslogandoBTP();
+                        return false;
+                    }
+
+                    bCarregado = false;
+                }
+                catch (Exception e)
+                {
+                    dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "ERRO INESPERADO. " + e.Message, novoDado);
+                    return false;
+                }
+
+            }
+            else
+            {
+                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "NÃO ENCONTROU CONTAINER", novoDado);
+            }
+
+            return true;
+        }
+
+
         public bool ConsultarLacreBTP(ListaDeCampos conteudo, bool bPrimeiraVez)
         {
             dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "INICIANDO CONSULTA", novoDado);
@@ -5156,9 +5326,9 @@ namespace TerminalRobo.Models
 
                         string to = "";
                         if (cdMinerva.FirstOrDefault(x => x == cdEntidade) != 0 && cdEntidade != 9620)
-                            to = ConfigurationManager.AppSettings["EmailMinervaDivergenciaLacre"].ToString();
+                            to = "sophia.mendonca@sateldespachos.com.br";
                         else
-                            to = "suporte@sateldespachos.com.br";
+                            to = "sophia.mendonca@sateldespachos.com.br"; //"suporte@sateldespachos.com.br";
                         Email e = new Email();
                         e.EnviaEmailDUE(to, "", "LACRE DIVERGENTE NO TERMINAL - " + dados.DS_REFERENCIA_CLIENTE + " - " + d.retornaPaisDestino(dados.CD_PROCESSO), corpo);
                     }

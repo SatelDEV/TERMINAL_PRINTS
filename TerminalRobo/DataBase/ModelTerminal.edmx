@@ -1979,6 +1979,12 @@ warning 6002: The table/view 'WEBSATEL.dbo.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DE
           <Parameter Name="CD_TERMINAL" Type="int" Mode="In" />
           <Parameter Name="NR_CONTAINER" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CD_TERMINAL" Type="int" Mode="In" />
+          <Parameter Name="NR_CONTAINER" Type="varchar" Mode="In" />
+          <Parameter Name="CD_GRUPO" Type="varchar(max)" Mode="In" />
+          <Parameter Name="CD_GRUPO_NAO" Type="varchar(max)" Mode="In" />
+        </Function>
         <EntityContainer Name="WEBSATELModelStoreContainer">
           <EntitySet Name="AVISOS_PRE_PROCESSO" EntityType="Self.AVISOS_PRE_PROCESSO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BTP_IMPORTAR_EXCEL" EntityType="Self.BTP_IMPORTAR_EXCEL" Schema="dbo" store:Type="Tables" />
@@ -2466,7 +2472,13 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
             <Parameter Name="CD_GRUPO_NAO" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO" ReturnType="Collection(WEBSATELModel.SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO_Result)">
-            <Parameter Name="IC_ROBO" Mode="In" Type="Int32" />
+          <Parameter Name="IC_ROBO" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE" ReturnType="Collection(WEBSATELModel.SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE_Result)">
+            <Parameter Name="CD_TERMINAL" Mode="In" Type="Int32" />
+            <Parameter Name="NR_CONTAINER" Mode="In" Type="String" />
+            <Parameter Name="CD_GRUPO" Mode="In" Type="String" />
+            <Parameter Name="CD_GRUPO_NAO" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <EntityType Name="PROCESSORESERVA">
@@ -4697,6 +4709,28 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Type="String" Name="DS_LACRE_SIF_TERMINAL" Nullable="true" MaxLength="25" />
           <Property Type="Int32" Name="IC_ROBO" Nullable="true" />
         </ComplexType>
+        <ComplexType Name="SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE_Result">
+          <Property Type="Int32" Name="CD_PROCESSO" Nullable="false" />
+          <Property Type="Int32" Name="CD_CLIENTE" Nullable="false" />
+          <Property Type="String" Name="DS_REFERENCIA_CLIENTE" Nullable="true" MaxLength="250" />
+          <Property Type="Int32" Name="CD_PROCESSORESERVA" Nullable="false" />
+          <Property Type="Int32" Name="CD_PROCESSORESERVACONTAINER" Nullable="false" />
+          <Property Type="String" Name="CD_NUMERO_PROCESSO" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="CD_NUMERO_CONTAINER" Nullable="false" MaxLength="14" />
+          <Property Type="Int32" Name="CD_TERMINAL_ATRACACAO" Nullable="true" />
+          <Property Type="String" Name="CD_NUMERO_RESERVA" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="NM_NAVIO" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="DT_DEAD_LINE_CONTAINER" Nullable="true" Precision="23" />
+          <Property Type="String" Name="NM_STATUS_PROCESSO2" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="DT_ABERTURA_PROCESSO" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="DT_DEPOSITO_TERM_EMBARQUE" Nullable="true" Precision="23" />
+          <Property Type="String" Name="IC_TIPO" Nullable="false" MaxLength="1" />
+          <Property Type="DateTime" Name="DT_EMBARQUE" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="IC_EMBARQUE_CONFIRMADO" Nullable="true" />
+          <Property Type="DateTime" Name="DT_ETA" Nullable="true" Precision="23" />
+          <Property Type="String" Name="DS_LACRE_AGENCIA" Nullable="true" MaxLength="25" />
+          <Property Type="String" Name="DS_LACRE_SIF" Nullable="true" MaxLength="25" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6383,6 +6417,32 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
                 <ScalarProperty Name="DS_LACRE_SIF" ColumnName="DS_LACRE_SIF" />
                 <ScalarProperty Name="DS_LACRE_SIF_TERMINAL" ColumnName="DS_LACRE_SIF_TERMINAL" />
                 <ScalarProperty Name="IC_ROBO" ColumnName="IC_ROBO" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE" FunctionName="WEBSATELModel.Store.SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WEBSATELModel.SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE_Result">
+                <ScalarProperty Name="CD_PROCESSO" ColumnName="CD_PROCESSO" />
+                <ScalarProperty Name="CD_CLIENTE" ColumnName="CD_CLIENTE" />
+                <ScalarProperty Name="DS_REFERENCIA_CLIENTE" ColumnName="DS_REFERENCIA_CLIENTE" />
+                <ScalarProperty Name="CD_PROCESSORESERVA" ColumnName="CD_PROCESSORESERVA" />
+                <ScalarProperty Name="CD_PROCESSORESERVACONTAINER" ColumnName="CD_PROCESSORESERVACONTAINER" />
+                <ScalarProperty Name="CD_NUMERO_PROCESSO" ColumnName="CD_NUMERO_PROCESSO" />
+                <ScalarProperty Name="CD_NUMERO_CONTAINER" ColumnName="CD_NUMERO_CONTAINER" />
+                <ScalarProperty Name="CD_TERMINAL_ATRACACAO" ColumnName="CD_TERMINAL_ATRACACAO" />
+                <ScalarProperty Name="CD_NUMERO_RESERVA" ColumnName="CD_NUMERO_RESERVA" />
+                <ScalarProperty Name="NM_NAVIO" ColumnName="NM_NAVIO" />
+                <ScalarProperty Name="DT_DEAD_LINE_CONTAINER" ColumnName="DT_DEAD_LINE_CONTAINER" />
+                <ScalarProperty Name="NM_STATUS_PROCESSO2" ColumnName="NM_STATUS_PROCESSO2" />
+                <ScalarProperty Name="DT_ABERTURA_PROCESSO" ColumnName="DT_ABERTURA_PROCESSO" />
+                <ScalarProperty Name="DT_DEPOSITO_TERM_EMBARQUE" ColumnName="DT_DEPOSITO_TERM_EMBARQUE" />
+                <ScalarProperty Name="IC_TIPO" ColumnName="IC_TIPO" />
+                <ScalarProperty Name="DT_EMBARQUE" ColumnName="DT_EMBARQUE" />
+                <ScalarProperty Name="IC_EMBARQUE_CONFIRMADO" ColumnName="IC_EMBARQUE_CONFIRMADO" />
+                <ScalarProperty Name="DT_ETA" ColumnName="DT_ETA" />
+                <ScalarProperty Name="DS_LACRE_AGENCIA" ColumnName="DS_LACRE_AGENCIA" />
+                <ScalarProperty Name="DS_LACRE_SIF" ColumnName="DS_LACRE_SIF" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

@@ -227,5 +227,26 @@ namespace TerminalRobo.DataBase
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO_Result>("SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO", iC_ROBOParameter);
         }
+    
+        public virtual ObjectResult<SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE_Result> SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE(Nullable<int> cD_TERMINAL, string nR_CONTAINER, string cD_GRUPO, string cD_GRUPO_NAO)
+        {
+            var cD_TERMINALParameter = cD_TERMINAL.HasValue ?
+                new ObjectParameter("CD_TERMINAL", cD_TERMINAL) :
+                new ObjectParameter("CD_TERMINAL", typeof(int));
+    
+            var nR_CONTAINERParameter = nR_CONTAINER != null ?
+                new ObjectParameter("NR_CONTAINER", nR_CONTAINER) :
+                new ObjectParameter("NR_CONTAINER", typeof(string));
+    
+            var cD_GRUPOParameter = cD_GRUPO != null ?
+                new ObjectParameter("CD_GRUPO", cD_GRUPO) :
+                new ObjectParameter("CD_GRUPO", typeof(string));
+    
+            var cD_GRUPO_NAOParameter = cD_GRUPO_NAO != null ?
+                new ObjectParameter("CD_GRUPO_NAO", cD_GRUPO_NAO) :
+                new ObjectParameter("CD_GRUPO_NAO", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE_Result>("SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE", cD_TERMINALParameter, nR_CONTAINERParameter, cD_GRUPOParameter, cD_GRUPO_NAOParameter);
+        }
     }
 }
