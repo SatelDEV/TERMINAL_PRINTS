@@ -811,7 +811,7 @@ namespace TerminalRobo.Models
                                    IC_ROBO = tmp.IC_ROBO
                                });
 
-            lstProcesso = lstProcesso.Where(x => x.IC_ROBO == icRobo);
+            //lstProcesso = lstProcesso.Where(x => x.IC_ROBO == icRobo);
 
             return lstProcesso.OrderBy(x => x.CD_USUARIO).ToList();
         }
