@@ -406,7 +406,7 @@ namespace TerminalRobo
            
         }
 
-        private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = true)
+        private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
         {
 
             string Grupo = ConfigurationManager.AppSettings["Grupo"].ToString();
