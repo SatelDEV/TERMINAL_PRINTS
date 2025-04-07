@@ -491,7 +491,7 @@ namespace TerminalRobo
 
                 }
 
-                if (icEnviarEmailAnalista == "N")
+                if (icEnviarEmailAnalista == "S")
                 {
                     //Verifica se existe divergências para enviar aos analistas do trafego
                     navegar.GerarPlanilhaExcelCliente(nr_robo);
