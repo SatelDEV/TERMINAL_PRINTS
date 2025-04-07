@@ -1178,7 +1178,7 @@ namespace TerminalRobo.Models
         ContainerElement.click();
     }
 ");
-                ConsultaSite = "https://novo-tas.btp.com.br/b2b/consultaconteiner";
+                ConsultaSite = "https://portaldocliente.btp.com.br/sistemas/processos-logisticos/b2b/consultaconteiner";
 
             }
             else
