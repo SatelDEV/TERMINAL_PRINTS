@@ -1112,39 +1112,32 @@ namespace TerminalRobo.Models
             };
 
             // Adiciona o cookie ao gerenciador global
-            cookieManager.SetCookieAsync("https://idp.btp.com.br", idpCookie);
-
-            do
-            {
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteBTP + "';");
-          
-                bCarregado = AguardaPaginaCarregar();
- 
-                url = chromeBrowser.Address;
-                icontador++;
-
-            } while (url != siteBTP && !bCarregado && icontador < 3);
+            cookieManager.SetCookieAsync("https://idp.btp.com.br", idpCookie);        
 
 
-            //mEsperaAjax = 30;
+
+
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync($"document.location = '{siteBTP}';");
+
+            AguardaPaginaCarregar();
             Thread.Sleep(7000);
             Application.DoEvents();
 
 
-
+            if()
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('login').value = '" + sUsuarioBTP + "';");
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('senha').value = '" + sSenhaBTP + "';");
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('entrar').click();");
 
          
-            Thread.Sleep(6000);
+            Thread.Sleep(8000);
             Application.DoEvents();
 
 
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.querySelectorAll('a[mat-raised-button]')[2].click();");
 
              
-            Thread.Sleep(5000);
+            Thread.Sleep(3000);
             Application.DoEvents();
 
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.querySelectorAll('mat-dialog-container button.mat-button .mat-button-wrapper')[0].click();");
@@ -1155,14 +1148,32 @@ namespace TerminalRobo.Models
 
 
        
-            Thread.Sleep(5000);
+            Thread.Sleep(4000);
             Application.DoEvents();
 
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(
-                "document.querySelector('#wrapper > div > btp-toolbar > mat-toolbar > div > div.full-height > button').click();"
-            );
+            var botaoScript = @"
+(function() {
+    var btn = document.querySelector('#wrapper > div > btp-toolbar > mat-toolbar > div > div.full-height > button');
+    if (btn) {
+        btn.click();
+        return true;
+    }
+    return false;
+})();";
 
-         
+            var task = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(botaoScript);
+            task.Wait();
+
+            if (task.Result.Success && task.Result.Result is bool clicado && clicado)
+            {
+              
+            }
+            else
+            {                
+                return EntrarPaginaBTP(lacre); // Chamada recursiva
+            }
+
+
             Thread.Sleep(3000);
             Application.DoEvents();
 
@@ -1210,7 +1221,7 @@ namespace TerminalRobo.Models
             // Obtendo o cookie
             cookieManager.VisitAllCookies(cookieVisitor);
 
-            Thread.Sleep(2000);
+            
 
             // Criando um novo cookie com o mesmo valor
             if (!string.IsNullOrEmpty(cookieVisitor.CookieValue))
@@ -1230,44 +1241,25 @@ namespace TerminalRobo.Models
                 cookieManager.SetCookie("https://novo-tas.btp.com.br", newCookie);
             }
 
+
+
+            chromeBrowser.GetBrowser().MainFrame.LoadUrl("about:blank");
             AguardaPaginaCarregar();
             Thread.Sleep(5000);
             Application.DoEvents();
 
 
-            // Continuar a navegação
-            
-
-            int icontadorX = 0;
-            do
-            {
-                // Carregar uma página em branco antes de acessar o ConsultaContainer
-                chromeBrowser.GetBrowser().MainFrame.LoadUrl("about:blank");
-
-                // Espera para garantir que a página em branco tenha carregado
-
-
-                AguardaPaginaCarregar();
-                Thread.Sleep(5000);
-                Application.DoEvents();
-
-                // Agora que a página em branco foi carregada, acessar a página ConsultaContainer
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync($"document.location = '{ConsultaSite}';");
-
-                // Aguarda a página ConsultaContainer carregar
-                bCarregado = AguardaPaginaCarregar();
-
-                url = chromeBrowser.Address;
-                icontadorX++;
-
-            } while (url != ConsultaSite && !bCarregado && icontadorX < 3);
 
 
 
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync($"document.location = '{ConsultaSite}';");
 
-            //AguardaPaginaCarregar();
-            //Thread.Sleep(5000);
-            //Application.DoEvents();
+            AguardaPaginaCarregar();
+            Thread.Sleep(5000);
+            Application.DoEvents();
+    
+
+
 
  
 
@@ -1283,14 +1275,23 @@ namespace TerminalRobo.Models
         {
 
 
-            //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('btnLimpar').click();");
 
 
+            const int maxTentativas = 5;
+            int tentativa = 0;
+            bool sucesso = false;
 
-            var frame = chromeBrowser.GetBrowser().MainFrame;
+            while (tentativa < maxTentativas && !sucesso)
+            {
+                tentativa++;
 
-            // Script para verificar se o elemento existe antes de clicar
-            var scriptExiste = @"
+                Thread.Sleep(2000);
+                Application.DoEvents();
+
+                var frame = chromeBrowser.GetBrowser().MainFrame;
+
+                // Script para verificar se o elemento existe antes de clicar
+                var scriptExiste = @"
         (function() {
             var btn = document.getElementById('btnLimpar');
             if (btn) {
@@ -1298,25 +1299,28 @@ namespace TerminalRobo.Models
                 return true;
             }
             return false;
-        })();
-    ";
+        })();";
 
-            var taskX = frame.EvaluateScriptAsync(scriptExiste);
-            taskX.ContinueWith(t =>
-            {
-                if (!t.IsFaulted)
+                // Executa o script e verifica o resultado
+                var taskP = frame.EvaluateScriptAsync(scriptExiste);
+                taskP.Wait(); // Espera o resultado da execução
+
+                if (taskP.Result.Success && taskP.Result.Result is bool resultp && resultp)
                 {
-                    var responseEx = t.Result;
-                    if (responseEx.Success && responseEx.Result != null && (bool)responseEx.Result)
-                    {
-                        
-                    }
-                    //else
-                    //{
-                    //    EntrarPaginaBTP(lacre);
-                    //}
-                }
-            });
+                    sucesso = true;
+                }             
+            }
+
+            if(sucesso == false)
+            {
+             
+
+
+            }
+
+          
+        
+
 
 
             Thread.Sleep(2000);
@@ -1326,13 +1330,13 @@ namespace TerminalRobo.Models
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('txtConteiner').value = '" + conteudo.NR_CONTAINER + "';");
 
 
-            Thread.Sleep(3000);
+            Thread.Sleep(2000);
             Application.DoEvents();
 
 
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('btnAddConteiner').click();");
 
-            Thread.Sleep(3000);
+            Thread.Sleep(2000);
             Application.DoEvents();
 
 
@@ -1342,7 +1346,7 @@ namespace TerminalRobo.Models
 
 
              Application.DoEvents();
-             Thread.Sleep(10000);
+             Thread.Sleep(5000);
 
 
             var browser = chromeBrowser.GetBrowser();
@@ -1352,7 +1356,7 @@ namespace TerminalRobo.Models
 
             if (responseX.Success && responseX.Result != null && (bool)responseX.Result)
             {
-                Console.WriteLine("Mensagem de espera detectada. Tentando novamente em 20 segundos...");
+                
                 Thread.Sleep(21000); // Aguarda 20 segundos
                 mainFrame.EvaluateScriptAsync("document.getElementById('btnPesquisar').click();");
 
@@ -1360,7 +1364,6 @@ namespace TerminalRobo.Models
                 Thread.Sleep(5000);
             }
 
-            Application.DoEvents();
 
 
 
@@ -1373,20 +1376,18 @@ namespace TerminalRobo.Models
             if (found) return; // Interrompe a execução após o primeiro encontrado
 
             let bookingCell = row.querySelector('td:nth-child(3)');
-            if (bookingCell && bookingCell.textContent.trim() === '" + conteudo.NR_BOOKING.Trim() + @"') {
+            if (bookingCell && bookingCell.textContent.trim().includes('" + conteudo.NR_BOOKING.Trim() + @"')) {
                 let checkbox = row.querySelector('input[type=checkbox]');
                 if (checkbox) {
                     checkbox.click();
-                    found = true; // Marca como encontrado
+                    found = true; 
                 }
             }
-        });
-
-        console.log(found); // Vai imprimir true ou false no console
+        });        
         return found; // Retorna se encontrou e clicou no checkbox
     }
 
-    // Chama a função para execução
+   
     executarCodigo();
 ";
 
@@ -1445,7 +1446,7 @@ namespace TerminalRobo.Models
                 int cont = 0;
 
 
-                Thread.Sleep(5000);
+                Thread.Sleep(2000);
                 Application.DoEvents();
                 //return true;
 
@@ -1462,7 +1463,7 @@ namespace TerminalRobo.Models
                         let rowRecepcao = tabelaRecepcao.querySelector('.jtable-data-row');
                         if (rowRecepcao) {
                             let cells = rowRecepcao.querySelectorAll('td');
-                            resultado[0] = cells[3]?.textContent.trim() || ''; // Data Recepção (índice 3)
+                            resultado[0] = cells[2]?.textContent.trim() || ''; // Data Recepção (índice 3)
                             resultado[5] = cells[4]?.textContent.trim() || ''; // Status Recepção (índice 4)
                         }
                     }
@@ -1501,71 +1502,7 @@ namespace TerminalRobo.Models
 
                 // Chama a função que contém o return
                 retornaValor();
-                ";
-
-
-
-                //var sDataDeposito = @" function retornaValor() {
-                //    let resultado = [];
-                //    let tabelaRecepcao = document.querySelector('#jtable-recepcao .jtable');
-                //    let tabelaDocumentacao = document.querySelector('#jTableListaDocumentacao .jtable');
-                //    let tabelaEntrega = document.querySelector('#jtable-entrega .jtable');
-                //    let rowSelecionada = document.querySelector('.jtable-row-selected');
-
-                //    if (rowSelecionada)
-                //    {
-                //        let cells = rowSelecionada.querySelectorAll('td');
-                //        let sbooking = cells[2]?.textContent.trim() || ''; // Booking
-                //        let nmStatus = cells[8]?.textContent.trim() || ''; // Status
-
-                //        resultado[0] = '';
-
-                //        if (tabelaRecepcao)
-                //        {
-                //            let rowRecepcao = tabelaRecepcao.querySelector('.jtable-data-row');
-                //            if (rowRecepcao)
-                //            {
-                //                let cellsRecepcao = rowRecepcao.querySelectorAll('td');
-                //                resultado[0] = document.getElementById('txtRecepcaoDataEntrada')?.value || ''; // Data Entrada no terminal
-                //                resultado[5] = document.getElementById('txtRecepcaoStatusResposta')?.value || ''; // Status resposta
-                //            }
-                //        }
-
-                //        if (tabelaDocumentacao)
-                //        {
-                //            let rowDocumentacao = tabelaDocumentacao.querySelector('.jtable-data-row');
-                //            if (rowDocumentacao)
-                //            {
-                //                let cellsDoc = rowDocumentacao.querySelectorAll('td');
-                //                resultado[1] = cellsDoc[2]?.textContent.trim() || ''; // DUE
-                //                resultado[6] = cellsDoc[4]?.textContent.trim() || ''; // Status Desembaraço
-                //                resultado[7] = cellsDoc[7]?.textContent.trim() || ''; // Local Embarque
-                //                resultado[8] = cellsDoc[8]?.textContent.trim() || ''; // Local CCT
-                //            }
-                //        }
-
-                //        resultado[2] = sbooking;
-                //        resultado[3] = cells[10]?.textContent.trim() || ''; // Navio
-
-                //        if (nmStatus === 'SAÍDO')
-                //        {
-                //            resultado[4] = document.getElementById('txtEntregaDataEmbarque')?.value || '';
-                //        }
-                //        else
-                //        {
-                //            resultado[4] = '';
-                //        }
-
-                //        if ((nmStatus === 'NO TERMINAL' || nmStatus === 'AVISADO') || nmStatus === 'SAÍDO')
-                //        {
-                //            return resultado;
-                //        }
-                //    }
-
-                //    return resultado;
-                //}
-
-                //retornaValor();";
+                ";         
 
 
 
@@ -1607,7 +1544,13 @@ namespace TerminalRobo.Models
             else
             {
                 dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "NÃO ENCONTROU CONTAINER", novoDado);
-            }        
+
+            }
+
+
+            Thread.Sleep(8000);
+            Application.DoEvents();
+
             return true;
         }
 
