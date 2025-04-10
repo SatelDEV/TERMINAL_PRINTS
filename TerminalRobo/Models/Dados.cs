@@ -748,7 +748,7 @@ namespace TerminalRobo.Models
         public List<ListaDeCampos> ConsultaLacreTerminalCliente(int? idTerminal, string nrContainer, string grupo, string grupo_nao)
         {
             var lstProcesso = (from s in db.SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE(idTerminal, nrContainer, grupo, grupo_nao)
-                               select new ListaDeCampos
+                               select new ListaDeCampos                               
                                {
                                    CD_PROCESSO = s.CD_PROCESSO,
                                    CD_CLIENTE = s.CD_CLIENTE,

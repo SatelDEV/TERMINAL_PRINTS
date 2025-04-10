@@ -117,19 +117,6 @@ namespace TerminalRobo.DataBase
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_SELECT_CONSULTA_CONTAINERS_TERMINAL_Result>("SP_SELECT_CONSULTA_CONTAINERS_TERMINAL", nR_CONTAINERParameter, cD_TERMINALParameter);
         }
     
-        public virtual ObjectResult<SP_SELECT_CONSULTA_LACRES_TERMINAL_Result> SP_SELECT_CONSULTA_LACRES_TERMINAL(Nullable<int> cD_TERMINAL, string nR_CONTAINER)
-        {
-            var cD_TERMINALParameter = cD_TERMINAL.HasValue ?
-                new ObjectParameter("CD_TERMINAL", cD_TERMINAL) :
-                new ObjectParameter("CD_TERMINAL", typeof(int));
-    
-            var nR_CONTAINERParameter = nR_CONTAINER != null ?
-                new ObjectParameter("NR_CONTAINER", nR_CONTAINER) :
-                new ObjectParameter("NR_CONTAINER", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_SELECT_CONSULTA_LACRES_TERMINAL_Result>("SP_SELECT_CONSULTA_LACRES_TERMINAL", cD_TERMINALParameter, nR_CONTAINERParameter);
-        }
-    
         public virtual ObjectResult<SP_SELECT_CONSULTA_CONTAINERS_Result> SP_SELECT_CONSULTA_CONTAINERS(Nullable<int> cD_TERMINAL, string nR_CONTAINER, Nullable<bool> iC_CONFIRMACAO)
         {
             var cD_TERMINALParameter = cD_TERMINAL.HasValue ?
@@ -226,6 +213,19 @@ namespace TerminalRobo.DataBase
                 new ObjectParameter("IC_ROBO", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO_Result>("SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO", iC_ROBOParameter);
+        }
+    
+        public virtual ObjectResult<SP_SELECT_CONSULTA_LACRES_TERMINAL_Result> SP_SELECT_CONSULTA_LACRES_TERMINAL(Nullable<int> cD_TERMINAL, string nR_CONTAINER)
+        {
+            var cD_TERMINALParameter = cD_TERMINAL.HasValue ?
+                new ObjectParameter("CD_TERMINAL", cD_TERMINAL) :
+                new ObjectParameter("CD_TERMINAL", typeof(int));
+    
+            var nR_CONTAINERParameter = nR_CONTAINER != null ?
+                new ObjectParameter("NR_CONTAINER", nR_CONTAINER) :
+                new ObjectParameter("NR_CONTAINER", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_SELECT_CONSULTA_LACRES_TERMINAL_Result>("SP_SELECT_CONSULTA_LACRES_TERMINAL", cD_TERMINALParameter, nR_CONTAINERParameter);
         }
     
         public virtual ObjectResult<SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE_Result> SP_SELECT_CONSULTA_LACRES_TERMINAL_CLIENTE(Nullable<int> cD_TERMINAL, string nR_CONTAINER, string cD_GRUPO, string cD_GRUPO_NAO)

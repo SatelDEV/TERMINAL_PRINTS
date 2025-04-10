@@ -86,6 +86,7 @@ namespace TerminalRobo.DataBase
         public string NR_ORDDEM_CLIENTE { get; set; }
         public Nullable<bool> IC_BREAK_BULK { get; set; }
         public string TEMPERATURE_RECORDER { get; set; }
+        public Nullable<bool> IC_AGUARDANDO_CONTAINER { get; set; }
     
         public virtual ICollection<PROCESSORESERVACONTAINER> PROCESSORESERVACONTAINER { get; set; }
     }

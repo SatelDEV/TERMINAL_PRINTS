@@ -163,7 +163,7 @@ namespace TerminalRobo.Models
 
         //const string siteSantosBrasil = "https://www.santosbrasil.com.br/tecon-santos-sistemas/login.asp";
         const string siteSantosBrasil = "https://www.santosbrasil.com.br/tecon-santos-sistemas/login.asp";
-           const string siteBTP = "https://portaldocliente.btp.com.br/sistemas/processos-logisticos";
+        const string siteBTP = "https://portaldocliente.btp.com.br/sistemas/processos-logisticos";
         const string siteEmbraport = "http://www.embraportonline.com.br/Main";
 
         //const string siteEmbraport = "https://www.embraportonline.com.br/Account/LogOn?service=EOL&returnurl=http://www.embraportonline.com.br/Account/LogOnIntegrado";
@@ -1108,53 +1108,35 @@ namespace TerminalRobo.Models
                 Path = "/",
                 HttpOnly = false,
                 Secure = false,
-                Expires = DateTime.Now.AddDays(1)
+                Expires = DateTime.Now.AddDays(30)
             };
 
             // Adiciona o cookie ao gerenciador global
-            cookieManager.SetCookieAsync("https://idp.btp.com.br", idpCookie);
+            cookieManager.SetCookieAsync("https://idp.btp.com.br", idpCookie);        
 
 
 
-             
 
-            do
-            {
-                bCarregado = false;
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync($"document.location = '{siteBTP}';");
 
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteBTP + "';");                
-                bCarregado = AguardaPaginaCarregar();
-
-                //Verifica se conseguiu acessar a página.
-                url = chromeBrowser.Address;
-                icontador++;
-
-            } while (url != siteBTP && !bCarregado && icontador < 3);
-
+            AguardaPaginaCarregar();
             Thread.Sleep(7000);
             Application.DoEvents();
 
 
-
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('login').value = '"+ sUsuarioBTP + "';");
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('senha').value = '"+ sSenhaBTP+ "';");
+            //if()
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('login').value = '" + sUsuarioBTP + "';");
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('senha').value = '" + sSenhaBTP + "';");
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('entrar').click();");
 
-
-            Thread.Sleep(5000);
+         
+            Thread.Sleep(8000);
             Application.DoEvents();
 
 
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(@"
-    const botoes = Array.from(document.querySelectorAll('a.mat-raised-button.mat-primary'));
-    const botoesFiltrados = botoes.filter(btn => btn.innerText.trim() === 'Acessar');
-    if (botoesFiltrados.length > 0) {
-        botoesFiltrados[botoesFiltrados.length - 1].click();
-    }
-");
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.querySelectorAll('a[mat-raised-button]')[2].click();");
 
-
-
+             
             Thread.Sleep(3000);
             Application.DoEvents();
 
@@ -1179,10 +1161,17 @@ namespace TerminalRobo.Models
     return false;
 })();";
 
-            var taskX = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(botaoScript);
-            taskX.Wait();
+            var task = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(botaoScript);
+            task.Wait();
 
-                 
+            if (task.Result.Success && task.Result.Result is bool clicado && clicado)
+            {
+              
+            }
+            else
+            {                
+                return EntrarPaginaBTP(lacre); // Chamada recursiva
+            }
 
 
             Thread.Sleep(3000);
@@ -1195,7 +1184,7 @@ namespace TerminalRobo.Models
             {
                 chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(@"
     const ContainerElement = Array.from(document.querySelectorAll('span.nav-link-title[translate=""no""]'))
-        .find(span => span.textContent.trim() === 'Container');
+        .find(span => span.textContent.trim() === 'Conteiner');
     if (ContainerElement) {
         ContainerElement.click();
     }
@@ -1217,7 +1206,7 @@ namespace TerminalRobo.Models
                 ConsultaSite = "https://novo-tas.btp.com.br/b2b/consultadue";
             }
            
-            Thread.Sleep(3000);
+            Thread.Sleep(2000);
             Application.DoEvents();
 
 
@@ -1291,7 +1280,7 @@ namespace TerminalRobo.Models
             const int maxTentativas = 5;
             int tentativa = 0;
             bool sucesso = false;
-
+            // pesquisa do container
             while (tentativa < maxTentativas && !sucesso)
             {
                 tentativa++;
@@ -1320,7 +1309,15 @@ namespace TerminalRobo.Models
                 {
                     sucesso = true;
                 }             
-            }         
+            }
+
+            if(sucesso == false)
+            {
+             
+
+
+            }
+
           
         
 
@@ -1417,7 +1414,7 @@ namespace TerminalRobo.Models
              {
                 string sNaoEncontrou = @"
                     var janela = document.getElementsByClassName('jtable');
-                    if (janela.length > 0) {
+                       if (janela.length == 0) return 'SEM_TABELA';
                         var tabela = janela[0];
                         var col = tabela.getElementsByTagName('td');
                         if (col.length > 0) {
@@ -4757,165 +4754,252 @@ namespace TerminalRobo.Models
 
         public bool ConsultarLacreBTP2(ListaDeCampos conteudo, bool bPrimeiraVez)
         {
-            dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "INICIANDO CONSULTA", novoDado);
-            //if (bPrimeiraVez)
-            //{
-            bCarregado = false;
-            //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='https://tas.btp.com.br/b2b/consultaconteiner';");
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('SubMenu-2')[0].getElementsByTagName('a')[3].click();");
-            AguardaPaginaCarregar();
-            //}
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('ddlCategoria').value = 'E';");
+
+
+            const int maxTentativas = 5;
+            int tentativa = 0;
+            bool sucesso = false;
+            // pesquisa do container        
+                     
+
+            Thread.Sleep(2000);
+            Application.DoEvents();
+
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(
+            "document.getElementById('ddlCategoria').value = 'E';");
+
+
+            Thread.Sleep(2000);
+            Application.DoEvents();
+
+
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('txtNumeroConteiner').value = '" + conteudo.NR_CONTAINER + "';");
+
+
+            Thread.Sleep(2000);
+            Application.DoEvents();
+
+
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('btnPesquisaConteinerTAS').click();");
 
 
-            VerificaJanelaAjaxCarregada("carregando-gif ico", "class-visible");
 
-            //Verifica se o container já está depositado
-            string sNaoEncontrou = "var janela = document.getElementsByClassName('jtable');";
-            sNaoEncontrou += "var tabela = janela[0];";
-            sNaoEncontrou += "var col = tabela.getElementsByTagName('td');";
-            sNaoEncontrou += "var linha = col[0].innerText;";
-            sNaoEncontrou += "linha == 'Não existem registros a listar!';";
-            var taskn = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sNaoEncontrou);
-            taskn.Wait();
-            var responsen = taskn.Result;
-            bool resultn = responsen.Success;
-            bool bNaoEncontrou = true;
-            if (resultn)
+
+            Application.DoEvents();
+            Thread.Sleep(5000);
+
+
+            var browser = chromeBrowser.GetBrowser();
+            var mainFrame = browser.MainFrame;
+
+            var responseX = mainFrame.EvaluateScriptAsync("document.getElementById('msgFiltro') !== null && document.getElementById('msgFiltro').innerText.includes('20 segundos')").Result;
+
+            if (responseX.Success && responseX.Result != null && (bool)responseX.Result)
             {
-                bNaoEncontrou = responsen.Result.ToString() == "True";
 
+                Thread.Sleep(21000); // Aguarda 20 segundos
+                mainFrame.EvaluateScriptAsync("document.getElementById('btnPesquisar').click();");
+
+                Application.DoEvents();
+                Thread.Sleep(5000);
+            }
+
+
+
+
+            string scriptF = @"
+    function executarCodigo() {
+        let rows = document.querySelectorAll('#jTableLista .jtable tbody tr');
+        let found = false;
+
+        rows.forEach(row => {
+            if (found) return; // Interrompe a execução após o primeiro encontrado
+
+            let bookingCell = row.querySelector('td:nth-child(3)');
+            if (bookingCell && bookingCell.textContent.trim().includes('" + conteudo.NR_BOOKING.Trim() + @"')) {
+                let checkbox = row.querySelector('input[type=checkbox]');
+                if (checkbox) {
+                    checkbox.click();
+                    found = true; 
+                }
+            }
+        });        
+        return found; // Retorna se encontrou e clicou no checkbox
+    }
+
+   
+    executarCodigo();
+";
+
+
+            // Executa o script no navegador
+            var task = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(scriptF);
+            task.Wait();
+            var response = task.Result;
+            bool result = response.Success;
+            bool bEncontrou = false;
+
+            if (result)
+            {
+                bEncontrou = response.Result.ToString() == "True";
             }
             else
-                bNaoEncontrou = false;
-
-            if (!bNaoEncontrou)
             {
-                //Verifica se já carregou os dados na tela
-                //=======================================================
+                bEncontrou = false;
+            }
 
-                string sJanelaCarregada = "function Carregou(listadue) { var h = 0; do { sleep(500); x++; } while(listadue[2] == null && x < 8) }";
-                sJanelaCarregada += "function sleep(milliseconds) {const date = Date.now();let currentDate = null;do{currentDate = Date.now();} while (currentDate - date < milliseconds);}";
-                sJanelaCarregada += "var bOk = false;";
-                sJanelaCarregada += "var janela = document.getElementsByClassName('jtable');";
-                sJanelaCarregada += " var x = janela[0].getElementsByTagName('tr');";
-                sJanelaCarregada += " var y = janela[2].getElementsByTagName('td');";
-                sJanelaCarregada += " for(var i=x.length - 1;i>0;i--){";
-                sJanelaCarregada += "   var k = x[i].getElementsByTagName('td');";
-                sJanelaCarregada += "   var sbooking = k[3].innerText;";
-                sJanelaCarregada += "   if (sbooking.trim().includes('" + conteudo.NR_BOOKING.Trim() + "')){";
-                sJanelaCarregada += "      var chek = k[0].getElementsByTagName('input'); ";
-                sJanelaCarregada += "      chek[0].click(); Carregou(y);";
-                sJanelaCarregada += "      if (y[2] != null) {bOk = true;} else {if (y[0].innerText == 'Não existem registros a listar!'){bOk = true;}} "; //DUE
-                sJanelaCarregada += "      break;";
-                sJanelaCarregada += "   }}";
-                sJanelaCarregada += "   bOk";
-                var taskx = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sJanelaCarregada);
-                taskx.Wait();
-                if (taskx.Result.Result.ToString().ToUpper() == "FALSE")
+            // Se o booking NÃO foi encontrado, verifica se há a mensagem "Não existem registros a listar!"
+            bool bNaoEncontrou = false;
+            if (!bEncontrou)
+            {
+                string sNaoEncontrou = @"
+                    var janela = document.getElementsByClassName('jtable');
+                       if (janela.length == 0) return 'SEM_TABELA';
+                        var tabela = janela[0];
+                        var col = tabela.getElementsByTagName('td');
+                        if (col.length > 0) {
+                            var linha = col[0].innerText;
+                            linha == 'Não existem registros a listar!';
+                        } else {
+                            false;
+                        }
+                    } else {
+                        false;
+                    }";
+
+                var taskn = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sNaoEncontrou);
+                taskn.Wait();
+                var responsen = taskn.Result;
+                bool resultn = responsen.Success;
+
+                if (resultn)
                 {
-                    dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "NÃO ENCONTROU CONTAINER", novoDado);
-                    return true;
+                    bEncontrou = false;
                 }
+            }
+
+            if (bEncontrou)
+            {
+
                 //precisa verificar se é de entrada ou saída quando encontrar.
                 bool bOk = false;
                 int cont = 0;
-                do
-                {
-                    var task = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("var bretorno = []; bretorno[0] = false; bretorno[1] = false; if (y[2] != null) {bretorno[0] = true;} else {if (y[0].innerText == 'Não existem registros a listar!' || !bok){bretorno[0] = true;}} bretorno;"); task.Wait();
-                    var response = task.Result;
-                    bool result = response.Success;
-                    if (result)
-                    {
-                        if (((List<object>)response.Result)[1].ToString() == "True")
-                            return true;
-                        bOk = ((List<object>)response.Result)[0].ToString() == "True";
 
-                    }
-                    else
-                    {
 
-                    }
-                    Application.DoEvents();
-                    Thread.Sleep(700);
-                    cont++;
-                } while (!bOk && cont < tbmEsperaAjax);
-                //===========================================================
-                //AguardaPaginaCarregar(ref tsStatus);
-                //Verifica se puxou os dados.
-                //VerificaJanelaAjaxCarregada("txtConteiner", "input");
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
                 Application.DoEvents();
                 //return true;
 
+            }
 
 
-                string sDataDeposito = "function retornaValor(){var janela = document.getElementsByClassName('jtable');";
-                sDataDeposito += " var x = janela[1].getElementsByTagName('tr');";
-                sDataDeposito += " var conteudo = [];";
-                sDataDeposito += " for(var i=1; i<x.length;i++){";
-                sDataDeposito += "   conteudo[i-1] = x[i].getElementsByTagName('td')[1].innerText;";
-                sDataDeposito += "   }";
-                sDataDeposito += " return conteudo} retornaValor(); ";
-                tentativa = 0;
-                try
-                {
-                    do
-                    {
 
-                        var task1 = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sDataDeposito);
-                        task1.Wait();
-                        var response1 = task1.Result;
+            var sDataDeposito = @"
+                function retornaValor() {
+                    let resultado = [];
 
-                        resultn = ValidarSituacaoLacre(conteudo, task1);
-
-                        bCarregado = false;
-
-                        Thread.Sleep(600);
-                        Application.DoEvents();
-                        tentativa++;
-                    } while (!resultn && tentativa < 20);
-                    //Caso ocorra algum erro na consulta, desloga do site e envia false para tentar novamente.
-                    if (tentativa >= 20)
-                    {
-                        dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "TENTATIVAS ESGOTADAS (20). TENTANDO NOVAMENTE.", novoDado);
-                        deslogandoBTP();
-                        return false;
+                    let tabelaRecepcao = document.querySelector('#jtable-recepcao .jtable');
+                    if (tabelaRecepcao) {
+                        let rowRecepcao = tabelaRecepcao.querySelector('.jtable-data-row');
+                        if (rowRecepcao) {
+                            let cells = rowRecepcao.querySelectorAll('td');
+                            resultado[0] = cells[2]?.textContent.trim() || ''; // Data Recepção (índice 3)
+                            resultado[5] = cells[4]?.textContent.trim() || ''; // Status Recepção (índice 4)
+                        }
                     }
 
-                    bCarregado = false;
+                    let tabelaDocumentacao = document.querySelector('#jTableListaDocumentacao .jtable');
+                    if (tabelaDocumentacao) {
+                        let rowDocumentacao = tabelaDocumentacao.querySelector('.jtable-data-row');
+                        if (rowDocumentacao) {
+                            let cells = rowDocumentacao.querySelectorAll('td');
+                            resultado[1] = cells[4]?.textContent.trim() || ''; // DUE (índice 4)
+                            resultado[6] = cells[7]?.textContent.trim() || ''; // Status de Desembaraço (índice 5)
+                            resultado[7] = cells[10]?.textContent.trim() || ''; // Local Embarque (índice 10)
+                            resultado[8] = cells[11]?.textContent.trim() || ''; // Local CCT (índice 11)
+                        }
+                    }
+
+                    let rowSelecionada = document.querySelector('.jtable-row-selected');
+                    if (rowSelecionada) {
+                        let cells = rowSelecionada.querySelectorAll('td');
+                        resultado[2] = cells[2]?.textContent.trim() || '';  // Booking (índice 2)
+                        resultado[3] = cells[10]?.textContent.trim() || '';  // Navio (índice 8)
+                    }
+
+                    let tabelaEntrega = document.querySelector('#jtable-entrega .jtable');
+                    if (tabelaEntrega) {
+                        let rowEntrega = tabelaEntrega.querySelector('.jtable-data-row');
+                        if (rowEntrega) {
+                            let cells = rowEntrega.querySelectorAll('td');
+                            resultado[4] = cells[2]?.textContent.trim() || ''; // Data Entrega (índice 3)
+                        }
+                    }
+
+                    // O return agora está dentro da função
+                    return resultado;
                 }
-                catch (Exception e)
+
+                // Chama a função que contém o return
+                retornaValor();
+                ";
+
+
+
+            tentativa = 0;
+            try
+            {
+                do
                 {
-                    dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "ERRO INESPERADO. " + e.Message, novoDado);
+
+                    var task1 = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sDataDeposito);
+                    task1.Wait();
+                    var response1 = task1.Result;
+
+                    result = ValidarSituacaoContainer(idBTP, conteudo, task1);
+
+                    bCarregado = false;
+
+                    Thread.Sleep(600);
+                    Application.DoEvents();
+                    tentativa++;
+                } while (!result && tentativa < 20);
+                //Caso ocorra algum erro na consulta, desloga do site e envia false para tentar novamente.
+                if (tentativa >= 20)
+                {
+                    dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "TENTATIVAS ESGOTADAS (20). TENTANDO NOVAMENTE.", novoDado);
+                    //deslogandoBTP();
                     return false;
                 }
 
+                bCarregado = false;
             }
-            else
+            catch (Exception e)
             {
-                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "NÃO ENCONTROU CONTAINER", novoDado);
+                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "ERRO INESPERADO. " + e.Message, novoDado);
+                return false;
             }
-
             return true;
         }
-
-
+            
+        
         public bool ConsultarLacreBTP(ListaDeCampos conteudo, bool bPrimeiraVez)
         {
             dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "INICIANDO CONSULTA", novoDado);
-            //if (bPrimeiraVez)
-            //{
-            bCarregado = false;
-            //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='https://tas.btp.com.br/b2b/consultaconteiner';");
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('SubMenu-2')[0].getElementsByTagName('a')[3].click();");
-            AguardaPaginaCarregar();
-            //}
+    
+                   
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('ddlCategoria').value = 'E';");
+
+            Thread.Sleep(300);
+            Application.DoEvents();
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('txtNumeroConteiner').value = '" + conteudo.NR_CONTAINER + "';");
+
+            Thread.Sleep(300);
+            Application.DoEvents();
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('btnPesquisaConteinerTAS').click();");
+
+            Thread.Sleep(300);
+            Application.DoEvents();
 
 
             VerificaJanelaAjaxCarregada("carregando-gif ico", "class-visible");
