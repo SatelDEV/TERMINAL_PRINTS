@@ -163,7 +163,7 @@ namespace TerminalRobo.Models
 
         //const string siteSantosBrasil = "https://www.santosbrasil.com.br/tecon-santos-sistemas/login.asp";
         const string siteSantosBrasil = "https://www.santosbrasil.com.br/tecon-santos-sistemas/login.asp";
-        const string siteBTP = "https://portaldocliente.btp.com.br/sistemas/processos-logisticos";
+           const string siteBTP = "https://portaldocliente.btp.com.br/sistemas/processos-logisticos";
         const string siteEmbraport = "http://www.embraportonline.com.br/Main";
 
         //const string siteEmbraport = "https://www.embraportonline.com.br/Account/LogOn?service=EOL&returnurl=http://www.embraportonline.com.br/Account/LogOnIntegrado";
@@ -1108,35 +1108,53 @@ namespace TerminalRobo.Models
                 Path = "/",
                 HttpOnly = false,
                 Secure = false,
-                Expires = DateTime.Now.AddDays(30)
+                Expires = DateTime.Now.AddDays(1)
             };
 
             // Adiciona o cookie ao gerenciador global
-            cookieManager.SetCookieAsync("https://idp.btp.com.br", idpCookie);        
+            cookieManager.SetCookieAsync("https://idp.btp.com.br", idpCookie);
 
 
 
+             
 
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync($"document.location = '{siteBTP}';");
+            do
+            {
+                bCarregado = false;
 
-            AguardaPaginaCarregar();
+                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteBTP + "';");                
+                bCarregado = AguardaPaginaCarregar();
+
+                //Verifica se conseguiu acessar a página.
+                url = chromeBrowser.Address;
+                icontador++;
+
+            } while (url != siteBTP && !bCarregado && icontador < 3);
+
             Thread.Sleep(7000);
             Application.DoEvents();
 
 
-            if()
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('login').value = '" + sUsuarioBTP + "';");
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('senha').value = '" + sSenhaBTP + "';");
+
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('login').value = '"+ sUsuarioBTP + "';");
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('senha').value = '"+ sSenhaBTP+ "';");
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('entrar').click();");
 
-         
-            Thread.Sleep(8000);
+
+            Thread.Sleep(5000);
             Application.DoEvents();
 
 
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.querySelectorAll('a[mat-raised-button]')[2].click();");
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(@"
+    const botoes = Array.from(document.querySelectorAll('a.mat-raised-button.mat-primary'));
+    const botoesFiltrados = botoes.filter(btn => btn.innerText.trim() === 'Acessar');
+    if (botoesFiltrados.length > 0) {
+        botoesFiltrados[botoesFiltrados.length - 1].click();
+    }
+");
 
-             
+
+
             Thread.Sleep(3000);
             Application.DoEvents();
 
@@ -1161,17 +1179,10 @@ namespace TerminalRobo.Models
     return false;
 })();";
 
-            var task = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(botaoScript);
-            task.Wait();
+            var taskX = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(botaoScript);
+            taskX.Wait();
 
-            if (task.Result.Success && task.Result.Result is bool clicado && clicado)
-            {
-              
-            }
-            else
-            {                
-                return EntrarPaginaBTP(lacre); // Chamada recursiva
-            }
+                 
 
 
             Thread.Sleep(3000);
@@ -1206,7 +1217,7 @@ namespace TerminalRobo.Models
                 ConsultaSite = "https://novo-tas.btp.com.br/b2b/consultadue";
             }
            
-            Thread.Sleep(2000);
+            Thread.Sleep(3000);
             Application.DoEvents();
 
 
@@ -1309,15 +1320,7 @@ namespace TerminalRobo.Models
                 {
                     sucesso = true;
                 }             
-            }
-
-            if(sucesso == false)
-            {
-             
-
-
-            }
-
+            }         
           
         
 
