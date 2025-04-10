@@ -406,7 +406,7 @@ namespace TerminalRobo
            
         }
 
-        private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
+        private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = true)
         {
 
             string Grupo = ConfigurationManager.AppSettings["Grupo"].ToString();
@@ -462,7 +462,7 @@ namespace TerminalRobo
                             Application.DoEvents();
                             if (DivergenciaLacre)
                             {
-                                if (!navegar.ConsultarLacreBTP2(conteudo, !bPrimeiraConsulta))
+                                if (!navegar.ConsultarLacreBTP(conteudo, !bPrimeiraConsulta))
                                 {
                                     //Caso de algum erro na consulta tenta logar novamente no site
                                     navegar.EntrarPaginaBTP(DivergenciaLacre);
