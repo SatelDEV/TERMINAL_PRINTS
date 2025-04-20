@@ -16,9 +16,9 @@ namespace TerminalRobo.DataBase
     {
         public RECIALFA()
         {
+            this.DDE = new HashSet<DDE>();
             this.DUE = new HashSet<DUE>();
             this.DUE1 = new HashSet<DUE>();
-            this.DDE = new HashSet<DDE>();
         }
     
         public string STR_CODIGORECIALFA { get; set; }
@@ -29,8 +29,8 @@ namespace TerminalRobo.DataBase
         public Nullable<int> CD_FILIAL { get; set; }
         public string DS_EMAIL_RECINTO { get; set; }
     
+        public virtual ICollection<DDE> DDE { get; set; }
         public virtual ICollection<DUE> DUE { get; set; }
         public virtual ICollection<DUE> DUE1 { get; set; }
-        public virtual ICollection<DDE> DDE { get; set; }
     }
 }

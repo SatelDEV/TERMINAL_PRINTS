@@ -67,7 +67,7 @@ namespace TerminalRobo.DataBase
         public Nullable<int> CD_DUE_NF_LPCO { get; set; }
         public Nullable<int> QTD_NOTA_REFERENCIADA { get; set; }
     
-        public virtual DUE DUE { get; set; }
         public virtual ICollection<DUE_NF_ITEM> DUE_NF_ITEM { get; set; }
+        public virtual DUE DUE { get; set; }
     }
 }

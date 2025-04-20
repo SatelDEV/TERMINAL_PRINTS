@@ -21,8 +21,8 @@ namespace TerminalRobo.DataBase
         public Nullable<int> CD_BL { get; set; }
         public string IC_TIPO { get; set; }
     
-        public virtual DUE DUE { get; set; }
         public virtual PROCESSOS PROCESSOS { get; set; }
         public virtual PROCESSOS PROCESSOS1 { get; set; }
+        public virtual DUE DUE { get; set; }
     }
 }

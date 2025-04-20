@@ -163,19 +163,21 @@ namespace TerminalRobo.Models
 
         //const string siteSantosBrasil = "https://www.santosbrasil.com.br/tecon-santos-sistemas/login.asp";
         const string siteSantosBrasil = "https://www.santosbrasil.com.br/tecon-santos-sistemas/login.asp";
-           const string siteBTP = "https://portaldocliente.btp.com.br/sistemas/processos-logisticos";
+        const string siteBTP = "https://portaldocliente.btp.com.br/sistemas";
         const string siteEmbraport = "http://www.embraportonline.com.br/Main";
 
         //const string siteEmbraport = "https://www.embraportonline.com.br/Account/LogOn?service=EOL&returnurl=http://www.embraportonline.com.br/Account/LogOnIntegrado";
         //const string siteEmbraport = "https://www.embraportonline.com.br/Account/LogOn";
 
 
-        
 
 
-      
+
+
 
         const string siteVilaConde = "https://www.santosbrasil.com.br/tecon-convicon/login.asp";
+        const string deslogaSantosBrasil = "https://www.santosbrasil.com.br/desloga.asp";
+
         const string siteItajai = "https://itajai.apmterminals.com.br/portal#/booking";
         const string siteItapoa = "https://clientes.portoitapoa.com/#/relatorios/booking";
         string sUsuarioSB = ConfigurationManager.AppSettings["usuarioSB"].ToString();
@@ -265,44 +267,38 @@ namespace TerminalRobo.Models
 
         public Navegacao(ref ToolStripStatusLabel Status, ref ToolStripStatusLabel terminal)
         {
-
             tsStatus = Status;
             tsTerminal = terminal;
-            //CefSettings settings = new CefSettings();
 
             var setting = new CefSettings();
-            /*
 
-                        //language setting   
+            // Configurações adicionais
+            setting.Locale = "pt-BR";
+            setting.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36";
+            setting.CefCommandLineArgs.Add("ignore-urlfetcher-cert-requests", "1");
+            setting.CefCommandLineArgs.Add("ignore-certificate-errors", "1");
 
+            // Adiciona caminho único para diretório de cache em cada instância para evitar conflito
+            string uniqueCachePath = Path.Combine(Path.GetTempPath(), "cef_cache_" + Guid.NewGuid().ToString());
+            setting.CachePath = uniqueCachePath;
 
-                        setting.Locale = "pt-BR";
-                        // cef set userAgent
-                        setting.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36";
-                        // Configure the browser path
-                        // setting.BrowserSubprocessPath = @"x86\CefSharp.BrowserSubprocess.exe";
-                        setting.CefCommandLineArgs.Add("ignore-urlfetcher-cert-requests", "1"); // Solve the certificate problem
-                        setting.CefCommandLineArgs.Add("ignore-certificate-errors", "1"); // Solve the certificate problem
-                        //Cef.Initialize(setting, performDependencyCheck: true, browserProcessHandler: null);
-                        */
+            // Inicializa o Cef apenas se necessário
+            if (!Cef.IsInitialized.HasValue)
+            {
+                Cef.Initialize(setting);
+            }
 
-            Cef.Initialize(setting);
+            // Inicializa o browser com URL desejada
             chromeBrowser = new ChromiumWebBrowser("http://www.sateldespachos.com.br")
             {
                 RequestHandler = new CustomRequestHandler()
             };
-            //chromeBrowser = new ChromiumWebBrowser("http://www.embraportonline.com.br/");
 
             chromeBrowser.Dock = DockStyle.Fill;
-
             chromeBrowser.LoadingStateChanged += chromeBrowser_LoadingStateChanged;
-
-
 
             JsDialogHandler jss = new JsDialogHandler();
             chromeBrowser.JsDialogHandler = jss;
-            //chromeBrowser.RequestHandler = new WinFormsRequestHandler();
-
         }
 
 
@@ -384,300 +380,7 @@ namespace TerminalRobo.Models
                 bCarregado = true;
             }
         }
-        #region Metodos Santos Brasil
-        //Entrar na página
-        //=================================================================
-        public bool EntrarPaginaSantosBrasil()
-        {
-            bCarregado = false;
-            try
-            {
-                string url = "";
-                int icontador = 0;
-                do
-                {
-                    bCarregado = false;
-
-                    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteSantosBrasil + "';");
-                    chromeBrowser.Load("document.location ='" + siteSantosBrasil + "';");
-                    bCarregado = AguardaPaginaCarregar();
-
-                    //Verifica se conseguiu acessar a página.
-                    url = chromeBrowser.Address;
-                    icontador++;
-
-                } while (url != siteSantosBrasil && !bCarregado && icontador < 3);
-
-
-
-                bCarregado = false;
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('login_').value = '" + sUsuarioSB + "';");
-
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('senha_').value = '" + sSenhaSB + "';");
-                //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("log_act();");
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('g-recaptcha')[0].click();");
-                //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('foption').options[1].selected = 'selected';");
-                //Thread.Sleep(1000);
-                //Application.DoEvents();
-                //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('btnForm').click();");
-
-                //chromeBrowser.ExecuteScriptAsync("document.getElementById('login_').value = '" + sUsuarioSB + "';");
-                //chromeBrowser.ExecuteScriptAsync("document.getElementById('senha_').value = '" + sSenhaSB + "';");
-                //chromeBrowser.ExecuteScriptAsync("log_act();");
-                bCarregado = AguardaPaginaCarregar();
-            }
-            catch
-            {
-                bCarregado = false;
-            }
-            return bCarregado;
-        }
-        //================================================================
-        //Consultar container
-        //================================================================
-        public bool ConsultarContainerSantosBrasil(ListaDeCampos conteudo)
-        {
-
-            dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "SANTOS BRASIL", DateTime.Now, "INICIANDO CONSULTA", novoDado);
-            bCarregado = false;
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('container cntr')[0].value = '" + conteudo.NR_CONTAINER + "';");
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('Export')[0].click();");
-            //AguardaPaginaCarregar(ref tsStatus);
-
-            Application.DoEvents();
-
-            //Pegar se o container foi depositado no terminal de embarque
-
-
-            //Verificar se a janela com informações do container já foi carregada
-
-            string sJanelaCarregada = "var j = document.getElementsByClassName('infConteiner janela')[0];";
-            sJanelaCarregada += " if (j != null) { true} else {false}";
-            bool bOk = false;
-            tentativa = 0;
-            bAlert = false;
-            do
-            {
-                var task = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sJanelaCarregada);
-                task.Wait();
-                var response = task.Result;
-                bool result = response.Success;
-                if (result)
-                {
-                    bOk = response.Result.ToString() == "True";
-
-                }
-                Application.DoEvents();
-                Thread.Sleep(750);
-                tentativa++;
-            } while ((!bOk && tentativa < 40) && (!bAlert));
-            if (tentativa >= 40)
-            {
-                //Não encontrou o container
-                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "SANTOS BRASIL", DateTime.Now, "ESGOTADO TENTATIVAS (20). CONTAINER NÃO ENCONTRADO", novoDado);
-                string nrProcesso = "E-" + conteudo.CD_NUMERO_PROCESSO.Substring(2, 6) + "/" + conteudo.CD_NUMERO_PROCESSO.Substring(0, 2);
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('btnFecha close')[2].click();");
-                /*
-                novoDado.NR_CONTAINER = conteudo.NR_CONTAINER;
-                novoDado.DT_CONTAINER = conteudo.DT_CONTAINER;
-                novoDado.DT_CONSULTA = DateTime.Now;
-                novoDado.CD_PROCESSO = conteudo.CD_PROCESSO;
-                novoDado.CD_NUMERO_PROCESSO = nrProcesso;
-                novoDado.DS_STATUS = "NÃO ENCONTROU";
-                novoDado.NM_TERMINAL = "SANTOS BRASIL";
-                novoDado.NM_NAVIO = conteudo.NM_NAVIO;
-                novoDado.NR_BOOKING = conteudo.NR_BOOKING;
-                 
-                dados.InsereConsulta(novoDado);
-                */
-                return false;
-            }
-            if (bAlert)
-            {
-                //Não encontrou o container
-                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "SANTOS BRASIL", DateTime.Now, "CONTAINER NÃO ENCONTRADO", novoDado);
-                string nrProcesso = "E-" + conteudo.CD_NUMERO_PROCESSO.Substring(2, 6) + "/" + conteudo.CD_NUMERO_PROCESSO.Substring(0, 2);
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('btnFecha close')[2].click();");
-                /*
-                novoDado.NR_CONTAINER = conteudo.NR_CONTAINER;
-                novoDado.DT_CONTAINER = conteudo.DT_CONTAINER;
-                novoDado.DT_CONSULTA = DateTime.Now;
-                novoDado.CD_PROCESSO = conteudo.CD_PROCESSO;
-                novoDado.CD_NUMERO_PROCESSO = nrProcesso;
-                novoDado.DS_STATUS = "NÃO ENCONTROU";
-                novoDado.NM_TERMINAL = "SANTOS BRASIL";
-                novoDado.NM_NAVIO = conteudo.NM_NAVIO;
-                novoDado.NR_BOOKING = conteudo.NR_BOOKING;
-                 
-                dados.InsereConsulta(novoDado);
-                */
-                return true;
-            }
-
-            string sDataDeposito = "function retornaValor(){var janela = document.getElementsByClassName('infConteiner janela');";
-            sDataDeposito += " var conteudo = [];";
-            sDataDeposito += " var info = janela[0].getElementsByClassName('info');";
-            sDataDeposito += " var li = info[0].getElementsByTagName('li');";
-            sDataDeposito += " conteudo[0] = ''; conteudo[1] = '';";
-            sDataDeposito += " conteudo[2] = ''; conteudo[3] = '';";
-            sDataDeposito += " conteudo[4] = ''; conteudo[5] = '';";
-            sDataDeposito += " conteudo[6] = ''; conteudo[7] = '';";
-            sDataDeposito += " ";
-
-            sDataDeposito += " for(var i=0;i< li.length;i++){";
-            sDataDeposito += " if (li[i].getElementsByTagName('label').length > 0){";
-            sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText == 'Entr. terminal'){";
-            sDataDeposito += " conteudo[0] = li[i].getElementsByTagName('span')[0].innerText;}";                                // DATA DE DEPÓSITO NO TERMINAL
-            sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText == 'Embarque'){";
-            sDataDeposito += " conteudo[4] = li[i] != null ? li[i].getElementsByTagName('span')[0].innerText : '';}}";          // DATA DE EMBARQUE
-
-            sDataDeposito += " if (li[i].getElementsByTagName('label').length > 0){";
-            sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText == 'Booking'){";
-            sDataDeposito += " conteudo[2] = li[i].getElementsByTagName('span')[0].innerText;}}";
-
-            sDataDeposito += " if (li[i].getElementsByTagName('label').length > 0){";
-            sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText.includes('DUE')){";
-            sDataDeposito += " conteudo[1] = li[i].getElementsByTagName('span')[0].innerText;}}";
-
-            sDataDeposito += " if (li[i].getElementsByTagName('label').length > 0){";
-            sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText == 'Navio'){";
-            sDataDeposito += " conteudo[3] = li[i].getElementsByTagName('span')[0].innerText;}}}";
-
-            sDataDeposito += " if (info[0].getElementsByClassName('aviso').length == 0){";
-            sDataDeposito += " conteudo[5] = document.getElementsByClassName('status')[0].innerText;";
-            sDataDeposito += " if (!conteudo[5].includes('Sa�do do Terminal') && !conteudo[5].includes('Saído do Terminal')) conteudo[4] = '';}";
-            sDataDeposito += " else{";
-            sDataDeposito += " conteudo[5] = info[0].getElementsByClassName('aviso')[0].innerText;}";
-
-            //PEGAR LACRES//
-            sDataDeposito += "var lacres = document.getElementsByClassName('janela lacre_fld')[1].getElementsByClassName('lacreCNTR');";
-            sDataDeposito += "if (lacres != null && lacres.length != 0) {";
-            sDataDeposito += "lacres = lacres[1].getElementsByClassName('inner')[0].getElementsByTagName('TR');";
-            sDataDeposito += "for (let index = 1; index < lacres.length; index++) {";
-            sDataDeposito += "if (lacres[index].getElementsByTagName('td')[1].innerText == 'Lacre Armador'){";
-            sDataDeposito += "conteudo[6] = lacres[index].getElementsByTagName('td')[0].innerText;}";
-            sDataDeposito += "if (lacres[index].getElementsByTagName('td')[1].innerText == 'Lacre Veterinário(SIF)'){";
-            sDataDeposito += "conteudo[7] = lacres[index].getElementsByTagName('td')[0].innerText;}}";
-            if (!string.IsNullOrEmpty(conteudo.DS_LACRE_SIF))
-            {
-                sDataDeposito += "if(conteudo[7] == ''){";
-                sDataDeposito += "for (let index = 1; index < lacres.length; index++) {";
-                sDataDeposito += "if (conteudo[7] == '' && lacres[index].getElementsByTagName('td')[1].innerText == 'Lacre Exportador'){";
-                sDataDeposito += "conteudo[7] = lacres[index].getElementsByTagName('td')[0].innerText;}";
-                sDataDeposito += "if (lacres[index].getElementsByTagName('td')[0].innerText.includes('" + conteudo.DS_LACRE_SIF.Replace("/", "").Replace("SIF", "").Replace("SENACSA", "") + "')){";
-                sDataDeposito += "conteudo[7] = lacres[index].getElementsByTagName('td')[0].innerText;}}}}";
-            }
-            else
-            {
-                sDataDeposito += "}";
-            }
-
-  
-            /* LÓGICA FRABICIANA
-            //sDataDeposito += " if (li.length < 15){";
-            //sDataDeposito += " conteudo[0] = ''; } ";
-            //sDataDeposito += " else{ ";
-            //sDataDeposito += " if (li.length == 15){";
-            //sDataDeposito += " conteudo[0] = li[14].getElementsByTagName('span')[0].innerText;}";
-            //sDataDeposito += " else{";
-            //sDataDeposito += " conteudo[0] = li[15].getElementsByTagName('span')[0].innerText;}}"; //Data do Terminal
-            
-            sDataDeposito += " if(li.length >= 6){";
-            sDataDeposito += " conteudo[1] = li[6].getElementsByTagName('span')[0].innerText;"; //Número da DUE e situação
-            sDataDeposito += " if (document.getElementsByClassName('status')[0].innerText == 'Aguardando transfer�ncia'){";
-            sDataDeposito += " conteudo[2] = li[1].getElementsByTagName('span')[0].innerText; ";
-            sDataDeposito += " }";
-            sDataDeposito += " else{";
-            sDataDeposito += " conteudo[2] = li[4].getElementsByTagName('span')[0].innerText;}"; //Número do Booking
-            sDataDeposito += " if (li[1].getElementsByTagName('span').length > 0){";
-            sDataDeposito += " conteudo[3] = li[1].getElementsByTagName('span')[0].innerText;}"; //Nome do Navio
-            sDataDeposito += " else{";
-            sDataDeposito += " conteudo[3] = li[1].getElementsByTagName('p')[0].innerText;}}";
-            sDataDeposito += " conteudo[5] = document.getElementsByClassName('status')[0].innerText;";
-            */
-
-            //sDataDeposito += " if (li.length == 16){";
-            //sDataDeposito += " conteudo[4] = li[15] != null ? li[15].getElementsByTagName('span')[0].innerText : '';} else{ conteudo[4] = li[15] != null ? li[16].getElementsByTagName('span')[0].innerText : '';}"; //Data do Embarque
-            sDataDeposito += " return conteudo} retornaValor(); ";
-            bool retorno = false;
-            tentativa = 0;
-            do
-            {
-
-                var task1 = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sDataDeposito);
-                task1.Wait();
-                var response1 = task1.Result;
-
-                retorno = ValidarSituacaoContainer(idTermSB, conteudo, task1);
-
-                bCarregado = false;
-
-                Thread.Sleep(300);
-                Application.DoEvents();
-                tentativa++;
-            } while (!retorno && tentativa < 20);
-            //Caso ocorra algum erro na consulta, desloga do site e envia false para tentar novamente.
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('btnFecha close')[2].click();");
-            if (tentativa >= 20)
-            {
-                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "SANTOS BRASIL", DateTime.Now, "ESGOTADO TENTATIVAS (2) - 2. DESLOGANDO E PARANDO", novoDado);
-                deslogandoSantosBrasil();
-                bCarregado = false;
-                return false;
-            }
-
-
-
-            bCarregado = false;
-            //Sair do site.
-
-            /*
-            chromeBrowser.EvaluateScriptAsync(sDataDeposito). ContinueWith(x =>
-            {
-                var response = x.Result;
-                if (response.Success && response.Result != null)
-                    MessageBox.Show(response.Result.ToString());
-            });
-             */
-            /*
-            chromeBrowser.EvaluateScriptAsync("document.getElementsByClassName('Export')[1].value;").ContinueWith(x =>
-            {
-                var response = x.Result;
-                if (response.Success && response.Result != null)
-                    MessageBox.Show(response.ToString());
-            });
-            */
-            return retorno;
-        }
-        /*
-        public class RenderProcessMessageHandler : IRenderProcessMessageHandler
-        {
-            // Wait for the underlying JavaScript Context to be created. This is only called for the main frame.
-            // If the page has no JavaScript, no context will be created.
-            void IRenderProcessMessageHandler.OnContextCreated(IWebBrowser browserControl, IBrowser browser, IFrame frame)
-            {
-                const string script = "document.addEventListener('DOMContentLoaded', function(){ alert('DomLoaded'); });";
-
-                frame.ExecuteJavaScriptAsync(script);
-            }
-        }
-        */
-
-
-
-        //======================================================================
-        public void deslogandoSantosBrasil()
-        {
-
-            exibirMensagem("T", "Deslogando Santos Brasil");
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='https://www.santosbrasil.com.br/tecon-santos-sistemas/restrito/desloga.asp';");
-            exibirMensagem("S", "Saindo da página...");
-            bCarregado = false;
-            AguardaPaginaCarregar();
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='https://www.sateldespachos.com.br';");
-
-        }
-        #endregion
+        
 
 
         #region Metodos Embraport
@@ -732,10 +435,10 @@ namespace TerminalRobo.Models
                 //add isidro 29/01
                 //if (bCarregado)
                 if ((bCarregado) && (url != siteEmbraport))
-                    {
-                        //Verifica se conseguiu carregar a página
+                {
+                    //Verifica se conseguiu carregar a página
 
-                        bCarregado = false;
+                    bCarregado = false;
 
 
                     chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('UserName').value = '" + sUsuarioEmbraport + "';");
@@ -1082,20 +785,20 @@ namespace TerminalRobo.Models
         #region Metodos BTP
 
 
-     
+
         //Entrar na página
         //=================================================================
 
-     
+
 
 
         public bool EntrarPaginaBTP(bool lacre)
-        {         
+        {
 
             int icontador = 0;
             bCarregado = false;
             string url = "";
-            
+
 
             string cookieValor = ConfigurationManager.AppSettings["CookieLoginBTP"].ToString();
 
@@ -1108,64 +811,64 @@ namespace TerminalRobo.Models
                 Path = "/",
                 HttpOnly = false,
                 Secure = false,
-                Expires = DateTime.Now.AddDays(1)
+                Expires = DateTime.Now.AddDays(30)
             };
 
             // Adiciona o cookie ao gerenciador global
             cookieManager.SetCookieAsync("https://idp.btp.com.br", idpCookie);
 
 
-
-             
-
             do
             {
-                bCarregado = false;
+                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteBTP + "';");
 
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteBTP + "';");                
                 bCarregado = AguardaPaginaCarregar();
 
-                //Verifica se conseguiu acessar a página.
                 url = chromeBrowser.Address;
                 icontador++;
 
             } while (url != siteBTP && !bCarregado && icontador < 3);
 
-            Thread.Sleep(7000);
+
+            Thread.Sleep(12000);
             Application.DoEvents();
 
 
-            //if()
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('login').value = '" + sUsuarioBTP + "';");
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('senha').value = '" + sSenhaBTP + "';");
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('entrar').click();");
+            url = chromeBrowser.Address;
 
+            if (url != siteBTP)
+            {              
+
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('login').value = '" + sUsuarioBTP + "';");
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('senha').value = '" + sSenhaBTP + "';");
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('entrar').click();");
+
+                
+                Thread.Sleep(12000);
+                Application.DoEvents();
+            }
+
+   
+
+
+
+
+           
+
+
+            chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.querySelectorAll('a[mat-raised-button]')[2].click();");
 
             Thread.Sleep(5000);
             Application.DoEvents();
 
-
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(@"
-    const botoes = Array.from(document.querySelectorAll('a.mat-raised-button.mat-primary'));
-    const botoesFiltrados = botoes.filter(btn => btn.innerText.trim() === 'Acessar');
-    if (botoesFiltrados.length > 0) {
-        botoesFiltrados[botoesFiltrados.length - 1].click();
-    }
-");
-
-
-
-            Thread.Sleep(3000);
-            Application.DoEvents();
-
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.querySelectorAll('mat-dialog-container button.mat-button .mat-button-wrapper')[0].click();");
+            chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.querySelectorAll('mat-dialog-container button.mat-button .mat-button-wrapper')[0].click();");
 
 
 
 
 
 
-       
+
             Thread.Sleep(4000);
             Application.DoEvents();
 
@@ -1174,15 +877,11 @@ namespace TerminalRobo.Models
     var btn = document.querySelector('#wrapper > div > btp-toolbar > mat-toolbar > div > div.full-height > button');
     if (btn) {
         btn.click();
-        return true;
     }
-    return false;
 })();";
 
-            var taskX = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(botaoScript);
-            taskX.Wait();
+            chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync(botaoScript);
 
-                 
 
 
             Thread.Sleep(3000);
@@ -1193,31 +892,30 @@ namespace TerminalRobo.Models
 
             if (lacre == true)
             {
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(@"
-    const ContainerElement = Array.from(document.querySelectorAll('span.nav-link-title[translate=""no""]'))
-        .find(span => span.textContent.trim() === 'Conteiner');
-    if (ContainerElement) {
-        ContainerElement.click();
-    }
-");
-                ConsultaSite = "https://novo-tas.btp.com.br/b2b/consultaconteiner";
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync(@"
+        const ContainerElement = Array.from(document.querySelectorAll('span.nav-link-title[translate=""no""]'))
+            .find(span => span.textContent.trim() === 'Conteiner');
+        if (ContainerElement) {
+            ContainerElement.click();
+        }
+    ");
 
+                ConsultaSite = "https://novo-tas.btp.com.br/b2b/consultaconteiner";
             }
             else
             {
-
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(@"
-    const dueElement = Array.from(document.querySelectorAll('span.nav-link-title[translate=""no""]'))
-        .find(span => span.textContent.trim() === 'Due');
-    if (dueElement) {
-        dueElement.click();
-    }
-");
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync(@"
+        const dueElement = Array.from(document.querySelectorAll('span.nav-link-title[translate=""no""]'))
+            .find(span => span.textContent.trim() === 'Due');
+        if (dueElement) {
+            dueElement.click();
+        }
+    ");
 
                 ConsultaSite = "https://novo-tas.btp.com.br/b2b/consultadue";
             }
-           
-            Thread.Sleep(3000);
+
+            Thread.Sleep(2000);
             Application.DoEvents();
 
 
@@ -1232,7 +930,7 @@ namespace TerminalRobo.Models
             // Obtendo o cookie
             cookieManager.VisitAllCookies(cookieVisitor);
 
-            
+
 
             // Criando um novo cookie com o mesmo valor
             if (!string.IsNullOrEmpty(cookieVisitor.CookieValue))
@@ -1268,11 +966,11 @@ namespace TerminalRobo.Models
             AguardaPaginaCarregar();
             Thread.Sleep(5000);
             Application.DoEvents();
-    
 
 
 
- 
+
+
 
             return bCarregado;
         }
@@ -1319,10 +1017,18 @@ namespace TerminalRobo.Models
                 if (taskP.Result.Success && taskP.Result.Result is bool resultp && resultp)
                 {
                     sucesso = true;
-                }             
-            }         
-          
-        
+                }
+            }
+
+            if (sucesso == false)
+            {
+
+
+
+            }
+
+
+
 
 
 
@@ -1348,8 +1054,8 @@ namespace TerminalRobo.Models
 
 
 
-             Application.DoEvents();
-             Thread.Sleep(5000);
+            Application.DoEvents();
+            Thread.Sleep(5000);
 
 
             var browser = chromeBrowser.GetBrowser();
@@ -1359,7 +1065,7 @@ namespace TerminalRobo.Models
 
             if (responseX.Success && responseX.Result != null && (bool)responseX.Result)
             {
-                
+
                 Thread.Sleep(21000); // Aguarda 20 segundos
                 mainFrame.EvaluateScriptAsync("document.getElementById('btnPesquisar').click();");
 
@@ -1414,7 +1120,7 @@ namespace TerminalRobo.Models
             // Se o booking NÃO foi encontrado, verifica se há a mensagem "Não existem registros a listar!"
             bool bNaoEncontrou = false;
             if (!bEncontrou)
-             {
+            {
                 string sNaoEncontrou = @"
                     var janela = document.getElementsByClassName('jtable');
                        if (janela.length == 0) return 'SEM_TABELA';
@@ -1443,7 +1149,7 @@ namespace TerminalRobo.Models
 
             if (bEncontrou)
             {
-                
+
                 //precisa verificar se é de entrada ou saída quando encontrar.
                 bool bOk = false;
                 int cont = 0;
@@ -1505,7 +1211,7 @@ namespace TerminalRobo.Models
 
                 // Chama a função que contém o return
                 retornaValor();
-                ";         
+                ";
 
 
 
@@ -1531,7 +1237,7 @@ namespace TerminalRobo.Models
                     if (tentativa >= 20)
                     {
                         dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "TENTATIVAS ESGOTADAS (20). TENTANDO NOVAMENTE.", novoDado);
-                      //deslogandoBTP();
+                        //deslogandoBTP();
                         return false;
                     }
 
@@ -1555,272 +1261,11 @@ namespace TerminalRobo.Models
             Application.DoEvents();
 
             return true;
-        }
-
-
-        //public bool ConsultarContainerBTP(ListaDeCampos conteudo, bool bPrimeiraVez)
-        //{
-        //    //dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "INICIANDO CONSULTA", novoDado);
-        //    //if (bPrimeiraVez)
-        //    //{
-        //    bCarregado = false;
-        //    //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='https://tas.btp.com.br/b2b/consultadue';");
-        //    // chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('SubMenu-2')[0].getElementsByTagName('a')[4].click();");
-
-        //    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('SubMenu-2')[0].getElementsByTagName('a')[3].click();");
-
-        //    //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='https://tas.btp.com.br/b2b/consultaconteiner?fromActionLink=True';");
-
-        //    AguardaPaginaCarregar();
-
-
-        //    //}
-
-        //    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('txtConteiner').value = '" + conteudo.NR_CONTAINER + "';");
-        //    bool bEncontrou20 = true;
-        //    do
-        //    {
-        //        Application.DoEvents();
-        //        Thread.Sleep(20000);
-        //        Application.DoEvents();
-
-        //        chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('btnPesquisar').click()");
-
-
-        //        VerificaJanelaAjaxCarregada("jtable-busy-message", "class-visible");
-
-        //        //Verifica se tem mensagem de 20 segundos
-        //        //Se tiver espera o tempo necessário para consultar novamente
-        //        string sTempoVinteSegundos = "var div = document.getElementById('msgFiltro');";
-        //        sTempoVinteSegundos += " var sMsg = document.getElementById('msgFiltro').innerHTML;";
-        //        sTempoVinteSegundos += " var isHidden = window.getComputedStyle(div).display === 'block';";
-        //        sTempoVinteSegundos += " (isHidden && sMsg == 'Você poderá executar novamente essa ação em 20 segundos.');";
-        //        var task20 = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sTempoVinteSegundos);
-        //        task20.Wait();
-        //        var response20 = task20.Result;
-        //        bool result20 = response20.Success;
-
-        //        if (result20)
-        //        {
-        //            bEncontrou20 = response20.Result.ToString() == "True";
-
-        //        }
-        //        else
-        //            bEncontrou20 = false;
-
-        //        if (bEncontrou20)
-        //        {
-        //            //espera 20 segundos para consultar novamente
-        //            Application.DoEvents();
-        //            Thread.Sleep(1000);
-        //            Application.DoEvents();
-
-
-        //        }
-        //    }
-        //    while (bEncontrou20);
-
-        //    //Verifica se o container já está depositado
-        //    string sNaoEncontrou = "var janela = document.getElementsByClassName('jtable');";
-        //    sNaoEncontrou += "var tabela = janela[0];";
-        //    sNaoEncontrou += "var col = tabela.getElementsByTagName('td');";
-        //    sNaoEncontrou += "var linha = col[0].innerText;";
-        //    sNaoEncontrou += "linha == 'Não existem registros a listar!';";
-        //    var taskn = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sNaoEncontrou);
-        //    taskn.Wait();
-        //    var responsen = taskn.Result;
-        //    bool resultn = responsen.Success;
-        //    bool bNaoEncontrou = true;
-        //    if (resultn)
-        //    {
-        //        bNaoEncontrou = responsen.Result.ToString() == "True";
-
-        //    }
-        //    else
-        //        bNaoEncontrou = false;
-
-        //    if (!bNaoEncontrou)
-        //    {
-        //        //Verifica se já carregou os dados na tela
-        //        //=======================================================
-
-        //        string sJanelaCarregada = "function Carregou(listadue) { var h = 0; do { sleep(500); x++; } while(listadue[2] == null && x < 8) }";
-        //        sJanelaCarregada += "function sleep(milliseconds) {const date = Date.now();let currentDate = null;do{currentDate = Date.now();} while (currentDate - date < milliseconds);}";
-        //        sJanelaCarregada += "var bOk = false;";
-        //        sJanelaCarregada += "var janela = document.getElementsByClassName('jtable');";
-        //        sJanelaCarregada += " var x = janela[0].getElementsByTagName('tr');";
-        //        sJanelaCarregada += " var y = janela[2].getElementsByTagName('td');";
-        //        sJanelaCarregada += " for(var i=x.length - 1;i> 0;i--){";
-        //        sJanelaCarregada += "   var k = x[i].getElementsByTagName('td');";
-        //        sJanelaCarregada += "   var sbooking = k[2].innerText;";
-        //        sJanelaCarregada += "   var nmStatus = k[8].innerText; ";
-        //        if (conteudo.DT_DEPOSITO != null)
-        //        {
-        //            sJanelaCarregada += "   if (sbooking.trim().includes('" + conteudo.NR_BOOKING.Trim() + "') || (nmStatus == 'NO TERMINAL')){";
-        //            sJanelaCarregada += "   if ((nmStatus == 'NO TERMINAL') || (nmStatus =='AVISADO') || (nmStatus == 'SAÍDO')) {";
-        //            sJanelaCarregada += "      var s = k[8].innerText; ";
-        //            sJanelaCarregada += "      var chek = k[0].getElementsByTagName('input'); ";
-        //            sJanelaCarregada += "      chek[0].click(); Carregou(y);";
-        //            sJanelaCarregada += "      if (y[2] != null) {bOk = true;} else {if (y[0].innerText == 'Não existem registros a listar!'){bOk = true;}} "; //DUE
-        //            sJanelaCarregada += "      break;";
-        //            sJanelaCarregada += "   }}}";
-        //        }
-        //        else
-        //        {
-        //            sJanelaCarregada += "   if ((nmStatus == 'NO TERMINAL') || (nmStatus =='AVISADO')) {";
-        //            sJanelaCarregada += "      var s = k[8].innerText; ";
-        //            sJanelaCarregada += "      if (s != 'SAÍDO'){ ";
-        //            sJanelaCarregada += "      var chek = k[0].getElementsByTagName('input'); ";
-        //            sJanelaCarregada += "      chek[0].click(); Carregou(y);";
-        //            sJanelaCarregada += "      if (y[2] != null) {bOk = true;} else {if (y[0].innerText == 'Não existem registros a listar!'){bOk = true;}} "; //DUE
-        //            sJanelaCarregada += "      break;";
-        //            sJanelaCarregada += "      } else { bOk = false}";
-        //            sJanelaCarregada += "   }}";
-        //        }
-        //        sJanelaCarregada += "   bOk";
-        //        var taskx = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sJanelaCarregada);
-        //        taskx.Wait();
-        //        if (taskx.Result.Result.ToString().ToUpper() == "FALSE")
-        //        {
-        //            dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "NÃO ENCONTROU CONTAINER", novoDado);
-        //            return true;
-        //        }
-        //        //precisa verificar se é de entrada ou saída quando encontrar.
-        //        bool bOk = false;
-        //        int cont = 0;
-        //        do
-        //        {
-        //            var task = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("var bretorno = []; bretorno[0] = false; bretorno[1] = false; if (y[2] != null) {bretorno[0] = true;} else {if (y[0].innerText == 'Não existem registros a listar!' || !bok){bretorno[0] = true;}} bretorno;"); task.Wait();
-        //            var response = task.Result;
-        //            bool result = response.Success;
-        //            if (result)
-        //            {
-        //                if (((List<object>)response.Result)[1].ToString() == "True")
-        //                    return true;
-        //                bOk = ((List<object>)response.Result)[0].ToString() == "True";
-
-        //            }
-        //            else
-        //            {
-
-        //            }
-        //            Application.DoEvents();
-        //            Thread.Sleep(700);
-        //            cont++;
-        //        } while (!bOk && cont < tbmEsperaAjax);
-        //        //===========================================================
-        //        //AguardaPaginaCarregar(ref tsStatus);
-        //        //Verifica se puxou os dados.
-        //        VerificaJanelaAjaxCarregada("txtRecepcaoDataEntrada", "input");
-
-        //        Application.DoEvents();
-        //        //return true;
+        }    
 
 
 
-        //        string sDataDeposito = "function retornaValor(){var janela = document.getElementsByClassName('jtable');";
-        //        sDataDeposito += " var x = janela[0].getElementsByTagName('tr');";
-        //        sDataDeposito += " var y = janela[2].getElementsByTagName('td');";
-        //        sDataDeposito += " var conteudo = [];";
-        //        sDataDeposito += " for(var i=x.length-1;i>0;i--){";
-        //        sDataDeposito += "   var k = x[i].getElementsByTagName('td');";
-        //        sDataDeposito += "   var sbooking = k[2].innerText; ";
-        //        sDataDeposito += "   var nmStatus = k[8].innerText; ";
-
-        //        sDataDeposito += "   conteudo[0] = '';";
-        //        if (conteudo.DT_DEPOSITO != null)
-        //        {
-        //            sDataDeposito += "   if (sbooking.trim().includes('" + conteudo.NR_BOOKING.Trim() + "') || (nmStatus == 'NO TERMINAL')){";
-        //            sDataDeposito += "   if ((nmStatus == 'NO TERMINAL') || (nmStatus =='AVISADO') || (nmStatus == 'SAÍDO')) {";
-        //            sDataDeposito += "      conteudo[0] = document.getElementById('txtRecepcaoDataEntrada').value; "; //Data Entrada no terminal
-        //            sDataDeposito += "      if (y[2] != null){"; //DUE
-        //            sDataDeposito += "          conteudo[1] =  y[2].innerText;"; //DUE
-        //            sDataDeposito += "          conteudo[6] =  y[4].innerText; "; //Status de Desembaraço
-        //            sDataDeposito += "          conteudo[7] =  y[7].innerText; "; //Local de Embarque
-        //            sDataDeposito += "          conteudo[8] =  y[8].innerText; }"; //Local CCT
-        //            sDataDeposito += "      else"; //DUE
-        //            sDataDeposito += "      conteudo[1] =  '';"; //DUE
-        //            sDataDeposito += "      conteudo[2] = sbooking; "; //Nr. Booking
-        //            sDataDeposito += "      conteudo[3] = k[10].innerText; "; //Navio
-
-        //            sDataDeposito += "      conteudo[4] = nmStatus == 'SAÍDO' ? document.getElementById('txtEntregaDataEmbarque').value : ''; "; //Status da resposta
-        //            sDataDeposito += "      conteudo[5] = document.getElementById('txtRecepcaoStatusResposta').value; "; //Status da resposta
-
-
-        //            sDataDeposito += "      break;";
-        //            sDataDeposito += "      }";
-        //            sDataDeposito += "   }";
-        //        }
-        //        else
-        //        {
-        //            sDataDeposito += "   if ((nmStatus == 'NO TERMINAL') || (nmStatus =='AVISADO')) {";
-        //            sDataDeposito += "      conteudo[0] = document.getElementById('txtRecepcaoDataEntrada').value; "; //Data Entrada no terminal
-        //            sDataDeposito += "      if (y[2] != null){"; //DUE
-        //            sDataDeposito += "          conteudo[1] =  y[2].innerText;"; //DUE
-        //            sDataDeposito += "          conteudo[6] =  y[4].innerText; "; //Status de Desembaraço
-        //            sDataDeposito += "          conteudo[7] =  y[7].innerText; "; //Local de Embarque
-        //            sDataDeposito += "          conteudo[8] =  y[8].innerText; }"; //Local CCT
-        //            sDataDeposito += "      else"; //DUE
-        //            sDataDeposito += "      conteudo[1] =  '';"; //DUE
-        //            sDataDeposito += "      conteudo[2] = sbooking; "; //Nr. Booking
-        //            sDataDeposito += "      conteudo[3] = k[10].innerText; "; //Navio
-
-        //            sDataDeposito += "      conteudo[4] = document.getElementById('txtEntregaDataEmbarque').value; "; //Status da resposta
-        //            sDataDeposito += "      conteudo[5] = document.getElementById('txtRecepcaoStatusResposta').value; "; //Status da resposta
-
-
-        //            sDataDeposito += "      break;";
-        //            sDataDeposito += "      }";
-        //        }
-        //        sDataDeposito += " }";
-        //        sDataDeposito += " return conteudo} retornaValor(); ";
-        //        tentativa = 0;
-        //        try
-        //        {
-        //            do
-        //            {
-
-        //                var task1 = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sDataDeposito);
-        //                task1.Wait();
-        //                var response1 = task1.Result;
-
-        //                resultn = ValidarSituacaoContainer(idBTP, conteudo, task1);
-
-        //                bCarregado = false;
-
-        //                Thread.Sleep(600);
-        //                Application.DoEvents();
-        //                tentativa++;
-        //            } while (!resultn && tentativa < 20);
-        //            //Caso ocorra algum erro na consulta, desloga do site e envia false para tentar novamente.
-        //            if (tentativa >= 20)
-        //            {
-        //                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "TENTATIVAS ESGOTADAS (20). TENTANDO NOVAMENTE.", novoDado);
-        //                deslogandoBTP();
-        //                return false;
-        //            }
-
-        //            bCarregado = false;
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "ERRO INESPERADO. " + e.Message, novoDado);
-        //            return false;
-        //        }
-
-        //    }
-        //    else
-        //    {
-        //        dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "NÃO ENCONTROU CONTAINER", novoDado);
-        //    }
-
-        //    return true;
-        //}
-        //======================================================================
-
-
-
-        public void deslogandoBTP()        
+        public void deslogandoBTP()
         {
             exibirMensagem("T", "Deslogando BTP");
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='https://tas.btp.com.br/Home/Logout';");
@@ -1833,7 +1278,278 @@ namespace TerminalRobo.Models
         }
         #endregion
 
+        #region Metodos Santos Brasil
+        //Entrar na página
+        //=================================================================
+        public bool EntrarPaginaSantosBrasil()
+        {
+            bCarregado = false;
+            try
+            {
+                string url = "";
+                int icontador = 0;
 
+
+                chromeBrowser.GetBrowser().MainFrame.LoadUrl("about:blank");
+                AguardaPaginaCarregar();
+                Thread.Sleep(5000);
+                Application.DoEvents();
+
+
+
+
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.location ='" + deslogaSantosBrasil + "';");
+                AguardaPaginaCarregar();
+                Thread.Sleep(3000);
+                Application.DoEvents();
+
+
+                do
+                {
+                    bCarregado = false;
+
+                    chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.location ='" + siteSantosBrasil + "';");
+                    bCarregado = AguardaPaginaCarregar();
+
+                    //Verifica se conseguiu acessar a página.
+                    url = chromeBrowser.Address;
+                    icontador++;
+
+                } while (url != siteSantosBrasil && !bCarregado && icontador < 3);
+
+                Application.DoEvents();
+                Thread.Sleep(2000);
+
+
+
+
+
+
+
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('login_').value = '" + sUsuarioSB + "';");
+
+
+
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('senha_').value = '" + sSenhaSB + "';");
+
+
+                //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("log_act();");
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('g-recaptcha')[0].click();");
+                //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('foption').options[1].selected = 'selected';");
+                //Thread.Sleep(1000);
+                //Application.DoEvents();
+                //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('btnForm').click();");
+
+                //chromeBrowser.ExecuteScriptAsync("document.getElementById('login_').value = '" + sUsuarioSB + "';");
+                //chromeBrowser.ExecuteScriptAsync("document.getElementById('senha_').value = '" + sSenhaSB + "';");
+                //chromeBrowser.ExecuteScriptAsync("log_act();");
+                //bCarregado = AguardaPaginaCarregar();
+
+                Application.DoEvents();
+                Thread.Sleep(2000);
+            }
+            catch
+            {
+                bCarregado = false;
+            }
+            return bCarregado;
+        }
+        //================================================================
+        //Consultar container
+        //================================================================
+        public bool ConsultarContainerSantosBrasil(ListaDeCampos conteudo)
+        {
+
+
+
+            dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "SANTOS BRASIL", DateTime.Now, "INICIANDO CONSULTA", novoDado);
+            bCarregado = false;
+
+
+
+
+            chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('container cntr')[0].value = '" + conteudo.NR_CONTAINER + "';");
+
+            Application.DoEvents();
+            Thread.Sleep(1000);
+
+            chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('Export')[0].click();");
+            //AguardaPaginaCarregar(ref tsStatus);
+
+
+            //Pegar se o container foi depositado no terminal de embarque
+
+
+            //Verificar se a janela com informações do container já foi carregada
+
+            string sJanelaCarregada = "var j = document.getElementsByClassName('infConteiner janela')[0];";
+            sJanelaCarregada += " if (j != null) { true} else {false}";
+            bool bOk = false;
+            tentativa = 0;
+            bAlert = false;
+            do
+            {
+                var task = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sJanelaCarregada);
+                task.Wait();
+                var response = task.Result;
+                bool result = response.Success;
+                if (result)
+                {
+                    bOk = response.Result.ToString() == "True";
+
+                }
+                Application.DoEvents();
+                Thread.Sleep(750);
+                tentativa++;
+            } while ((!bOk && tentativa < 40) && (!bAlert));
+            if (tentativa >= 40)
+            {
+                //Não encontrou o container
+                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "SANTOS BRASIL", DateTime.Now, "ESGOTADO TENTATIVAS (20). CONTAINER NÃO ENCONTRADO", novoDado);
+                string nrProcesso = "E-" + conteudo.CD_NUMERO_PROCESSO.Substring(2, 6) + "/" + conteudo.CD_NUMERO_PROCESSO.Substring(0, 2);
+                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('btnFecha close')[2].click();");
+                /*
+                novoDado.NR_CONTAINER = conteudo.NR_CONTAINER;
+                novoDado.DT_CONTAINER = conteudo.DT_CONTAINER;
+                novoDado.DT_CONSULTA = DateTime.Now;
+                novoDado.CD_PROCESSO = conteudo.CD_PROCESSO;
+                novoDado.CD_NUMERO_PROCESSO = nrProcesso;
+                novoDado.DS_STATUS = "NÃO ENCONTROU";
+                novoDado.NM_TERMINAL = "SANTOS BRASIL";
+                novoDado.NM_NAVIO = conteudo.NM_NAVIO;
+                novoDado.NR_BOOKING = conteudo.NR_BOOKING;
+                 
+                dados.InsereConsulta(novoDado);
+                */
+                return false;
+            }
+            if (bAlert)
+            {
+                //Não encontrou o container
+                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "SANTOS BRASIL", DateTime.Now, "CONTAINER NÃO ENCONTRADO", novoDado);
+                string nrProcesso = "E-" + conteudo.CD_NUMERO_PROCESSO.Substring(2, 6) + "/" + conteudo.CD_NUMERO_PROCESSO.Substring(0, 2);
+                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('btnFecha close')[2].click();");
+                /*
+                novoDado.NR_CONTAINER = conteudo.NR_CONTAINER;
+                novoDado.DT_CONTAINER = conteudo.DT_CONTAINER;
+                novoDado.DT_CONSULTA = DateTime.Now;
+                novoDado.CD_PROCESSO = conteudo.CD_PROCESSO;
+                novoDado.CD_NUMERO_PROCESSO = nrProcesso;
+                novoDado.DS_STATUS = "NÃO ENCONTROU";
+                novoDado.NM_TERMINAL = "SANTOS BRASIL";
+                novoDado.NM_NAVIO = conteudo.NM_NAVIO;
+                novoDado.NR_BOOKING = conteudo.NR_BOOKING;
+                 
+                dados.InsereConsulta(novoDado);
+                */
+                return true;
+            }
+
+            string sDataDeposito = "function retornaValor(){var janela = document.getElementsByClassName('infConteiner janela');";
+            sDataDeposito += " var conteudo = [];";
+            sDataDeposito += " var info = janela[0].getElementsByClassName('info');";
+            sDataDeposito += " var li = info[0].getElementsByTagName('li');";
+            sDataDeposito += " conteudo[0] = ''; conteudo[1] = '';";
+            sDataDeposito += " conteudo[2] = ''; conteudo[3] = '';";
+            sDataDeposito += " conteudo[4] = ''; conteudo[5] = '';";
+            sDataDeposito += " conteudo[6] = ''; conteudo[7] = '';";
+            sDataDeposito += " ";
+
+            sDataDeposito += " for(var i=0;i< li.length;i++){";
+            sDataDeposito += " if (li[i].getElementsByTagName('label').length > 0){";
+            sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText == 'Entr. terminal'){";
+            sDataDeposito += " conteudo[0] = li[i].getElementsByTagName('span')[0].innerText;}";                                // DATA DE DEPÓSITO NO TERMINAL
+            sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText == 'Embarque'){";
+            sDataDeposito += " conteudo[4] = li[i] != null ? li[i].getElementsByTagName('span')[0].innerText : '';}}";          // DATA DE EMBARQUE
+
+            sDataDeposito += " if (li[i].getElementsByTagName('label').length > 0){";
+            sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText == 'Booking'){";
+            sDataDeposito += " conteudo[2] = li[i].getElementsByTagName('span')[0].innerText;}}";
+
+            sDataDeposito += " if (li[i].getElementsByTagName('label').length > 0){";
+            sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText.includes('DUE')){";
+            sDataDeposito += " conteudo[1] = li[i].getElementsByTagName('span')[0].innerText;}}";
+
+            sDataDeposito += " if (li[i].getElementsByTagName('label').length > 0){";
+            sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText == 'Navio'){";
+            sDataDeposito += " conteudo[3] = li[i].getElementsByTagName('span')[0].innerText;}}}";
+
+            sDataDeposito += " if (info[0].getElementsByClassName('aviso').length == 0){";
+            sDataDeposito += " conteudo[5] = document.getElementsByClassName('status')[0].innerText;";
+            sDataDeposito += " if (!conteudo[5].includes('Sa�do do Terminal') && !conteudo[5].includes('Saído do Terminal')) conteudo[4] = '';}";
+            sDataDeposito += " else{";
+            sDataDeposito += " conteudo[5] = info[0].getElementsByClassName('aviso')[0].innerText;}";
+
+            //PEGAR LACRES//
+            sDataDeposito += "var lacres = document.getElementsByClassName('janela lacre_fld')[1].getElementsByClassName('lacreCNTR');";
+            sDataDeposito += "if (lacres != null && lacres.length != 0) {";
+            sDataDeposito += "lacres = lacres[1].getElementsByClassName('inner')[0].getElementsByTagName('TR');";
+            sDataDeposito += "for (let index = 1; index < lacres.length; index++) {";
+            sDataDeposito += "if (lacres[index].getElementsByTagName('td')[1].innerText == 'Lacre Armador'){";
+            sDataDeposito += "conteudo[6] = lacres[index].getElementsByTagName('td')[0].innerText;}";
+            sDataDeposito += "if (lacres[index].getElementsByTagName('td')[1].innerText == 'Lacre Veterinário(SIF)'){";
+            sDataDeposito += "conteudo[7] = lacres[index].getElementsByTagName('td')[0].innerText;}}";
+            if (!string.IsNullOrEmpty(conteudo.DS_LACRE_SIF))
+            {
+                sDataDeposito += "if(conteudo[7] == ''){";
+                sDataDeposito += "for (let index = 1; index < lacres.length; index++) {";
+                sDataDeposito += "if (conteudo[7] == '' && lacres[index].getElementsByTagName('td')[1].innerText == 'Lacre Exportador'){";
+                sDataDeposito += "conteudo[7] = lacres[index].getElementsByTagName('td')[0].innerText;}";
+                sDataDeposito += "if (lacres[index].getElementsByTagName('td')[0].innerText.includes('" + conteudo.DS_LACRE_SIF.Replace("/", "").Replace("SIF", "").Replace("SENACSA", "") + "')){";
+                sDataDeposito += "conteudo[7] = lacres[index].getElementsByTagName('td')[0].innerText;}}}}";
+            }
+            else
+            {
+                sDataDeposito += "}";
+            }
+
+            sDataDeposito += " return conteudo} retornaValor(); ";
+            bool retorno = false;
+            tentativa = 0;
+            do
+            {
+
+                var task1 = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sDataDeposito);
+                task1.Wait();
+                var response1 = task1.Result;
+
+                retorno = ValidarSituacaoContainer(idTermSB, conteudo, task1);
+
+                bCarregado = false;
+
+                Thread.Sleep(300);
+                Application.DoEvents();
+                tentativa++;
+            } while (!retorno && tentativa < 100);
+            //Caso ocorra algum erro na consulta, desloga do site e envia false para tentar novamente.
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('btnFecha close')[2].click();");
+            if (tentativa >= 100)
+            {
+                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "SANTOS BRASIL", DateTime.Now, "ESGOTADO TENTATIVAS (2) - 2. DESLOGANDO E PARANDO", novoDado);
+                deslogandoSantosBrasil();
+                bCarregado = false;
+                return false;
+            }
+
+            bCarregado = false;           
+            return retorno;
+        }
+   
+
+
+        //======================================================================
+        public void deslogandoSantosBrasil()
+        {
+
+            exibirMensagem("T", "Deslogando Santos Brasil");
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='https://www.santosbrasil.com.br/tecon-santos-sistemas/restrito/desloga.asp';");
+            exibirMensagem("S", "Saindo da página...");
+            bCarregado = false;
+            AguardaPaginaCarregar();
+            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='https://www.sateldespachos.com.br';");
+
+        }
+        #endregion
 
 
         #region Metodos Vila do Conde
@@ -1844,12 +1560,25 @@ namespace TerminalRobo.Models
             {
                 string url = "";
                 int icontador = 0;
+
+
+                chromeBrowser.GetBrowser().MainFrame.LoadUrl("about:blank");
+                AguardaPaginaCarregar();
+                Thread.Sleep(5000);
+                Application.DoEvents();
+
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.location ='" + deslogaSantosBrasil + "';");
+                AguardaPaginaCarregar();
+                Thread.Sleep(3000);
+                Application.DoEvents();
+
+
+
                 do
                 {
                     bCarregado = false;
 
-                    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteVilaConde + "';");
-                    chromeBrowser.Load("document.location ='" + siteVilaConde + "';");
+                    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteVilaConde + "';");                    
                     bCarregado = AguardaPaginaCarregar();
 
                     //Verifica se conseguiu acessar a página.
@@ -1859,18 +1588,29 @@ namespace TerminalRobo.Models
                 } while (url != siteVilaConde && !bCarregado && icontador < 3);
 
 
+                Application.DoEvents();
+                Thread.Sleep(2000);
+
 
                 bCarregado = false;
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('login_').value = '" + sUsuarioVilaConde + "';");
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('senha_').value = '" + sSenhaVilaConde + "';");
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('g-recaptcha')[0].click();");
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('login_').value = '" + sUsuarioVilaConde + "';");
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('senha_').value = '" + sSenhaVilaConde + "';");
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('g-recaptcha')[0].click();");
 
-                bCarregado = AguardaPaginaCarregar();
+              
+              //  bCarregado = AguardaPaginaCarregar();
+
+                Application.DoEvents();
+                Thread.Sleep(4000);
             }
             catch
             {
                 bCarregado = false;
             }
+
+         
+
+
             return bCarregado;
         }
 
@@ -1879,11 +1619,18 @@ namespace TerminalRobo.Models
 
             dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "VILA DO CONDE", DateTime.Now, "INICIANDO CONSULTA", novoDado);
             bCarregado = false;
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('container cntr')[0].value = '" + conteudo.NR_CONTAINER + "';");
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('Export')[0].click();");
+
+
+            chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('container cntr')[0].value = '" + conteudo.NR_CONTAINER + "';");
+
+     
+
+            chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('Export')[0].click();");
             //AguardaPaginaCarregar(ref tsStatus);
 
             Application.DoEvents();
+            Thread.Sleep(1000);
+
 
             //Pegar se o container foi depositado no terminal de embarque
 
@@ -1997,14 +1744,12 @@ namespace TerminalRobo.Models
                 Thread.Sleep(300);
                 Application.DoEvents();
                 tentativa++;
-            } while (!retorno && tentativa < 20);
+            } while (!retorno && tentativa < 100);
             //Caso ocorra algum erro na consulta, desloga do site e envia false para tentar novamente.
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('btnFecha close')[2].click();");
-            if (tentativa >= 20)
+            if (tentativa >= 100)
             {
-                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "VILA DO CONDE", DateTime.Now, "ESGOTADO TENTATIVAS (2) - 2. DESLOGANDO E PARANDO", novoDado);
-                deslogandoVilaConde();
-                bCarregado = false;
+                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "VILA DO CONDE", DateTime.Now, "ESGOTADO TENTATIVAS (2) - 2. DESLOGANDO E PARANDO", novoDado);           
                 return false;
             }
             bCarregado = false;
@@ -2037,8 +1782,7 @@ namespace TerminalRobo.Models
                 {
                     bCarregado = false;
 
-                    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteItajai + "';");
-                    chromeBrowser.Load("document.location ='" + siteItajai + "';");
+                    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteItajai + "';");                    
                     bCarregado = AguardaPaginaCarregar();
 
                     //Verifica se conseguiu acessar a página.
@@ -2220,7 +1964,7 @@ namespace TerminalRobo.Models
                     bCarregado = false;
 
                     chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteItapoa + "';");
-                    chromeBrowser.Load("document.location ='" + siteItapoa + "';");
+                    //chromeBrowser.Load("document.location ='" + siteItapoa + "';");
                     bCarregado = AguardaPaginaCarregar();
 
                     //Verifica se conseguiu acessar a página.
@@ -2878,7 +2622,7 @@ namespace TerminalRobo.Models
                         dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "DP WORLD", DateTime.Now, "CONTAINER ENCONTRADO MAS NÃO EXPORTAÇÃO", novoDado);
                         return true;
                     }
-
+                    
                     auxLacreAgencia = ((List<object>)response1.Result)[6].ToString();
                     auxLacreSIF = ((List<object>)response1.Result)[7].ToString();
                 }
@@ -3263,674 +3007,253 @@ namespace TerminalRobo.Models
             novoDado.DT_ETA = null;
         }
 
+       
         public bool GerarPlanilhaExcel()
         {
-            //Criar planilha
-
-            string caminhoArquivo = "";
-
+            string caminhoArquivo = CriaPastaDoc("AVISODIVERGENCIA");
             string dsAssuntoEmail = "DADOS DIVERGENTES DO TERMINAL";
             string dsCorpoEmail = "Segue anexo planilha com os dados divergentes na consulta de deposito do container no(s) terminal(is).";
-
-            caminhoArquivo = CriaPastaDoc("AVISODIVERGENCIA");
-
-
-
+            bool minerva = false;
 
 
             List<InsereDados> lstPrc = dados.ConsultaDivergencia();
-            if (lstPrc != null)
+
+            if (lstPrc == null || lstPrc.Count == 0)
+                return false;
+
+            exibirMensagem("S", "Enviando e-mail para os analistas");
+
+            string PrefixoNmArquivo = "EDI_DEPOSITO_DIVERGENCIA_";
+
+            // Agrupar por CD_USUARIO
+            var gruposPorUsuario = lstPrc.GroupBy(p => p.CD_USUARIO);
+
+            foreach (var grupo in gruposPorUsuario)
             {
+                int? idUsuario = grupo.Key ?? 1;
+                string sUsuario = dados.RetornaEmailUsuario((int)idUsuario, "nome");
 
-                if (lstPrc.Count > 0)
+                clsExcel excel = new clsExcel();
+                string nmArquivo = PrefixoNmArquivo + sUsuario + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".xlsx";
+
+                void CriarCabecalhoExcel()
                 {
-
-                    exibirMensagem("S", "Enviando e-mail para os analistas");
-                    #region MONTAR EXCEL
-
-                    clsExcel excel = new clsExcel();
-                    //excel.MataExcelPerdido();
-
-
-                    string sUsuario = "";
-                    int? idUsuario = lstPrc.FirstOrDefault().CD_USUARIO == null ? 1 : lstPrc.FirstOrDefault().CD_USUARIO;
-
-
-                    //Pega o nome do usuário
-                    sUsuario = dados.RetornaEmailUsuario((int)idUsuario, "nome");
-
-                    //int? cdGrupo = null;
-                    int? cdUsuarioGrupo = null;
-
-                    string PrefixoNmArquivo = "EDI_DEPOSITO_DIVERGENCIA_";
-                    string nmArquivo = PrefixoNmArquivo + sUsuario + "_" + String.Format("{0:ddMMyyyyHHmmss}", DateTime.Now) + ".xlsx";
-                    //Gerar dados na planilha
-
                     excel.EscreverCelula(1, 1, "ANALISTA");
                     excel.EscreverCelula(1, 2, sUsuario);
-
-                    excel.EscreverCelula(2, 1, "Processo");
-                    excel.EscreverCelula(2, 2, "Ordem");
-                    excel.EscreverCelula(2, 3, "Cliente");
-                    excel.EscreverCelula(2, 4, "Container");
-                    excel.EscreverCelula(2, 5, "Dead Line Container");
-                    excel.EscreverCelula(2, 6, "Dt. Deposito");
-                    excel.EscreverCelula(2, 7, "Dt. Protocolo");
-                    excel.EscreverCelula(2, 8, "Dt. Embarque");
-                    excel.EscreverCelula(2, 9, "Dt. ETA");
-                    excel.EscreverCelula(2, 10, "Nr. Booking (Sistema)");
-                    excel.EscreverCelula(2, 11, "Nr. Booking (Terminal)");
-                    excel.EscreverCelula(2, 12, "Navio (Sistema)");
-                    excel.EscreverCelula(2, 13, "Navio (Terminal)");
-                    excel.EscreverCelula(2, 14, "Mensagem");
-                    excel.EscreverCelula(2, 15, "Dt. Consulta");
-                    excel.EscreverCelula(2, 16, "Terminal Consultado");
-                    excel.EscreverCelula(2, 17, "Terminal Sistema");
-                    excel.EscreverCelula(2, 18, "Status 2");
-                    excel.EscreverCelula(2, 19, "Lacre Agência (Sistema)");
-                    excel.EscreverCelula(2, 20, "Lacre Agência (Terminal)");
-                    excel.EscreverCelula(2, 21, "Lacre SIF (Sistema)");
-                    excel.EscreverCelula(2, 22, "Lacre SIF (Terminal)");
+                    string[] headers = new string[]
+                    {
+                "Processo", "Ordem", "Cliente", "Container", "Dead Line Container",
+                "Dt. Deposito", "Dt. Protocolo", "Dt. Embarque", "Dt. ETA",
+                "Nr. Booking (Sistema)", "Nr. Booking (Terminal)",
+                "Navio (Sistema)", "Navio (Terminal)", "Mensagem", "Dt. Consulta",
+                "Terminal Consultado", "Terminal Sistema", "Status 2",
+                "Lacre Agência (Sistema)", "Lacre Agência (Terminal)",
+                "Lacre SIF (Sistema)", "Lacre SIF (Terminal)"
+                    };
+                    for (int i = 0; i < headers.Length; i++)
+                        excel.EscreverCelula(2, i + 1, headers[i]);
                     excel.FormatarFundo("A2", "V2");
-
-
-                    int l = 3;
-                    foreach (var conteudo in lstPrc)
-                    {
-
-                        cdUsuarioGrupo = conteudo.CD_USUARIO;
-
-                        if (idUsuario != conteudo.CD_USUARIO)
-                        {
-                            //Pegar o e-mail do usuário
-                            string to = dados.RetornaEmailUsuario((int)idUsuario, "email");
-
-                            string copiaEmail = "";
-                            List<UsuarioCopia> listaEmailCopia = new List<UsuarioCopia>();
-                            listaEmailCopia = dados.emailUsuarioCopia(idUsuario);
-                            if (listaEmailCopia.Count() > 0)
-                            {
-
-                                foreach (var itemEmail in listaEmailCopia)
-                                {
-                                    if (!string.IsNullOrEmpty(itemEmail.NM_EMAIL_USUARIO))
-                                    {
-                                        if (string.IsNullOrEmpty(copiaEmail))
-                                        {
-                                            copiaEmail = itemEmail.NM_EMAIL_USUARIO;
-                                        }
-                                        else
-                                        {
-                                            copiaEmail = copiaEmail + ";" + itemEmail.NM_EMAIL_USUARIO;
-                                        }
-                                    }
-                                }
-                            }/*
-                            if (idUsuario == 27) // SE FOR VICTOR, MANDA NO MARFRIG@SATELDESPACHOS
-                            {
-                                to = "marfrig@sateldespachos.com.br";
-                                copiaEmail = "";
-                            }*/
-                            sUsuario = dados.RetornaEmailUsuario((int)idUsuario, "nome");
-
-                            if(idUsuario == 209)
-                            {
-                                to = "beatrizsilva@sateldespachos.com.br;erika@sateldespachos.com.br";
-                            }
-
-                            nmArquivo = PrefixoNmArquivo + sUsuario + "_" + String.Format("{0:ddMMyyyyHHmmss}", DateTime.Now) + ".xlsx";
-
-                            //dsAssuntoEmail = "DADOS DIVERGENTES DO TERMINAL";
-
-                            //Gera o excel para enviar a planhilha para o cliente
-                            excel.FormatarFonteEstilo("A2", "V2", true, false, false);
-                            excel.FormatarBorda("A2", "V" + l.ToString());
-                            excel.LarguraAuto();
-
-                            excel.salvarComo(caminhoArquivo + "\\" + nmArquivo);
-                            string caminhoExcel = caminhoArquivo + "\\" + nmArquivo;
-                            excel.FecharExcel();
-
-                            //Disparar Email para cliente
-                            Email email = new Email();
-                            email.EnviaEmailEDI(to, copiaEmail, dsAssuntoEmail, dsCorpoEmail, caminhoExcel);
-
-                            idUsuario = conteudo.CD_USUARIO == null ? 1 : conteudo.CD_USUARIO;
-                            sUsuario = conteudo.DS_GRUPO;
-
-                            excel = new clsExcel();
-
-                            l = 3;
-                            excel.EscreverCelula(1, 1, "ANALISTA");
-                            excel.EscreverCelula(1, 2, sUsuario);
-
-                            excel.EscreverCelula(2, 1, "Processo");
-                            excel.EscreverCelula(2, 2, "Ordem");
-                            excel.EscreverCelula(2, 3, "Cliente");
-                            excel.EscreverCelula(2, 4, "Container");
-                            excel.EscreverCelula(2, 5, "Dead Line Container");
-                            excel.EscreverCelula(2, 6, "Dt. Deposito");
-                            excel.EscreverCelula(2, 7, "Dt. Protocolo");
-                            excel.EscreverCelula(2, 8, "Dt. Embarque");
-                            excel.EscreverCelula(2, 9, "Dt. ETA");
-                            excel.EscreverCelula(2, 10, "Nr. Booking (Sistema)");
-                            excel.EscreverCelula(2, 11, "Nr. Booking (Terminal)");
-                            excel.EscreverCelula(2, 12, "Navio (Sistema)");
-                            excel.EscreverCelula(2, 13, "Navio (Terminal)");
-                            excel.EscreverCelula(2, 14, "Mensagem");
-                            excel.EscreverCelula(2, 15, "Dt. Consulta");
-                            excel.EscreverCelula(2, 16, "Terminal Consultado");
-                            excel.EscreverCelula(2, 17, "Terminal Sistema");
-                            excel.EscreverCelula(2, 18, "Status 2");
-                            excel.EscreverCelula(2, 19, "Lacre Agência (Sistema)");
-                            excel.EscreverCelula(2, 20, "Lacre Agência (Terminal)");
-                            excel.EscreverCelula(2, 21, "Lacre SIF (Sistema)");
-                            excel.EscreverCelula(2, 22, "Lacre SIF (Terminal)");
-                            excel.FormatarFundo("A2", "V2");
-
-
-                        }
-
-                        string nrContainer = conteudo.NR_CONTAINER;
-                        string nmCliente = conteudo.NM_CLIENTE;
-                        string nrBooking = conteudo.NR_BOOKING + " ";
-                        string nrBookingTerminal = conteudo.NR_BOOKING_TERMINAL + " ";
-                        string nmNavio = conteudo.NM_NAVIO;
-                        string nmNavioTerminal = conteudo.NM_NAVIO_TERMINAL;
-
-                        string dtDeposito = "";
-                        string dtEmbarque = "";
-                        string dtConsulta = "";
-                        string dsStatus = conteudo.DS_STATUS;
-                        string nmTerminal = conteudo.NM_TERMINAL;
-                        string nrProcesso = conteudo.CD_NUMERO_PROCESSO;
-                        string nrOrdem = conteudo.DS_REFERENCIA_CLIENTE;
-                        string dtContainer = "";
-                        string dtProtocolo = "";
-                        string dtEta = "";
-                        string sTerminal = conteudo.NM_TERMINAL;
-                        string sTerminalSistema = conteudo.NM_TERMINAL_SISTEMA;
-                        string nmStatus2 = conteudo.NM_PROCESSO_STATUS2;
-
-                        string nrLacreAgencia = conteudo.DS_LACRE_AGENCIA;
-                        string nrLacreAgenciaTerminal = conteudo.DS_LACRE_AGENCIA_TERMINAL;
-                        string nrLacreSIF = conteudo.DS_LACRE_SIF;
-                        string nrLacreSIFTerminal = conteudo.DS_LACRE_SIF_TERMINAL;
-
-
-                        if (conteudo.DT_DEPOSITO != null)
-                        {
-                            dtDeposito = DateTime.Parse(conteudo.DT_DEPOSITO.ToString()).ToString("MM/dd/yyyy HH:mm");
-                        }
-
-
-                        if (conteudo.DT_CONSULTA != null)
-                        {
-                            dtConsulta = DateTime.Parse(conteudo.DT_CONSULTA.ToString()).ToString("MM/dd/yyyy HH:mm");
-                        }
-                        if (conteudo.DT_CONTAINER != null)
-                        {
-                            dtContainer = DateTime.Parse(conteudo.DT_CONTAINER.ToString()).ToString("MM/dd/yyyy HH:mm");
-                        }
-
-                        if (conteudo.DT_PROTOCOLO != null)
-                        {
-                            dtProtocolo = DateTime.Parse(conteudo.DT_PROTOCOLO.ToString()).ToString("MM/dd/yyyy HH:mm");
-                        }
-
-                        if (conteudo.DT_EMBARQUE != null)
-                        {
-                            dtEmbarque = DateTime.Parse(conteudo.DT_EMBARQUE.ToString()).ToString("MM/dd/yyyy HH:mm");
-                        }
-
-                        if (conteudo.DT_ETA != null)
-                        {
-                            dtEta = DateTime.Parse(conteudo.DT_ETA.ToString()).ToString("MM/dd/yyyy HH:mm");
-                        }
-
-                        excel.EscreverCelula(l, 1, nrProcesso);
-                        excel.EscreverCelula(l, 2, nrOrdem);
-                        excel.EscreverCelula(l, 3, nmCliente);
-                        excel.EscreverCelula(l, 4, nrContainer);
-                        excel.EscreverCelula(l, 5, dtContainer);
-                        excel.EscreverCelula(l, 6, dtDeposito);
-                        excel.EscreverCelula(l, 7, dtProtocolo);
-                        excel.EscreverCelula(l, 8, dtEmbarque);
-                        //excel.FormatarTipoCelulaTexto("H" + (l).ToString(), "H" + (l).ToString());
-                        excel.EscreverCelula(l, 9, dtEta);
-                        excel.FormatarTipoCelulaTexto("J" + (l).ToString(), "J" + (l).ToString());
-                        excel.EscreverCelula(l, 10, nrBooking);
-                        excel.FormatarTipoCelulaTexto("K" + (l).ToString(), "K" + (l).ToString());
-                        excel.EscreverCelula(l, 11, nrBookingTerminal);
-                        excel.EscreverCelula(l, 12, nmNavio);
-                        excel.EscreverCelula(l, 13, nmNavioTerminal);
-                        excel.EscreverCelula(l, 14, dsStatus);
-                        excel.EscreverCelula(l, 15, dtConsulta);
-                        excel.EscreverCelula(l, 16, sTerminal);
-                        excel.EscreverCelula(l, 17, sTerminalSistema);
-                        excel.EscreverCelula(l, 18, nmStatus2);
-                        excel.EscreverCelula(l, 19, nrLacreAgencia);
-                        excel.EscreverCelula(l, 20, nrLacreAgenciaTerminal);
-                        excel.EscreverCelula(l, 21, nrLacreSIF);
-                        excel.EscreverCelula(l, 22, nrLacreSIFTerminal);
-                        if (dtEmbarque != "" && conteudo.IC_TIPO == "D")
-                        {
-                            excel.FormatarFundoOrange("A" + l.ToString(), "V" + l.ToString());
-                            excel.FormatarFonteEstilo("N" + l.ToString(), "N" + l.ToString(), true, false, false);
-                        }
-                        if (dsStatus == "TERMINAL DIVERGENTE")
-                        {
-                            PrefixoNmArquivo = "EDI_TERMINAL_DIVERGENTE_";
-                            //nmArquivo = "EDI_TERMINAL_DIVERGENTE" + sUsuario + "_" + String.Format("{0:ddMMyyyyHHmmss}", DateTime.Now) + ".xlsx";
-                            //dsAssuntoEmail = "CONTAINERS EM TERMINAL DIVERGENTE";
-                            excel.FormatarFundoBlue("A" + l.ToString(), "V" + l.ToString());
-                            excel.FormatarFonteEstilo("N" + l.ToString(), "N" + l.ToString(), true, false, false);
-                        }
-                        if (conteudo.DT_ETA > conteudo.DT_EMBARQUE)
-                        {
-                            excel.FormatarFundoGreen("A" + l.ToString(), "V" + l.ToString());
-                            excel.FormatarFonteEstilo("H" + l.ToString(), "I" + l.ToString(), true, false, false);
-                        }
-                        l++;
-                    }
-
-                    #endregion MONTAR EXCEL
-
-                    //Pegar o e-mail do usuário
-                    string to2 = dados.RetornaEmailUsuario((int)idUsuario, "email");
-
-
-                    if (idUsuario == 209)
-                    {
-                        to2 = "beatrizsilva@sateldespachos.com.br;erika@sateldespachos.com.br";
-                    }
-
-                    string copiaEmail2 = "";
-
-                    List<UsuarioCopia> listaEmailCopia2 = new List<UsuarioCopia>();
-                    listaEmailCopia2 = dados.emailUsuarioCopia(cdUsuarioGrupo);
-                    if (listaEmailCopia2.Count() > 0)
-                    {
-
-                        foreach (var itemEmail in listaEmailCopia2)
-                        {
-                            if (!string.IsNullOrEmpty(itemEmail.NM_EMAIL_USUARIO))
-                            {
-                                if (string.IsNullOrEmpty(copiaEmail2))
-                                {
-                                    copiaEmail2 = itemEmail.NM_EMAIL_USUARIO;
-                                }
-                                else
-                                {
-                                    copiaEmail2 = copiaEmail2 + ";" + itemEmail.NM_EMAIL_USUARIO;
-                                }
-                            }
-                        }
-
-                    }
-
-
-                    sUsuario = dados.RetornaEmailUsuario((int)idUsuario, "nome");
-
-                    //Gera o excel para enviar a planhilha para o cliente
-                    excel.FormatarFonteEstilo("V2", "V2", true, false, false);
-                    excel.FormatarBorda("A2", "V" + l.ToString());
-                    excel.LarguraAuto();
-
-                    nmArquivo = PrefixoNmArquivo + sUsuario + "_" + String.Format("{0:ddMMyyyyHHmmss}", DateTime.Now) + ".xlsx";
-                    //dsAssuntoEmail = "DADOS DIVERGENTES DO TERMINAL";
-
-                    excel.salvarComo(caminhoArquivo + "\\" + nmArquivo);
-                    string caminhoExcel2 = caminhoArquivo + "\\" + nmArquivo;
-                    excel.FecharExcel();
-
-
-                    //Disparar Email para cliente
-                    Email email2 = new Email();
-                    email2.EnviaEmailEDI(to2, copiaEmail2, dsAssuntoEmail, dsCorpoEmail, caminhoExcel2);
-
                 }
+
+                CriarCabecalhoExcel();
+                int l = 3;
+
+
+                 minerva = false;
+
+                foreach (var conteudo in grupo)
+                {
+                    string FormatDate(DateTime? dt) => dt?.ToString("MM/dd/yyyy HH:mm") ?? "";
+
+                    excel.EscreverCelula(l, 1, conteudo.CD_NUMERO_PROCESSO);
+                    excel.EscreverCelula(l, 2, conteudo.DS_REFERENCIA_CLIENTE);
+                    excel.EscreverCelula(l, 3, conteudo.NM_CLIENTE);
+                    excel.EscreverCelula(l, 4, conteudo.NR_CONTAINER);
+                    excel.EscreverCelula(l, 5, FormatDate(conteudo.DT_CONTAINER));
+                    excel.EscreverCelula(l, 6, FormatDate(conteudo.DT_DEPOSITO));
+                    excel.EscreverCelula(l, 7, FormatDate(conteudo.DT_PROTOCOLO));
+                    excel.EscreverCelula(l, 8, FormatDate(conteudo.DT_EMBARQUE));
+                    excel.EscreverCelula(l, 9, FormatDate(conteudo.DT_ETA));
+                    excel.FormatarTipoCelulaTexto("J" + l, "J" + l);
+                    excel.EscreverCelula(l, 10, conteudo.NR_BOOKING + " ");
+                    excel.FormatarTipoCelulaTexto("K" + l, "K" + l);
+                    excel.EscreverCelula(l, 11, conteudo.NR_BOOKING_TERMINAL + " ");
+                    excel.EscreverCelula(l, 12, conteudo.NM_NAVIO);
+                    excel.EscreverCelula(l, 13, conteudo.NM_NAVIO_TERMINAL);
+                    excel.EscreverCelula(l, 14, conteudo.DS_STATUS);
+                    excel.EscreverCelula(l, 15, FormatDate(conteudo.DT_CONSULTA));
+                    excel.EscreverCelula(l, 16, conteudo.NM_TERMINAL);
+                    excel.EscreverCelula(l, 17, conteudo.NM_TERMINAL_SISTEMA);
+                    excel.EscreverCelula(l, 18, conteudo.NM_PROCESSO_STATUS2);
+                    excel.EscreverCelula(l, 19, conteudo.DS_LACRE_AGENCIA);
+                    excel.EscreverCelula(l, 20, conteudo.DS_LACRE_AGENCIA_TERMINAL);
+                    excel.EscreverCelula(l, 21, conteudo.DS_LACRE_SIF);
+                    excel.EscreverCelula(l, 22, conteudo.DS_LACRE_SIF_TERMINAL);
+
+                    if(conteudo.CD_GRUPO == 1)
+                    {
+                        minerva = true;
+                    }
+
+                    l++;
+                }
+
+                excel.FormatarFonteEstilo("A2", "V2", true, false, false);
+                excel.FormatarBorda("A2", "V" + l);
+                excel.LarguraAuto();
+
+                string caminhoFinal = Path.Combine(caminhoArquivo, nmArquivo);
+                excel.salvarComo(caminhoFinal);
+                excel.FecharExcel();
+
+
+
+
+                string toFinal = dados.RetornaEmailUsuario((int)idUsuario, "email");
+                string copiaFinal = string.Join(";", dados.emailUsuarioCopia(idUsuario).Where(x => !string.IsNullOrEmpty(x.NM_EMAIL_USUARIO)).Select(x => x.NM_EMAIL_USUARIO));
+
+                if (idUsuario == 209)
+                {
+                    toFinal = "beatrizsilva@sateldespachos.com.br;erika@sateldespachos.com.br";
+                }
+
+                //if (minerva == true)
+                //{
+                //    copiaFinal += ConfigurationManager.AppSettings["EmailMinervaDivergencia"].ToString();
+                //}
+
+                //dsAssuntoEmail = dsAssuntoEmail + toFinal;
+                //toFinal = "fabiosilva@sateldespachos.com.br";
+                //copiaFinal = "";
+                new Email().EnviaEmailEDI(toFinal, copiaFinal, dsAssuntoEmail, dsCorpoEmail, caminhoFinal);
             }
 
-            exibirMensagem("S", "");
             return true;
-
         }
 
 
-        public bool GerarPlanilhaExcelCliente(int ic_robo)
+
+        public bool GerarPlanilhaExcelCliente(string ic_robo)
         {
-            //Criar planilha
-
-            string caminhoArquivo = "";
-
+            string caminhoArquivo = CriaPastaDoc("AVISODIVERGENCIA");
             string dsAssuntoEmail = "DADOS DIVERGENTES DO TERMINAL";
             string dsCorpoEmail = "Segue anexo planilha com os dados divergentes na consulta de deposito do container no(s) terminal(is).";
+            bool minerva = false;
 
-            caminhoArquivo = CriaPastaDoc("AVISODIVERGENCIA");
+            int nr_robo = int.Parse(ic_robo);
 
+            List<InsereDados> lstPrc = dados.ConsultaDivergenciaCliente(nr_robo);
 
+            if (lstPrc == null || lstPrc.Count == 0)
+                return false;
 
+            exibirMensagem("S", "Enviando e-mail para os analistas");
 
+            string PrefixoNmArquivo = "EDI_DEPOSITO_DIVERGENCIA_";
 
-            List<InsereDados> lstPrc = dados.ConsultaDivergenciaCliente(ic_robo);
-            if (lstPrc != null)
+            // Agrupar por CD_USUARIO
+            var gruposPorUsuario = lstPrc.GroupBy(p => p.CD_USUARIO);
+
+            foreach (var grupo in gruposPorUsuario)
             {
+                int? idUsuario = grupo.Key ?? 1;
+                string sUsuario = dados.RetornaEmailUsuario((int)idUsuario, "nome");
 
-                if (lstPrc.Count > 0)
+                clsExcel excel = new clsExcel();
+                string nmArquivo = PrefixoNmArquivo + sUsuario + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".xlsx";
+
+                void CriarCabecalhoExcel()
                 {
-
-                    exibirMensagem("S", "Enviando e-mail para os analistas");
-                    #region MONTAR EXCEL
-
-                    clsExcel excel = new clsExcel();
-                    //excel.MataExcelPerdido();
-
-
-                    string sUsuario = "";
-                    int? idUsuario = lstPrc.FirstOrDefault().CD_USUARIO == null ? 1 : lstPrc.FirstOrDefault().CD_USUARIO;
-
-
-                    //Pega o nome do usuário
-                    sUsuario = dados.RetornaEmailUsuario((int)idUsuario, "nome");
-
-                    //int? cdGrupo = null;
-                    int? cdUsuarioGrupo = null;
-
-                    string PrefixoNmArquivo = "EDI_DEPOSITO_DIVERGENCIA_";
-                    string nmArquivo = PrefixoNmArquivo + sUsuario + "_" + String.Format("{0:ddMMyyyyHHmmss}", DateTime.Now) + ".xlsx";
-                    //Gerar dados na planilha
-
                     excel.EscreverCelula(1, 1, "ANALISTA");
                     excel.EscreverCelula(1, 2, sUsuario);
-
-                    excel.EscreverCelula(2, 1, "Processo");
-                    excel.EscreverCelula(2, 2, "Ordem");
-                    excel.EscreverCelula(2, 3, "Cliente");
-                    excel.EscreverCelula(2, 4, "Container");
-                    excel.EscreverCelula(2, 5, "Dead Line Container");
-                    excel.EscreverCelula(2, 6, "Dt. Deposito");
-                    excel.EscreverCelula(2, 7, "Dt. Protocolo");
-                    excel.EscreverCelula(2, 8, "Dt. Embarque");
-                    excel.EscreverCelula(2, 9, "Dt. ETA");
-                    excel.EscreverCelula(2, 10, "Nr. Booking (Sistema)");
-                    excel.EscreverCelula(2, 11, "Nr. Booking (Terminal)");
-                    excel.EscreverCelula(2, 12, "Navio (Sistema)");
-                    excel.EscreverCelula(2, 13, "Navio (Terminal)");
-                    excel.EscreverCelula(2, 14, "Mensagem");
-                    excel.EscreverCelula(2, 15, "Dt. Consulta");
-                    excel.EscreverCelula(2, 16, "Terminal Consultado");
-                    excel.EscreverCelula(2, 17, "Terminal Sistema");
-                    excel.EscreverCelula(2, 18, "Status 2");
-                    excel.EscreverCelula(2, 19, "Lacre Agência (Sistema)");
-                    excel.EscreverCelula(2, 20, "Lacre Agência (Terminal)");
-                    excel.EscreverCelula(2, 21, "Lacre SIF (Sistema)");
-                    excel.EscreverCelula(2, 22, "Lacre SIF (Terminal)");
+                    string[] headers = new string[]
+                    {
+                "Processo", "Ordem", "Cliente", "Container", "Dead Line Container",
+                "Dt. Deposito", "Dt. Protocolo", "Dt. Embarque", "Dt. ETA",
+                "Nr. Booking (Sistema)", "Nr. Booking (Terminal)",
+                "Navio (Sistema)", "Navio (Terminal)", "Mensagem", "Dt. Consulta",
+                "Terminal Consultado", "Terminal Sistema", "Status 2",
+                "Lacre Agência (Sistema)", "Lacre Agência (Terminal)",
+                "Lacre SIF (Sistema)", "Lacre SIF (Terminal)"
+                    };
+                    for (int i = 0; i < headers.Length; i++)
+                        excel.EscreverCelula(2, i + 1, headers[i]);
                     excel.FormatarFundo("A2", "V2");
-
-
-                    int l = 3;
-                    foreach (var conteudo in lstPrc)
-                    {
-
-                        cdUsuarioGrupo = conteudo.CD_USUARIO;
-
-                        if (idUsuario != conteudo.CD_USUARIO)
-                        {
-                            //Pegar o e-mail do usuário
-                            string to = dados.RetornaEmailUsuario((int)idUsuario, "email");
-
-                            string copiaEmail = "";
-                            List<UsuarioCopia> listaEmailCopia = new List<UsuarioCopia>();
-                            listaEmailCopia = dados.emailUsuarioCopia(idUsuario);
-                            if (listaEmailCopia.Count() > 0)
-                            {
-
-                                foreach (var itemEmail in listaEmailCopia)
-                                {
-                                    if (!string.IsNullOrEmpty(itemEmail.NM_EMAIL_USUARIO))
-                                    {
-                                        if (string.IsNullOrEmpty(copiaEmail))
-                                        {
-                                            copiaEmail = itemEmail.NM_EMAIL_USUARIO;
-                                        }
-                                        else
-                                        {
-                                            copiaEmail = copiaEmail + ";" + itemEmail.NM_EMAIL_USUARIO;
-                                        }
-                                    }
-                                }
-                            }/*
-                            if (idUsuario == 27) // SE FOR VICTOR, MANDA NO MARFRIG@SATELDESPACHOS
-                            {
-                                to = "marfrig@sateldespachos.com.br";
-                                copiaEmail = "";
-                            }*/
-                            sUsuario = dados.RetornaEmailUsuario((int)idUsuario, "nome");
-
-                            if (idUsuario == 209)
-                            {
-                                to = "beatrizsilva@sateldespachos.com.br;erika@sateldespachos.com.br";
-                            }
-
-                            nmArquivo = PrefixoNmArquivo + sUsuario + "_" + String.Format("{0:ddMMyyyyHHmmss}", DateTime.Now) + ".xlsx";
-
-                            //dsAssuntoEmail = "DADOS DIVERGENTES DO TERMINAL";
-
-                            //Gera o excel para enviar a planhilha para o cliente
-                            excel.FormatarFonteEstilo("A2", "V2", true, false, false);
-                            excel.FormatarBorda("A2", "V" + l.ToString());
-                            excel.LarguraAuto();
-
-                            excel.salvarComo(caminhoArquivo + "\\" + nmArquivo);
-                            string caminhoExcel = caminhoArquivo + "\\" + nmArquivo;
-                            excel.FecharExcel();
-
-                            //Disparar Email para cliente
-                            Email email = new Email();
-                            email.EnviaEmailEDI(to, copiaEmail, dsAssuntoEmail, dsCorpoEmail, caminhoExcel);
-
-                            idUsuario = conteudo.CD_USUARIO == null ? 1 : conteudo.CD_USUARIO;
-                            sUsuario = conteudo.DS_GRUPO;
-
-                            excel = new clsExcel();
-
-                            l = 3;
-                            excel.EscreverCelula(1, 1, "ANALISTA");
-                            excel.EscreverCelula(1, 2, sUsuario);
-
-                            excel.EscreverCelula(2, 1, "Processo");
-                            excel.EscreverCelula(2, 2, "Ordem");
-                            excel.EscreverCelula(2, 3, "Cliente");
-                            excel.EscreverCelula(2, 4, "Container");
-                            excel.EscreverCelula(2, 5, "Dead Line Container");
-                            excel.EscreverCelula(2, 6, "Dt. Deposito");
-                            excel.EscreverCelula(2, 7, "Dt. Protocolo");
-                            excel.EscreverCelula(2, 8, "Dt. Embarque");
-                            excel.EscreverCelula(2, 9, "Dt. ETA");
-                            excel.EscreverCelula(2, 10, "Nr. Booking (Sistema)");
-                            excel.EscreverCelula(2, 11, "Nr. Booking (Terminal)");
-                            excel.EscreverCelula(2, 12, "Navio (Sistema)");
-                            excel.EscreverCelula(2, 13, "Navio (Terminal)");
-                            excel.EscreverCelula(2, 14, "Mensagem");
-                            excel.EscreverCelula(2, 15, "Dt. Consulta");
-                            excel.EscreverCelula(2, 16, "Terminal Consultado");
-                            excel.EscreverCelula(2, 17, "Terminal Sistema");
-                            excel.EscreverCelula(2, 18, "Status 2");
-                            excel.EscreverCelula(2, 19, "Lacre Agência (Sistema)");
-                            excel.EscreverCelula(2, 20, "Lacre Agência (Terminal)");
-                            excel.EscreverCelula(2, 21, "Lacre SIF (Sistema)");
-                            excel.EscreverCelula(2, 22, "Lacre SIF (Terminal)");
-                            excel.FormatarFundo("A2", "V2");
-
-
-                        }
-
-                        string nrContainer = conteudo.NR_CONTAINER;
-                        string nmCliente = conteudo.NM_CLIENTE;
-                        string nrBooking = conteudo.NR_BOOKING + " ";
-                        string nrBookingTerminal = conteudo.NR_BOOKING_TERMINAL + " ";
-                        string nmNavio = conteudo.NM_NAVIO;
-                        string nmNavioTerminal = conteudo.NM_NAVIO_TERMINAL;
-
-                        string dtDeposito = "";
-                        string dtEmbarque = "";
-                        string dtConsulta = "";
-                        string dsStatus = conteudo.DS_STATUS;
-                        string nmTerminal = conteudo.NM_TERMINAL;
-                        string nrProcesso = conteudo.CD_NUMERO_PROCESSO;
-                        string nrOrdem = conteudo.DS_REFERENCIA_CLIENTE;
-                        string dtContainer = "";
-                        string dtProtocolo = "";
-                        string dtEta = "";
-                        string sTerminal = conteudo.NM_TERMINAL;
-                        string sTerminalSistema = conteudo.NM_TERMINAL_SISTEMA;
-                        string nmStatus2 = conteudo.NM_PROCESSO_STATUS2;
-
-                        string nrLacreAgencia = conteudo.DS_LACRE_AGENCIA;
-                        string nrLacreAgenciaTerminal = conteudo.DS_LACRE_AGENCIA_TERMINAL;
-                        string nrLacreSIF = conteudo.DS_LACRE_SIF;
-                        string nrLacreSIFTerminal = conteudo.DS_LACRE_SIF_TERMINAL;
-
-
-                        if (conteudo.DT_DEPOSITO != null)
-                        {
-                            dtDeposito = DateTime.Parse(conteudo.DT_DEPOSITO.ToString()).ToString("MM/dd/yyyy HH:mm");
-                        }
-
-
-                        if (conteudo.DT_CONSULTA != null)
-                        {
-                            dtConsulta = DateTime.Parse(conteudo.DT_CONSULTA.ToString()).ToString("MM/dd/yyyy HH:mm");
-                        }
-                        if (conteudo.DT_CONTAINER != null)
-                        {
-                            dtContainer = DateTime.Parse(conteudo.DT_CONTAINER.ToString()).ToString("MM/dd/yyyy HH:mm");
-                        }
-
-                        if (conteudo.DT_PROTOCOLO != null)
-                        {
-                            dtProtocolo = DateTime.Parse(conteudo.DT_PROTOCOLO.ToString()).ToString("MM/dd/yyyy HH:mm");
-                        }
-
-                        if (conteudo.DT_EMBARQUE != null)
-                        {
-                            dtEmbarque = DateTime.Parse(conteudo.DT_EMBARQUE.ToString()).ToString("MM/dd/yyyy HH:mm");
-                        }
-
-                        if (conteudo.DT_ETA != null)
-                        {
-                            dtEta = DateTime.Parse(conteudo.DT_ETA.ToString()).ToString("MM/dd/yyyy HH:mm");
-                        }
-
-                        excel.EscreverCelula(l, 1, nrProcesso);
-                        excel.EscreverCelula(l, 2, nrOrdem);
-                        excel.EscreverCelula(l, 3, nmCliente);
-                        excel.EscreverCelula(l, 4, nrContainer);
-                        excel.EscreverCelula(l, 5, dtContainer);
-                        excel.EscreverCelula(l, 6, dtDeposito);
-                        excel.EscreverCelula(l, 7, dtProtocolo);
-                        excel.EscreverCelula(l, 8, dtEmbarque);
-                        //excel.FormatarTipoCelulaTexto("H" + (l).ToString(), "H" + (l).ToString());
-                        excel.EscreverCelula(l, 9, dtEta);
-                        excel.FormatarTipoCelulaTexto("J" + (l).ToString(), "J" + (l).ToString());
-                        excel.EscreverCelula(l, 10, nrBooking);
-                        excel.FormatarTipoCelulaTexto("K" + (l).ToString(), "K" + (l).ToString());
-                        excel.EscreverCelula(l, 11, nrBookingTerminal);
-                        excel.EscreverCelula(l, 12, nmNavio);
-                        excel.EscreverCelula(l, 13, nmNavioTerminal);
-                        excel.EscreverCelula(l, 14, dsStatus);
-                        excel.EscreverCelula(l, 15, dtConsulta);
-                        excel.EscreverCelula(l, 16, sTerminal);
-                        excel.EscreverCelula(l, 17, sTerminalSistema);
-                        excel.EscreverCelula(l, 18, nmStatus2);
-                        excel.EscreverCelula(l, 19, nrLacreAgencia);
-                        excel.EscreverCelula(l, 20, nrLacreAgenciaTerminal);
-                        excel.EscreverCelula(l, 21, nrLacreSIF);
-                        excel.EscreverCelula(l, 22, nrLacreSIFTerminal);
-                        if (dtEmbarque != "" && conteudo.IC_TIPO == "D")
-                        {
-                            excel.FormatarFundoOrange("A" + l.ToString(), "V" + l.ToString());
-                            excel.FormatarFonteEstilo("N" + l.ToString(), "N" + l.ToString(), true, false, false);
-                        }
-                        if (dsStatus == "TERMINAL DIVERGENTE")
-                        {
-                            PrefixoNmArquivo = "EDI_TERMINAL_DIVERGENTE_";
-                            //nmArquivo = "EDI_TERMINAL_DIVERGENTE" + sUsuario + "_" + String.Format("{0:ddMMyyyyHHmmss}", DateTime.Now) + ".xlsx";
-                            //dsAssuntoEmail = "CONTAINERS EM TERMINAL DIVERGENTE";
-                            excel.FormatarFundoBlue("A" + l.ToString(), "V" + l.ToString());
-                            excel.FormatarFonteEstilo("N" + l.ToString(), "N" + l.ToString(), true, false, false);
-                        }
-                        if (conteudo.DT_ETA > conteudo.DT_EMBARQUE)
-                        {
-                            excel.FormatarFundoGreen("A" + l.ToString(), "V" + l.ToString());
-                            excel.FormatarFonteEstilo("H" + l.ToString(), "I" + l.ToString(), true, false, false);
-                        }
-                        l++;
-                    }
-
-                    #endregion MONTAR EXCEL
-
-                    //Pegar o e-mail do usuário
-                    string to2 = dados.RetornaEmailUsuario((int)idUsuario, "email");
-
-
-                    if (idUsuario == 209)
-                    {
-                        to2 = "beatrizsilva@sateldespachos.com.br;erika@sateldespachos.com.br";
-                    }
-
-                    string copiaEmail2 = "";
-
-                    List<UsuarioCopia> listaEmailCopia2 = new List<UsuarioCopia>();
-                    listaEmailCopia2 = dados.emailUsuarioCopia(cdUsuarioGrupo);
-                    if (listaEmailCopia2.Count() > 0)
-                    {
-
-                        foreach (var itemEmail in listaEmailCopia2)
-                        {
-                            if (!string.IsNullOrEmpty(itemEmail.NM_EMAIL_USUARIO))
-                            {
-                                if (string.IsNullOrEmpty(copiaEmail2))
-                                {
-                                    copiaEmail2 = itemEmail.NM_EMAIL_USUARIO;
-                                }
-                                else
-                                {
-                                    copiaEmail2 = copiaEmail2 + ";" + itemEmail.NM_EMAIL_USUARIO;
-                                }
-                            }
-                        }
-
-                    }
-
-
-                    sUsuario = dados.RetornaEmailUsuario((int)idUsuario, "nome");
-
-                    //Gera o excel para enviar a planhilha para o cliente
-                    excel.FormatarFonteEstilo("V2", "V2", true, false, false);
-                    excel.FormatarBorda("A2", "V" + l.ToString());
-                    excel.LarguraAuto();
-
-                    nmArquivo = PrefixoNmArquivo + sUsuario + "_" + String.Format("{0:ddMMyyyyHHmmss}", DateTime.Now) + ".xlsx";
-                    //dsAssuntoEmail = "DADOS DIVERGENTES DO TERMINAL";
-
-                    excel.salvarComo(caminhoArquivo + "\\" + nmArquivo);
-                    string caminhoExcel2 = caminhoArquivo + "\\" + nmArquivo;
-                    excel.FecharExcel();
-
-
-                    //Disparar Email para cliente
-                    Email email2 = new Email();
-                    email2.EnviaEmailEDI(to2, copiaEmail2, dsAssuntoEmail, dsCorpoEmail, caminhoExcel2);
-
                 }
+
+                CriarCabecalhoExcel();
+                int l = 3;
+
+                minerva = false;
+
+                foreach (var conteudo in grupo)
+                {
+                    string FormatDate(DateTime? dt) => dt?.ToString("MM/dd/yyyy HH:mm") ?? "";
+
+                    excel.EscreverCelula(l, 1, conteudo.CD_NUMERO_PROCESSO);
+                    excel.EscreverCelula(l, 2, conteudo.DS_REFERENCIA_CLIENTE);
+                    excel.EscreverCelula(l, 3, conteudo.NM_CLIENTE);
+                    excel.EscreverCelula(l, 4, conteudo.NR_CONTAINER);
+                    excel.EscreverCelula(l, 5, FormatDate(conteudo.DT_CONTAINER));
+                    excel.EscreverCelula(l, 6, FormatDate(conteudo.DT_DEPOSITO));
+                    excel.EscreverCelula(l, 7, FormatDate(conteudo.DT_PROTOCOLO));
+                    excel.EscreverCelula(l, 8, FormatDate(conteudo.DT_EMBARQUE));
+                    excel.EscreverCelula(l, 9, FormatDate(conteudo.DT_ETA));
+                    excel.FormatarTipoCelulaTexto("J" + l, "J" + l);
+                    excel.EscreverCelula(l, 10, conteudo.NR_BOOKING + " ");
+                    excel.FormatarTipoCelulaTexto("K" + l, "K" + l);
+                    excel.EscreverCelula(l, 11, conteudo.NR_BOOKING_TERMINAL + " ");
+                    excel.EscreverCelula(l, 12, conteudo.NM_NAVIO);
+                    excel.EscreverCelula(l, 13, conteudo.NM_NAVIO_TERMINAL);
+                    excel.EscreverCelula(l, 14, conteudo.DS_STATUS);
+                    excel.EscreverCelula(l, 15, FormatDate(conteudo.DT_CONSULTA));
+                    excel.EscreverCelula(l, 16, conteudo.NM_TERMINAL);
+                    excel.EscreverCelula(l, 17, conteudo.NM_TERMINAL_SISTEMA);
+                    excel.EscreverCelula(l, 18, conteudo.NM_PROCESSO_STATUS2);
+                    excel.EscreverCelula(l, 19, conteudo.DS_LACRE_AGENCIA);
+                    excel.EscreverCelula(l, 20, conteudo.DS_LACRE_AGENCIA_TERMINAL);
+                    excel.EscreverCelula(l, 21, conteudo.DS_LACRE_SIF);
+                    excel.EscreverCelula(l, 22, conteudo.DS_LACRE_SIF_TERMINAL);
+
+
+                    if (conteudo.CD_GRUPO == 1)
+                    {
+                        minerva = true;
+                    }
+
+                    l++;
+                }
+
+                excel.FormatarFonteEstilo("A2", "V2", true, false, false);
+                excel.FormatarBorda("A2", "V" + l);
+                excel.LarguraAuto();
+
+                string caminhoFinal = Path.Combine(caminhoArquivo, nmArquivo);
+                excel.salvarComo(caminhoFinal);
+                excel.FecharExcel();
+
+                string toFinal = dados.RetornaEmailUsuario((int)idUsuario, "email");
+                string copiaFinal = string.Join(";", dados.emailUsuarioCopia(idUsuario).Where(x => !string.IsNullOrEmpty(x.NM_EMAIL_USUARIO)).Select(x => x.NM_EMAIL_USUARIO));
+
+                if (idUsuario == 209)
+                {
+                    toFinal = "beatrizsilva@sateldespachos.com.br;erika@sateldespachos.com.br";
+                }                               
+
+                //if (minerva == true)
+                //{
+                //    copiaFinal += ConfigurationManager.AppSettings["EmailMinervaDivergencia"].ToString();
+                //}
+
+
+
+                new Email().EnviaEmailEDI(toFinal, copiaFinal, dsAssuntoEmail, dsCorpoEmail, caminhoFinal);
             }
 
-            exibirMensagem("S", "");
             return true;
-
         }
+
+
 
         public string CriaPastaDoc(string nmPasta)
         {
@@ -4481,10 +3804,10 @@ namespace TerminalRobo.Models
 
             dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "SANTOS BRASIL", DateTime.Now, "INICIANDO CONSULTA", novoDado);
             bCarregado = false;
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('container cntr')[0].value = '" + conteudo.NR_CONTAINER + "';");
+            chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('container cntr')[0].value = '" + conteudo.NR_CONTAINER + "';");
             Application.DoEvents();
             Thread.Sleep(100);
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('Export')[0].click();");
+            chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('Export')[0].click();");
             //AguardaPaginaCarregar(ref tsStatus);
 
             Application.DoEvents();
@@ -4566,8 +3889,8 @@ namespace TerminalRobo.Models
             sDataDeposito += " var lacres = document.getElementById('tabelalacreCNTR').getElementsByTagName('tbody')[0].getElementsByTagName('tr');";
             sDataDeposito += " for (var i = 0; i < lacres.length; i++) {";
             sDataDeposito += " var numeroLacre = lacres[i].getElementsByTagName('td')[0].innerText.trim();";
-            sDataDeposito += " var tipoLacre = lacres[i].getElementsByTagName('td')[1].innerText.trim();"; 
-            sDataDeposito += " console.log('Tipo de Lacre:', tipoLacre, 'Número de Lacre:', numeroLacre);"; 
+            sDataDeposito += " var tipoLacre = lacres[i].getElementsByTagName('td')[1].innerText.trim();";
+            sDataDeposito += " console.log('Tipo de Lacre:', tipoLacre, 'Número de Lacre:', numeroLacre);";
             sDataDeposito += " if (tipoLacre == 'Lacre Armador') { conteudo[6] = numeroLacre; }";
             sDataDeposito += " if (tipoLacre == 'Lacre Veterinário(SIF)') { conteudo[7] = numeroLacre; }";
             sDataDeposito += " }";
@@ -4763,7 +4086,7 @@ namespace TerminalRobo.Models
             int tentativa = 0;
             bool sucesso = false;
             // pesquisa do container        
-                     
+
 
             Thread.Sleep(2000);
             Application.DoEvents();
@@ -4984,13 +4307,13 @@ namespace TerminalRobo.Models
             }
             return true;
         }
-            
-        
+
+
         public bool ConsultarLacreBTP(ListaDeCampos conteudo, bool bPrimeiraVez)
         {
             dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "BTP", DateTime.Now, "INICIANDO CONSULTA", novoDado);
-    
-                   
+
+
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('ddlCategoria').value = 'E';");
 
             Thread.Sleep(300);
@@ -5249,7 +4572,7 @@ namespace TerminalRobo.Models
                 {
                     nmTerminal = "SANTOS BRASIL";
                     exibirMensagem("T", "Consultando SANTOS BRASIL");
-                }              
+                }
                 else if (conteudo.CD_TERMINAL_EMBARQUE == idTermVilaConde)
                 {
                     nmTerminal = "VILA DO CONDE";
@@ -5267,9 +4590,9 @@ namespace TerminalRobo.Models
 
                 string auxLacreSIF = "";
                 string auxLacreAgencia = "";
-                
-                auxLacreSIF = stringList[7]; 
-                auxLacreAgencia = stringList[6]; 
+
+                auxLacreSIF = stringList[7];
+                auxLacreAgencia = stringList[6];
 
                 InsereDados novoDado = new InsereDados();
                 novoDado.CD_PROCESSO = conteudo.CD_PROCESSO;
@@ -5287,7 +4610,7 @@ namespace TerminalRobo.Models
                 novoDado.DS_LACRE_AGENCIA = conteudo.DS_LACRE_AGENCIA ?? "";
                 novoDado.DS_LACRE_SIF_TERMINAL = auxLacreSIF ?? "";
                 novoDado.DS_LACRE_SIF = conteudo.DS_LACRE_SIF ?? "";
-               
+
 
 
 
@@ -5420,9 +4743,8 @@ namespace TerminalRobo.Models
         }
 
 
-      
+
 
 
     }
 }
-

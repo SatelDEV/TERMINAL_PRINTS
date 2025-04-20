@@ -18,10 +18,10 @@ namespace TerminalRobo.DataBase
         {
             this.PROCESSORESERVA = new HashSet<PROCESSORESERVA>();
             this.PROCESSOEVENTO = new HashSet<PROCESSOEVENTO>();
-            this.DUE = new HashSet<DUE>();
             this.PROCESSO_LOTE = new HashSet<PROCESSO_LOTE>();
             this.PROCESSO_LOTE1 = new HashSet<PROCESSO_LOTE>();
             this.DDE = new HashSet<DDE>();
+            this.DUE = new HashSet<DUE>();
         }
     
         public int CD_PROCESSO { get; set; }
@@ -253,7 +253,6 @@ namespace TerminalRobo.DataBase
         public virtual ICollection<PROCESSORESERVA> PROCESSORESERVA { get; set; }
         public virtual LOCAIS LOCAIS { get; set; }
         public virtual ICollection<PROCESSOEVENTO> PROCESSOEVENTO { get; set; }
-        public virtual ICollection<DUE> DUE { get; set; }
         public virtual ICollection<PROCESSO_LOTE> PROCESSO_LOTE { get; set; }
         public virtual ICollection<PROCESSO_LOTE> PROCESSO_LOTE1 { get; set; }
         public virtual ICollection<DDE> DDE { get; set; }
@@ -269,5 +268,6 @@ namespace TerminalRobo.DataBase
         public virtual ENTIDADE ENTIDADE9 { get; set; }
         public virtual ENTIDADE ENTIDADE10 { get; set; }
         public virtual ENTIDADE ENTIDADE11 { get; set; }
+        public virtual ICollection<DUE> DUE { get; set; }
     }
 }

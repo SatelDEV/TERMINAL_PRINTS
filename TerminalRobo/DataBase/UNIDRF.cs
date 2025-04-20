@@ -16,10 +16,10 @@ namespace TerminalRobo.DataBase
     {
         public UNIDRF()
         {
-            this.DUE = new HashSet<DUE>();
-            this.DUE1 = new HashSet<DUE>();
             this.DDE = new HashSet<DDE>();
             this.DDE1 = new HashSet<DDE>();
+            this.DUE = new HashSet<DUE>();
+            this.DUE1 = new HashSet<DUE>();
         }
     
         public string STR_CODIGOUNIDADERF { get; set; }
@@ -33,9 +33,9 @@ namespace TerminalRobo.DataBase
         public Nullable<int> CD_ENTIDADE { get; set; }
         public Nullable<int> CD_FILIAL { get; set; }
     
-        public virtual ICollection<DUE> DUE { get; set; }
-        public virtual ICollection<DUE> DUE1 { get; set; }
         public virtual ICollection<DDE> DDE { get; set; }
         public virtual ICollection<DDE> DDE1 { get; set; }
+        public virtual ICollection<DUE> DUE { get; set; }
+        public virtual ICollection<DUE> DUE1 { get; set; }
     }
 }

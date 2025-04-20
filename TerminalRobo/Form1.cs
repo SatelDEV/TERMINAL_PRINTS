@@ -37,6 +37,7 @@ namespace TerminalRobo
         string icConsultarItapoa = ConfigurationManager.AppSettings["icConsultarItapoa"].ToString();
         string icConsultarParanagua = ConfigurationManager.AppSettings["icConsultarParanagua"].ToString();
         string icEnviarEmailAnalista = ConfigurationManager.AppSettings["icEnviarEmailAnalista"].ToString();
+        string icrobo = ConfigurationManager.AppSettings["nrRobo"].ToString();
 
         
 
@@ -88,7 +89,7 @@ namespace TerminalRobo
                 if (icEnviarEmailAnalista == "S")
                 {
                     //Verifica se existe divergências para enviar aos analistas do trafego
-                    navegar.GerarPlanilhaExcel();
+                    navegar.GerarPlanilhaExcelCliente(icrobo);
                     //Antes de iniciar a consulta limpa a tabela temporária
                     dados.LimparTabelatemporaria(true);
                 }
@@ -106,7 +107,7 @@ namespace TerminalRobo
                 if (icEnviarEmailAnalista == "S")
                 {
                     //Verifica se existe divergências para enviar aos analistas do trafego
-                    navegar.GerarPlanilhaExcel();
+                    navegar.GerarPlanilhaExcelCliente(icrobo);
                     //Antes de iniciar a consulta limpa a tabela temporária
                     dados.LimparTabelatemporaria(true);
                 }
@@ -125,7 +126,7 @@ namespace TerminalRobo
                 if (icEnviarEmailAnalista == "S")
                 {
                     //Verifica se existe divergências para enviar aos analistas do trafego
-                    navegar.GerarPlanilhaExcel();
+                    navegar.GerarPlanilhaExcelCliente(icrobo);
                     //Antes de iniciar a consulta limpa a tabela temporária
                     dados.LimparTabelatemporaria(true);
                 }
@@ -145,7 +146,7 @@ namespace TerminalRobo
                 if (icEnviarEmailAnalista == "S")
                 {
                     //Verifica se existe divergências para enviar aos analistas do trafego
-                    navegar.GerarPlanilhaExcel();
+                    navegar.GerarPlanilhaExcelCliente(icrobo);
                     //Antes de iniciar a consulta limpa a tabela temporária
                     dados.LimparTabelatemporaria(true);
                 }
@@ -164,7 +165,7 @@ namespace TerminalRobo
                 if (icEnviarEmailAnalista == "S")
                 {
                     //Verifica se existe divergências para enviar aos analistas do trafego
-                    navegar.GerarPlanilhaExcel();
+                    navegar.GerarPlanilhaExcelCliente(icrobo);
                     //Antes de iniciar a consulta limpa a tabela temporária
                     dados.LimparTabelatemporaria(true);
                 }
@@ -183,7 +184,7 @@ namespace TerminalRobo
                 if (icEnviarEmailAnalista == "S")
                 {
                     //Verifica se existe divergências para enviar aos analistas do trafego
-                    navegar.GerarPlanilhaExcel();
+                    navegar.GerarPlanilhaExcelCliente(icrobo);
                     //Antes de iniciar a consulta limpa a tabela temporária
                     dados.LimparTabelatemporaria(true);
                 }
@@ -315,7 +316,7 @@ namespace TerminalRobo
                         i++;
                     }
                     tsContainer.Text = "AGUARDANDO";
-                    navegar.deslogandoSantosBrasil();
+                    //navegar.deslogandoSantosBrasil();
                     dados.EmbarqueConfirmado(lstVA);
                 }
             }
@@ -406,17 +407,14 @@ namespace TerminalRobo
            
         }
 
-        private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = true)
+        private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
         {
 
             string Grupo = ConfigurationManager.AppSettings["Grupo"].ToString();
 
-            string GrupoNao = ConfigurationManager.AppSettings["Grupo_Nao"].ToString();
+            string GrupoNao = ConfigurationManager.AppSettings["Grupo_Nao"].ToString();   
 
-            string icrobo = ConfigurationManager.AppSettings["nrRobo"].ToString();
-
-
-            int nr_robo = int.Parse(icrobo);
+            
 
              bool bCarregado = false;
             List<ListaDeCampos> lstConsulta = new List<ListaDeCampos>();
@@ -484,20 +482,10 @@ namespace TerminalRobo
                         tsContainer.Text = "AGUARDANDO";
                         //navegar.deslogandoBTP();
                         dados.EmbarqueConfirmado(lstVA);
-                    }
-
-                  
+                    }              
 
 
-                }
-
-                if (icEnviarEmailAnalista == "S")
-                {
-                    //Verifica se existe divergências para enviar aos analistas do trafego
-                    navegar.GerarPlanilhaExcelCliente(nr_robo);
-                    //Antes de iniciar a consulta limpa a tabela temporária
-                    dados.LimparTabelatemporaria(true);
-                }
+                }           
 
 
             }
@@ -627,7 +615,7 @@ namespace TerminalRobo
                         i++;
                     }
                     tsContainer.Text = "AGUARDANDO";
-                    navegar.deslogandoVilaConde();
+                    //navegar.deslogandoVilaConde();
                     dados.EmbarqueConfirmado(lstVA);
                 }
             }
@@ -1582,7 +1570,7 @@ namespace TerminalRobo
             if (icEnviarEmailAnalista == "S")
             {
                 //Verifica se existe divergências para enviar aos analistas do trafego
-                navegar.GerarPlanilhaExcel();
+                navegar.GerarPlanilhaExcelCliente(icrobo);
                 //Antes de iniciar a consulta limpa a tabela temporária
                 dados.LimparTabelatemporaria(true);
             }

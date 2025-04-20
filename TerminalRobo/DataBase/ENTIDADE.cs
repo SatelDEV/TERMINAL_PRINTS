@@ -18,7 +18,6 @@ namespace TerminalRobo.DataBase
         {
             this.DDE = new HashSet<DDE>();
             this.DDE1 = new HashSet<DDE>();
-            this.DUE = new HashSet<DUE>();
             this.GRUPOCLI_ENTIDADE = new HashSet<GRUPOCLI_ENTIDADE>();
             this.PROCESSOS = new HashSet<PROCESSOS>();
             this.PROCESSOS1 = new HashSet<PROCESSOS>();
@@ -35,6 +34,7 @@ namespace TerminalRobo.DataBase
             this.RELACIONAMENTOENTIDADE = new HashSet<RELACIONAMENTOENTIDADE>();
             this.USUARIO_CA = new HashSet<USUARIO_CA>();
             this.RELAC_EXPORTADOR = new HashSet<RELAC_EXPORTADOR>();
+            this.DUE = new HashSet<DUE>();
         }
     
         public int CD_ENTIDADE { get; set; }
@@ -80,7 +80,6 @@ namespace TerminalRobo.DataBase
     
         public virtual ICollection<DDE> DDE { get; set; }
         public virtual ICollection<DDE> DDE1 { get; set; }
-        public virtual ICollection<DUE> DUE { get; set; }
         public virtual ICollection<GRUPOCLI_ENTIDADE> GRUPOCLI_ENTIDADE { get; set; }
         public virtual ICollection<PROCESSOS> PROCESSOS { get; set; }
         public virtual ICollection<PROCESSOS> PROCESSOS1 { get; set; }
@@ -97,5 +96,6 @@ namespace TerminalRobo.DataBase
         public virtual ICollection<RELACIONAMENTOENTIDADE> RELACIONAMENTOENTIDADE { get; set; }
         public virtual ICollection<USUARIO_CA> USUARIO_CA { get; set; }
         public virtual ICollection<RELAC_EXPORTADOR> RELAC_EXPORTADOR { get; set; }
+        public virtual ICollection<DUE> DUE { get; set; }
     }
 }

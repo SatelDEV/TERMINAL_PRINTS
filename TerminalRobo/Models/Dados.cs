@@ -1410,12 +1410,12 @@ namespace TerminalRobo.Models
                 dsCorpo += "<br><b>Container(s):</b> " + container;
                 dsCorpo += "<br><b>DUE:</b> " + d.CD_NUMERO_DUE;
                 dsCorpo += "<br><b>Id DUE:</b> " + cdDue;
-                if (recintoDAnt != recintoD)
-                {
-                    dsCorpo += "<br><b>Recinto Despacho:</b> " + recintoDAnt + " <b>=></b> " + recintoD;
-                    alteracao = "desembaraço";
-                }
-                if (recintoEAnt != recintoE)
+            if ((recintoDAnt != recintoD) && (d.IC_LOCAL_EMBARQUE_TRANSPOSICAO_FRONTEIRA == null || d.IC_LOCAL_EMBARQUE_TRANSPOSICAO_FRONTEIRA == false))
+            {
+                dsCorpo += "<br><b>Recinto Despacho:</b> " + recintoDAnt + " <b>=></b> " + recintoD;
+                alteracao = "desembaraço";
+            }
+            if (recintoEAnt != recintoE)
                 {
                     dsCorpo += "<br><b>Recinto Embarque:</b> " + recintoEAnt + " <b>=></b> " + recintoE;
 
@@ -1439,7 +1439,19 @@ namespace TerminalRobo.Models
                         string emailResp = (from u in db.USUARIO_CA join en in db.ENTIDADE on u.CD_ENTIDADE equals en.CD_ENTIDADE where u.CD_USUARIO == cdUsuarioResp select en.EMAIL_ENTIDADE).FirstOrDefault();
                         dsEmails += ";" + emailResp;
                     }
+
+                string emailAlterou = (from u in db.USUARIO_CA join en in db.ENTIDADE on u.CD_ENTIDADE equals en.CD_ENTIDADE where u.CD_USUARIO == idUsuario select en.EMAIL_ENTIDADE).FirstOrDefault();
+                dsEmails += ";" + emailAlterou;
+                if (cdUsuarioResp == 209)
+                {
+                    dsEmails += ";beatrizsilva@sateldespachos.com.br;victormoreira@sateldespachos.com.br";
                 }
+                else if (cdUsuarioResp == 470)
+                {
+                    dsEmails += ";erika@sateldespachos.com.br;victormoreira@sateldespachos.com.br";
+                }
+
+            }
 
                 Email email2 = new Email();
                 email2.EnviaEmailDUE(dsEmails, "", dsAssunto, dsCorpo);

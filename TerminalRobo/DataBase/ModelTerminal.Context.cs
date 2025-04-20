@@ -42,7 +42,6 @@ namespace TerminalRobo.DataBase
         public DbSet<USUARIO_CA> USUARIO_CA { get; set; }
         public DbSet<GRUPOCLI_ENTIDADE> GRUPOCLI_ENTIDADE { get; set; }
         public DbSet<GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO> GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO { get; set; }
-        public DbSet<DUE> DUE { get; set; }
         public DbSet<PROCESSO_LOTE> PROCESSO_LOTE { get; set; }
         public DbSet<UNIDRF> UNIDRF { get; set; }
         public DbSet<RECIALFA> RECIALFA { get; set; }
@@ -68,6 +67,7 @@ namespace TerminalRobo.DataBase
         public DbSet<LOG_DIVERGENCIA_LACRE> LOG_DIVERGENCIA_LACRE { get; set; }
         public DbSet<BTP_IMPORTAR_EXCEL> BTP_IMPORTAR_EXCEL { get; set; }
         public DbSet<PARAMETRO_WEB> PARAMETRO_WEB { get; set; }
+        public DbSet<DUE> DUE { get; set; }
     
         public virtual ObjectResult<Nullable<int>> SP_RETORNA_TERMINAL_DUE(Nullable<int> cD_PROCESSORESERVA)
         {

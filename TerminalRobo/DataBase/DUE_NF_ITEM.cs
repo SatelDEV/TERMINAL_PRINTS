@@ -64,7 +64,7 @@ namespace TerminalRobo.DataBase
         public Nullable<int> CD_SEQ_ITEM { get; set; }
         public string CD_PRODUTO2 { get; set; }
     
-        public virtual DUE DUE { get; set; }
         public virtual DUE_NF DUE_NF { get; set; }
+        public virtual DUE DUE { get; set; }
     }
 }

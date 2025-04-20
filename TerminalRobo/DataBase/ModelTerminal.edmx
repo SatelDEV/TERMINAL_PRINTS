@@ -2258,16 +2258,7 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
             <End Role="GRUPOCLI_ENTIDADE" EntitySet="GRUPOCLI_ENTIDADE" />
           </AssociationSet>
           <EntitySet Name="GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO" EntityType="WEBSATELModel.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO" />
-          <EntitySet Name="DUE" EntityType="WEBSATELModel.DUE" />
-          <AssociationSet Name="FK_DUE_PROCESSOS" Association="WEBSATELModel.FK_DUE_PROCESSOS">
-            <End Role="PROCESSOS" EntitySet="PROCESSOS" />
-            <End Role="DUE" EntitySet="DUE" />
-          </AssociationSet>
           <EntitySet Name="PROCESSO_LOTE" EntityType="WEBSATELModel.PROCESSO_LOTE" />
-          <AssociationSet Name="FK_PROCESSOS_DUE" Association="WEBSATELModel.FK_PROCESSOS_DUE">
-            <End Role="DUE" EntitySet="DUE" />
-            <End Role="PROCESSO_LOTE" EntitySet="PROCESSO_LOTE" />
-          </AssociationSet>
           <AssociationSet Name="FK_PROCESSOS_PROCESSO_FILHO" Association="WEBSATELModel.FK_PROCESSOS_PROCESSO_FILHO">
             <End Role="PROCESSOS" EntitySet="PROCESSOS" />
             <End Role="PROCESSO_LOTE" EntitySet="PROCESSO_LOTE" />
@@ -2277,23 +2268,7 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
             <End Role="PROCESSO_LOTE" EntitySet="PROCESSO_LOTE" />
           </AssociationSet>
           <EntitySet Name="UNIDRF" EntityType="WEBSATELModel.UNIDRF" />
-          <AssociationSet Name="FK_DUE_UNIDRF_DESPACHO" Association="WEBSATELModel.FK_DUE_UNIDRF_DESPACHO">
-            <End Role="UNIDRF" EntitySet="UNIDRF" />
-            <End Role="DUE" EntitySet="DUE" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DUE_UNIDRF_EMBARQUE" Association="WEBSATELModel.FK_DUE_UNIDRF_EMBARQUE">
-            <End Role="UNIDRF" EntitySet="UNIDRF" />
-            <End Role="DUE" EntitySet="DUE" />
-          </AssociationSet>
           <EntitySet Name="RECIALFA" EntityType="WEBSATELModel.RECIALFA" />
-          <AssociationSet Name="FK_DUE_RECINTO_DESPACHO" Association="WEBSATELModel.FK_DUE_RECINTO_DESPACHO">
-            <End Role="RECIALFA" EntitySet="RECIALFA" />
-            <End Role="DUE" EntitySet="DUE" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DUE_RECINTO_EMBARQUE" Association="WEBSATELModel.FK_DUE_RECINTO_EMBARQUE">
-            <End Role="RECIALFA" EntitySet="RECIALFA" />
-            <End Role="DUE" EntitySet="DUE" />
-          </AssociationSet>
           <EntitySet Name="FORMA_EXPORTACAO_DUE" EntityType="WEBSATELModel.FORMA_EXPORTACAO_DUE" />
           <EntitySet Name="PRE_PROCESSOS" EntityType="WEBSATELModel.PRE_PROCESSOS" />
           <EntitySet Name="AVISOS_PRE_PROCESSO" EntityType="WEBSATELModel.AVISOS_PRE_PROCESSO" />
@@ -2330,10 +2305,6 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <AssociationSet Name="FK_DDE_EXPORTADOR" Association="WEBSATELModel.FK_DDE_EXPORTADOR">
             <End Role="ENTIDADE" EntitySet="ENTIDADE" />
             <End Role="DDE" EntitySet="DDE" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DUE_EXPORTADOR" Association="WEBSATELModel.FK_DUE_EXPORTADOR">
-            <End Role="ENTIDADE" EntitySet="ENTIDADE" />
-            <End Role="DUE" EntitySet="DUE" />
           </AssociationSet>
           <AssociationSet Name="FK_GRUPOCLI_ENTIDADE_ENTIDADE" Association="WEBSATELModel.FK_GRUPOCLI_ENTIDADE_ENTIDADE">
             <End Role="ENTIDADE" EntitySet="ENTIDADE" />
@@ -2398,15 +2369,7 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <EntitySet Name="LOG_NOTIFICACAO_RECINTO" EntityType="WEBSATELModel.LOG_NOTIFICACAO_RECINTO" />
           <EntitySet Name="DUE_NF_ITEM" EntityType="WEBSATELModel.DUE_NF_ITEM" />
           <EntitySet Name="LOG_ENVIO_MINERVA" EntityType="WEBSATELModel.LOG_ENVIO_MINERVA" />
-          <AssociationSet Name="FK_DUE_NF_ITEM_DUE" Association="WEBSATELModel.FK_DUE_NF_ITEM_DUE">
-            <End Role="DUE" EntitySet="DUE" />
-            <End Role="DUE_NF_ITEM" EntitySet="DUE_NF_ITEM" />
-          </AssociationSet>
           <EntitySet Name="DUE_NF" EntityType="WEBSATELModel.DUE_NF" />
-          <AssociationSet Name="FK_DUE_NF_DUE" Association="WEBSATELModel.FK_DUE_NF_DUE">
-            <End Role="DUE" EntitySet="DUE" />
-            <End Role="DUE_NF" EntitySet="DUE_NF" />
-          </AssociationSet>
           <AssociationSet Name="FK_DUE_NF_ITEM_NF" Association="WEBSATELModel.FK_DUE_NF_ITEM_NF">
             <End Role="DUE_NF" EntitySet="DUE_NF" />
             <End Role="DUE_NF_ITEM" EntitySet="DUE_NF_ITEM" />
@@ -2481,6 +2444,43 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
             <Parameter Name="CD_GRUPO" Mode="In" Type="String" />
             <Parameter Name="CD_GRUPO_NAO" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="DUE" EntityType="WEBSATELModel.DUE" />
+          <AssociationSet Name="FK_DUE_EXPORTADOR" Association="WEBSATELModel.FK_DUE_EXPORTADOR">
+            <End Role="ENTIDADE" EntitySet="ENTIDADE" />
+            <End Role="DUE" EntitySet="DUE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DUE_NF_DUE" Association="WEBSATELModel.FK_DUE_NF_DUE">
+            <End Role="DUE" EntitySet="DUE" />
+            <End Role="DUE_NF" EntitySet="DUE_NF" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DUE_NF_ITEM_DUE" Association="WEBSATELModel.FK_DUE_NF_ITEM_DUE">
+            <End Role="DUE" EntitySet="DUE" />
+            <End Role="DUE_NF_ITEM" EntitySet="DUE_NF_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DUE_PROCESSOS" Association="WEBSATELModel.FK_DUE_PROCESSOS">
+            <End Role="PROCESSOS" EntitySet="PROCESSOS" />
+            <End Role="DUE" EntitySet="DUE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DUE_RECINTO_DESPACHO" Association="WEBSATELModel.FK_DUE_RECINTO_DESPACHO">
+            <End Role="RECIALFA" EntitySet="RECIALFA" />
+            <End Role="DUE" EntitySet="DUE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DUE_RECINTO_EMBARQUE" Association="WEBSATELModel.FK_DUE_RECINTO_EMBARQUE">
+            <End Role="RECIALFA" EntitySet="RECIALFA" />
+            <End Role="DUE" EntitySet="DUE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DUE_UNIDRF_DESPACHO" Association="WEBSATELModel.FK_DUE_UNIDRF_DESPACHO">
+            <End Role="UNIDRF" EntitySet="UNIDRF" />
+            <End Role="DUE" EntitySet="DUE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DUE_UNIDRF_EMBARQUE" Association="WEBSATELModel.FK_DUE_UNIDRF_EMBARQUE">
+            <End Role="UNIDRF" EntitySet="UNIDRF" />
+            <End Role="DUE" EntitySet="DUE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PROCESSOS_DUE" Association="WEBSATELModel.FK_PROCESSOS_DUE">
+            <End Role="DUE" EntitySet="DUE" />
+            <End Role="PROCESSO_LOTE" EntitySet="PROCESSO_LOTE" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="PROCESSORESERVA">
           <Key>
@@ -2700,7 +2700,6 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <NavigationProperty Name="LOCAIS" Relationship="WEBSATELModel.FK_PROCESSOS_LOCAIS" FromRole="PROCESSOS" ToRole="LOCAIS" />
           <NavigationProperty Name="PROCESSOEVENTO" Relationship="WEBSATELModel.FK_PROCESSOEVENTO_PROCESSOS" FromRole="PROCESSOS" ToRole="PROCESSOEVENTO" />
           <Property Type="Int32" Name="CD_IMPORTADOR_CAMBIO" />
-          <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_PROCESSOS" FromRole="PROCESSOS" ToRole="DUE" />
           <NavigationProperty Name="PROCESSO_LOTE" Relationship="WEBSATELModel.FK_PROCESSOS_PROCESSO_FILHO" FromRole="PROCESSOS" ToRole="PROCESSO_LOTE" />
           <NavigationProperty Name="PROCESSO_LOTE1" Relationship="WEBSATELModel.FK_PROCESSOS_PROCESSO_MASTER" FromRole="PROCESSOS" ToRole="PROCESSO_LOTE" />
           <NavigationProperty Name="DDE" Relationship="WEBSATELModel.FK_DDE_PROCESSOS" FromRole="PROCESSOS" ToRole="DDE" />
@@ -2745,6 +2744,7 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Name="IC_REVENDA" Type="Boolean" />
           <Property Name="DS_BUYER" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="DT_SUSPENSO" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_PROCESSOS" FromRole="PROCESSOS" ToRole="DUE" />
         </EntityType>
         <Association Name="FK_PROCESSORESERVA_PROCESSOS">
           <End Role="PROCESSOS" Type="WEBSATELModel.PROCESSOS" Multiplicity="1" />
@@ -3133,96 +3133,6 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Type="Int32" Name="CD_USUARIO_DESTINATARIO" />
           <Property Type="Int32" Name="CD_USUARIO" />
         </EntityType>
-        <EntityType Name="DUE">
-          <Key>
-            <PropertyRef Name="CD_DUE" />
-          </Key>
-          <Property Type="Int32" Name="CD_DUE" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="Int32" Name="CD_PROCESSO" />
-          <Property Type="DateTime" Name="DT_DUE" Precision="3" />
-          <Property Type="String" Name="CD_NUMERO_DUE" MaxLength="14" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="CD_NUMERO_RUC" MaxLength="35" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="STR_CODIGOMOEDA" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="DS_SITUACAO" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Type="Int32" Name="CD_EXPORTADOR" />
-          <Property Type="String" Name="CD_FORMA_EXPORTACAO" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="STR_CODIGOUNIDADERF_DESPACHO" MaxLength="7" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="CD_RECINTO_DESPACHO" MaxLength="7" FixedLength="false" Unicode="false" />
-          <Property Type="Int32" Name="IC_RECINTO_ADUANEIRO_DESPACHO" />
-          <Property Type="String" Name="STR_CODIGOUNIDADERF_EMBARQUE" MaxLength="7" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="CD_RECINTO_EMBARQUE" MaxLength="7" FixedLength="false" Unicode="false" />
-          <Property Type="Int32" Name="IC_RECINTO_ADUANEIRO_EMBARQUE" />
-          <Property Type="String" Name="DS_REFERENCIA_ENDERECO" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="DS_INFORMACOES_COMPLEMENTARES" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Type="Int32" Name="CD_VIA_TRANSPORTE_ESPECIAL" />
-          <Property Type="Decimal" Name="VL_FRETE_INTERNACIONAL" Precision="15" Scale="2" />
-          <Property Type="Int32" Name="CD_USUARIO_DUE" />
-          <Property Type="Decimal" Name="VL_DESCONTO" Precision="15" Scale="2" />
-          <Property Type="Int32" Name="IC_STATUS_PARA_ENVIO_TRANSMISSAO" />
-          <Property Type="Boolean" Name="SG_FRETE_INTERNACIONAL_EMBUTIDO" />
-          <Property Type="Boolean" Name="SG_SEGURO_INTERNACIONAL_EMBUTIDO" />
-          <Property Type="Decimal" Name="VL_SEGURO" Precision="15" Scale="5" />
-          <Property Type="DateTime" Name="DT_TRANSMISSAO" Precision="3" />
-          <Property Type="Int32" Name="CD_USUARIO_TRANSMISSAO" />
-          <Property Type="DateTime" Name="DT_DESEMBARACO" Precision="3" />
-          <Property Type="Int32" Name="SG_TIPO_DUE" />
-          <Property Type="String" Name="DS_REFERENCIA" MaxLength="80" FixedLength="false" Unicode="false" />
-          <Property Type="Int32" Name="CD_USUARIO_RETIRICAR" />
-          <Property Type="String" Name="DS_ARQUIVO_XML" MaxLength="300" FixedLength="false" Unicode="false" />
-          <Property Type="DateTime" Name="DT_CANCELADO" Precision="3" />
-          <Property Type="Int32" Name="CD_USUARIO_CANCELOU" />
-          <Property Type="DateTime" Name="DT_CANAL_VERMELHO" Precision="3" />
-          <Property Type="DateTime" Name="DT_ENTREGA_DESPACHO" Precision="3" />
-          <Property Type="DateTime" Name="DT_BLOQUEIO_ADM" Precision="3" />
-          <Property Type="Int32" Name="IC_BLOQUEIO" />
-          <Property Type="Int32" Name="IC_CONTROLE_ADM" />
-          <Property Type="Int32" Name="IC_SITUACAO_CARGA" />
-          <Property Type="DateTime" Name="DT_DEPOSITADO" Precision="3" />
-          <Property Type="DateTime" Name="DT_DIVERGENCIA_RECINTO" Precision="3" />
-          <Property Type="DateTime" Name="DT_ANALISE_FISCAL" Precision="3" />
-          <Property Type="DateTime" Name="DT_EXPIRACAO_PRAZO" Precision="3" />
-          <Property Type="Int32" Name="CD_USUARIO_ENVIO_TERMINAL_EMBARQUE" />
-          <Property Type="String" Name="CD_CHAVE_ACESSO" MaxLength="80" FixedLength="false" Unicode="false" />
-          <Property Type="DateTime" Name="DT_ABERBADO" Precision="3" />
-          <Property Type="Int32" Name="SG_TIPO_DUE_ANT" />
-          <Property Type="String" Name="CD_MOTIVO_DISPENSA_NF" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="NR_CNPJ" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Type="DateTime" Name="DT_ENVIO_REGISTRO" Precision="3" />
-          <Property Type="DateTime" Name="DT_ENVIO_AVERBADO" Precision="3" />
-          <Property Type="String" Name="NR_CHAVE_NF" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="PROCESSOS" Relationship="WEBSATELModel.FK_DUE_PROCESSOS" FromRole="DUE" ToRole="PROCESSOS" />
-          <NavigationProperty Name="PROCESSO_LOTE" Relationship="WEBSATELModel.FK_PROCESSOS_DUE" FromRole="DUE" ToRole="PROCESSO_LOTE" />
-          <NavigationProperty Name="UNIDRF" Relationship="WEBSATELModel.FK_DUE_UNIDRF_DESPACHO" FromRole="DUE" ToRole="UNIDRF" />
-          <NavigationProperty Name="UNIDRF1" Relationship="WEBSATELModel.FK_DUE_UNIDRF_EMBARQUE" FromRole="DUE" ToRole="UNIDRF" />
-          <NavigationProperty Name="RECIALFA" Relationship="WEBSATELModel.FK_DUE_RECINTO_DESPACHO" FromRole="DUE" ToRole="RECIALFA" />
-          <NavigationProperty Name="RECIALFA1" Relationship="WEBSATELModel.FK_DUE_RECINTO_EMBARQUE" FromRole="DUE" ToRole="RECIALFA" />
-          <Property Type="Int32" Name="CD_STATUS_HISTORICO" />
-          <Property Type="DateTime" Name="DT_ENVIO_MENSAL_REGISTRO" Precision="3" />
-          <Property Name="DT_ENVIO_EXTRATO_REGISTRADA" Type="DateTime" Precision="3" />
-          <Property Name="DT_ENVIO_EXTRATO_AVERBADA" Type="DateTime" Precision="3" />
-          <Property Name="IC_GERADO_EXTRATO_DUE_REGISTRADA" Type="Int32" />
-          <Property Name="IC_GERADO_EXTRATO_DUE_AVERBADA" Type="Int32" />
-          <NavigationProperty Name="ENTIDADE" Relationship="WEBSATELModel.FK_DUE_EXPORTADOR" FromRole="DUE" ToRole="ENTIDADE" />
-          <Property Name="DT_ENVIO_EXTRATO_DIARIA_AVERBADA" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="DUE_NF_ITEM" Relationship="WEBSATELModel.FK_DUE_NF_ITEM_DUE" FromRole="DUE" ToRole="DUE_NF_ITEM" />
-          <NavigationProperty Name="DUE_NF" Relationship="WEBSATELModel.FK_DUE_NF_DUE" FromRole="DUE" ToRole="DUE_NF" />
-          <Property Name="DT_ENVIO_EXTRATO_AVERBADA_SPED" Type="DateTime" Precision="3" />
-          <Property Name="DT_ENVIO_EXTRATO_REGISTRADA_FTP" Type="DateTime" Precision="3" />
-          <Property Name="DT_ENVIO_EXTRATO_AVERBADA_FTP" Type="DateTime" Precision="3" />
-          <Property Name="IC_LOCAL_EMBARQUE_TRANSPOSICAO_FRONTEIRA" Type="Boolean" />
-        </EntityType>
-        <Association Name="FK_DUE_PROCESSOS">
-          <End Type="WEBSATELModel.PROCESSOS" Role="PROCESSOS" Multiplicity="0..1" />
-          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PROCESSOS">
-              <PropertyRef Name="CD_PROCESSO" />
-            </Principal>
-            <Dependent Role="DUE">
-              <PropertyRef Name="CD_PROCESSO" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="PROCESSO_LOTE">
           <Key>
             <PropertyRef Name="CD_PROCESSO_LOTE" />
@@ -3233,22 +3143,10 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Type="Int32" Name="CD_DUE" />
           <Property Type="Int32" Name="CD_BL" />
           <Property Type="String" Name="IC_TIPO" MaxLength="1" FixedLength="true" Unicode="false" />
-          <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_PROCESSOS_DUE" FromRole="PROCESSO_LOTE" ToRole="DUE" />
           <NavigationProperty Name="PROCESSOS" Relationship="WEBSATELModel.FK_PROCESSOS_PROCESSO_FILHO" FromRole="PROCESSO_LOTE" ToRole="PROCESSOS" />
           <NavigationProperty Name="PROCESSOS1" Relationship="WEBSATELModel.FK_PROCESSOS_PROCESSO_MASTER" FromRole="PROCESSO_LOTE" ToRole="PROCESSOS" />
+          <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_PROCESSOS_DUE" FromRole="PROCESSO_LOTE" ToRole="DUE" />
         </EntityType>
-        <Association Name="FK_PROCESSOS_DUE">
-          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="0..1" />
-          <End Type="WEBSATELModel.PROCESSO_LOTE" Role="PROCESSO_LOTE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DUE">
-              <PropertyRef Name="CD_DUE" />
-            </Principal>
-            <Dependent Role="PROCESSO_LOTE">
-              <PropertyRef Name="CD_DUE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PROCESSOS_PROCESSO_FILHO">
           <End Type="WEBSATELModel.PROCESSOS" Role="PROCESSOS" Multiplicity="0..1" />
           <End Type="WEBSATELModel.PROCESSO_LOTE" Role="PROCESSO_LOTE" Multiplicity="*" />
@@ -3287,35 +3185,11 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Type="String" Name="STR_CODIGOEXTERNO" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Type="Int32" Name="CD_ENTIDADE" />
           <Property Type="Int32" Name="CD_FILIAL" />
-          <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_UNIDRF_DESPACHO" FromRole="UNIDRF" ToRole="DUE" />
-          <NavigationProperty Name="DUE1" Relationship="WEBSATELModel.FK_DUE_UNIDRF_EMBARQUE" FromRole="UNIDRF" ToRole="DUE" />
           <NavigationProperty Name="DDE" Relationship="WEBSATELModel.FK_DDE_UNIDRF_DESPACHO" FromRole="UNIDRF" ToRole="DDE" />
           <NavigationProperty Name="DDE1" Relationship="WEBSATELModel.FK_DDE_UNIDRF_EMBARQUE" FromRole="UNIDRF" ToRole="DDE" />
+          <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_UNIDRF_DESPACHO" FromRole="UNIDRF" ToRole="DUE" />
+          <NavigationProperty Name="DUE1" Relationship="WEBSATELModel.FK_DUE_UNIDRF_EMBARQUE" FromRole="UNIDRF" ToRole="DUE" />
         </EntityType>
-        <Association Name="FK_DUE_UNIDRF_DESPACHO">
-          <End Type="WEBSATELModel.UNIDRF" Role="UNIDRF" Multiplicity="0..1" />
-          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UNIDRF">
-              <PropertyRef Name="STR_CODIGOUNIDADERF" />
-            </Principal>
-            <Dependent Role="DUE">
-              <PropertyRef Name="STR_CODIGOUNIDADERF_DESPACHO" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DUE_UNIDRF_EMBARQUE">
-          <End Type="WEBSATELModel.UNIDRF" Role="UNIDRF" Multiplicity="0..1" />
-          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UNIDRF">
-              <PropertyRef Name="STR_CODIGOUNIDADERF" />
-            </Principal>
-            <Dependent Role="DUE">
-              <PropertyRef Name="STR_CODIGOUNIDADERF_EMBARQUE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="RECIALFA">
           <Key>
             <PropertyRef Name="STR_CODIGORECIALFA" />
@@ -3327,34 +3201,10 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Type="Int32" Name="CD_ENTIDADE" />
           <Property Type="Int32" Name="CD_FILIAL" />
           <Property Type="String" Name="DS_EMAIL_RECINTO" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="DDE" Relationship="WEBSATELModel.FK_DDE_UNIDRF_RECINTO" FromRole="RECIALFA" ToRole="DDE" />
           <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_RECINTO_DESPACHO" FromRole="RECIALFA" ToRole="DUE" />
           <NavigationProperty Name="DUE1" Relationship="WEBSATELModel.FK_DUE_RECINTO_EMBARQUE" FromRole="RECIALFA" ToRole="DUE" />
-          <NavigationProperty Name="DDE" Relationship="WEBSATELModel.FK_DDE_UNIDRF_RECINTO" FromRole="RECIALFA" ToRole="DDE" />
         </EntityType>
-        <Association Name="FK_DUE_RECINTO_DESPACHO">
-          <End Type="WEBSATELModel.RECIALFA" Role="RECIALFA" Multiplicity="0..1" />
-          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="RECIALFA">
-              <PropertyRef Name="STR_CODIGORECIALFA" />
-            </Principal>
-            <Dependent Role="DUE">
-              <PropertyRef Name="CD_RECINTO_DESPACHO" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DUE_RECINTO_EMBARQUE">
-          <End Type="WEBSATELModel.RECIALFA" Role="RECIALFA" Multiplicity="0..1" />
-          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="RECIALFA">
-              <PropertyRef Name="STR_CODIGORECIALFA" />
-            </Principal>
-            <Dependent Role="DUE">
-              <PropertyRef Name="CD_RECINTO_EMBARQUE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="FORMA_EXPORTACAO_DUE">
           <Key>
             <PropertyRef Name="CD_FORMA_EXPORTACAO" />
@@ -3810,7 +3660,6 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Name="STR_CODIGORECIALFA" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="DDE" Relationship="WEBSATELModel.FK_DDE_EMPRESA" FromRole="ENTIDADE" ToRole="DDE" />
           <NavigationProperty Name="DDE1" Relationship="WEBSATELModel.FK_DDE_EXPORTADOR" FromRole="ENTIDADE" ToRole="DDE" />
-          <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_EXPORTADOR" FromRole="ENTIDADE" ToRole="DUE" />
           <NavigationProperty Name="GRUPOCLI_ENTIDADE" Relationship="WEBSATELModel.FK_GRUPOCLI_ENTIDADE_ENTIDADE" FromRole="ENTIDADE" ToRole="GRUPOCLI_ENTIDADE" />
           <NavigationProperty Name="PROCESSOS" Relationship="WEBSATELModel.FK_PROCESSOS_CAMARA_COMERCIO" FromRole="ENTIDADE" ToRole="PROCESSOS" />
           <NavigationProperty Name="PROCESSOS1" Relationship="WEBSATELModel.FK_PROCESSOS_CARTORIO" FromRole="ENTIDADE" ToRole="PROCESSOS" />
@@ -3828,6 +3677,7 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <NavigationProperty Name="USUARIO_CA" Relationship="WEBSATELModel.FK_USUARIO_CA_ENTIDADE" FromRole="ENTIDADE" ToRole="USUARIO_CA" />
           <NavigationProperty Name="RELAC_EXPORTADOR" Relationship="WEBSATELModel.FK_RELAC_EXPORTADOR_ENTIDADE" FromRole="ENTIDADE" ToRole="RELAC_EXPORTADOR" />
           <Property Name="DT_CADASTRO" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_EXPORTADOR" FromRole="ENTIDADE" ToRole="DUE" />
         </EntityType>
         <Association Name="FK_DDE_EMPRESA">
           <End Type="WEBSATELModel.ENTIDADE" Role="ENTIDADE" Multiplicity="0..1" />
@@ -3849,18 +3699,6 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
               <PropertyRef Name="CD_ENTIDADE" />
             </Principal>
             <Dependent Role="DDE">
-              <PropertyRef Name="CD_EXPORTADOR" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DUE_EXPORTADOR">
-          <End Type="WEBSATELModel.ENTIDADE" Role="ENTIDADE" Multiplicity="0..1" />
-          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ENTIDADE">
-              <PropertyRef Name="CD_ENTIDADE" />
-            </Principal>
-            <Dependent Role="DUE">
               <PropertyRef Name="CD_EXPORTADOR" />
             </Dependent>
           </ReferentialConstraint>
@@ -4110,10 +3948,10 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Name="VL_CONDICAO_VENDA_BRL" Type="Decimal" Precision="15" Scale="4" />
           <Property Name="IC_ALTERADO" Type="Boolean" />
           <Property Name="QTD_NOTA_REFERENCIADA" Type="Int32" />
-          <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_NF_ITEM_DUE" FromRole="DUE_NF_ITEM" ToRole="DUE" />
           <NavigationProperty Name="DUE_NF" Relationship="WEBSATELModel.FK_DUE_NF_ITEM_NF" FromRole="DUE_NF_ITEM" ToRole="DUE_NF" />
           <Property Name="CD_SEQ_ITEM" Type="Int32" />
           <Property Name="CD_PRODUTO2" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_NF_ITEM_DUE" FromRole="DUE_NF_ITEM" ToRole="DUE" />
         </EntityType>
         <EntityType Name="LOG_ENVIO_MINERVA">
           <Key>
@@ -4152,18 +3990,6 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Name="DT_BL_REAL" Type="DateTime" Precision="3" />
           <Property Name="DT_ENVIADO" Type="DateTime" Precision="3" />
         </EntityType>
-        <Association Name="FK_DUE_NF_ITEM_DUE">
-          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="1" />
-          <End Type="WEBSATELModel.DUE_NF_ITEM" Role="DUE_NF_ITEM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DUE">
-              <PropertyRef Name="CD_DUE" />
-            </Principal>
-            <Dependent Role="DUE_NF_ITEM">
-              <PropertyRef Name="CD_DUE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="DUE_NF">
           <Key>
             <PropertyRef Name="CD_NF" />
@@ -4215,21 +4041,9 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Name="CD_UNIDADE_VIGIAGRO" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="CD_DUE_NF_LPCO" Type="Int32" />
           <Property Name="QTD_NOTA_REFERENCIADA" Type="Int32" />
-          <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_NF_DUE" FromRole="DUE_NF" ToRole="DUE" />
           <NavigationProperty Name="DUE_NF_ITEM" Relationship="WEBSATELModel.FK_DUE_NF_ITEM_NF" FromRole="DUE_NF" ToRole="DUE_NF_ITEM" />
+          <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_NF_DUE" FromRole="DUE_NF" ToRole="DUE" />
         </EntityType>
-        <Association Name="FK_DUE_NF_DUE">
-          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="0..1" />
-          <End Type="WEBSATELModel.DUE_NF" Role="DUE_NF" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DUE">
-              <PropertyRef Name="CD_DUE" />
-            </Principal>
-            <Dependent Role="DUE_NF">
-              <PropertyRef Name="CD_DUE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_DUE_NF_ITEM_NF">
           <End Type="WEBSATELModel.DUE_NF" Role="DUE_NF" Multiplicity="0..1" />
           <End Type="WEBSATELModel.DUE_NF_ITEM" Role="DUE_NF_ITEM" Multiplicity="*" />
@@ -4733,6 +4547,192 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Type="String" Name="DS_LACRE_AGENCIA" Nullable="true" MaxLength="25" />
           <Property Type="String" Name="DS_LACRE_SIF" Nullable="true" MaxLength="25" />
         </ComplexType>
+        <EntityType Name="DUE">
+          <Key>
+            <PropertyRef Name="CD_DUE" />
+          </Key>
+          <Property Name="CD_DUE" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CD_PROCESSO" Type="Int32" />
+          <Property Name="DT_DUE" Type="DateTime" Precision="3" />
+          <Property Name="CD_NUMERO_DUE" Type="String" MaxLength="14" FixedLength="false" Unicode="false" />
+          <Property Name="CD_NUMERO_RUC" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="STR_CODIGOMOEDA" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="DS_SITUACAO" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CD_EXPORTADOR" Type="Int32" />
+          <Property Name="CD_FORMA_EXPORTACAO" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="STR_CODIGOUNIDADERF_DESPACHO" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="CD_RECINTO_DESPACHO" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="IC_RECINTO_ADUANEIRO_DESPACHO" Type="Int32" />
+          <Property Name="STR_CODIGOUNIDADERF_EMBARQUE" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="CD_RECINTO_EMBARQUE" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="IC_RECINTO_ADUANEIRO_EMBARQUE" Type="Int32" />
+          <Property Name="DS_REFERENCIA_ENDERECO" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="DS_INFORMACOES_COMPLEMENTARES" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CD_VIA_TRANSPORTE_ESPECIAL" Type="Int32" />
+          <Property Name="VL_FRETE_INTERNACIONAL" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="CD_USUARIO_DUE" Type="Int32" />
+          <Property Name="VL_DESCONTO" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="IC_STATUS_PARA_ENVIO_TRANSMISSAO" Type="Int32" />
+          <Property Name="SG_FRETE_INTERNACIONAL_EMBUTIDO" Type="Boolean" />
+          <Property Name="SG_SEGURO_INTERNACIONAL_EMBUTIDO" Type="Boolean" />
+          <Property Name="VL_SEGURO" Type="Decimal" Precision="15" Scale="5" />
+          <Property Name="DT_TRANSMISSAO" Type="DateTime" Precision="3" />
+          <Property Name="CD_USUARIO_TRANSMISSAO" Type="Int32" />
+          <Property Name="DT_DESEMBARACO" Type="DateTime" Precision="3" />
+          <Property Name="SG_TIPO_DUE" Type="Int32" />
+          <Property Name="DS_REFERENCIA" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="CD_USUARIO_RETIRICAR" Type="Int32" />
+          <Property Name="DS_ARQUIVO_XML" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="DT_CANCELADO" Type="DateTime" Precision="3" />
+          <Property Name="CD_USUARIO_CANCELOU" Type="Int32" />
+          <Property Name="DT_CANAL_VERMELHO" Type="DateTime" Precision="3" />
+          <Property Name="DT_ENTREGA_DESPACHO" Type="DateTime" Precision="3" />
+          <Property Name="DT_BLOQUEIO_ADM" Type="DateTime" Precision="3" />
+          <Property Name="IC_BLOQUEIO" Type="Int32" />
+          <Property Name="IC_CONTROLE_ADM" Type="Int32" />
+          <Property Name="IC_SITUACAO_CARGA" Type="Int32" />
+          <Property Name="DT_DEPOSITADO" Type="DateTime" Precision="3" />
+          <Property Name="DT_DIVERGENCIA_RECINTO" Type="DateTime" Precision="3" />
+          <Property Name="DT_ANALISE_FISCAL" Type="DateTime" Precision="3" />
+          <Property Name="DT_EXPIRACAO_PRAZO" Type="DateTime" Precision="3" />
+          <Property Name="CD_USUARIO_ENVIO_TERMINAL_EMBARQUE" Type="Int32" />
+          <Property Name="CD_CHAVE_ACESSO" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="DT_ABERBADO" Type="DateTime" Precision="3" />
+          <Property Name="SG_TIPO_DUE_ANT" Type="Int32" />
+          <Property Name="CD_MOTIVO_DISPENSA_NF" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="NR_CNPJ" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DT_ENVIO_REGISTRO" Type="DateTime" Precision="3" />
+          <Property Name="DT_ENVIO_AVERBADO" Type="DateTime" Precision="3" />
+          <Property Name="NR_CHAVE_NF" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CD_STATUS_HISTORICO" Type="Int32" />
+          <Property Name="DT_ENVIO_MENSAL_REGISTRO" Type="DateTime" Precision="3" />
+          <Property Name="DT_ENVIO_EXTRATO_REGISTRADA" Type="DateTime" Precision="3" />
+          <Property Name="DT_ENVIO_EXTRATO_AVERBADA" Type="DateTime" Precision="3" />
+          <Property Name="IC_GERADO_EXTRATO_DUE_REGISTRADA" Type="Int32" />
+          <Property Name="IC_GERADO_EXTRATO_DUE_AVERBADA" Type="Int32" />
+          <Property Name="DT_ENVIO_EXTRATO_DIARIA_AVERBADA" Type="DateTime" Precision="3" />
+          <Property Name="DT_ENVIO_EXTRATO_AVERBADA_SPED" Type="DateTime" Precision="3" />
+          <Property Name="DT_ENVIO_EXTRATO_REGISTRADA_FTP" Type="DateTime" Precision="3" />
+          <Property Name="DT_ENVIO_EXTRATO_AVERBADA_FTP" Type="DateTime" Precision="3" />
+          <Property Name="IC_LOCAL_EMBARQUE_TRANSPOSICAO_FRONTEIRA" Type="Boolean" />
+          <NavigationProperty Name="ENTIDADE" Relationship="WEBSATELModel.FK_DUE_EXPORTADOR" FromRole="DUE" ToRole="ENTIDADE" />
+          <NavigationProperty Name="DUE_NF" Relationship="WEBSATELModel.FK_DUE_NF_DUE" FromRole="DUE" ToRole="DUE_NF" />
+          <NavigationProperty Name="DUE_NF_ITEM" Relationship="WEBSATELModel.FK_DUE_NF_ITEM_DUE" FromRole="DUE" ToRole="DUE_NF_ITEM" />
+          <NavigationProperty Name="PROCESSOS" Relationship="WEBSATELModel.FK_DUE_PROCESSOS" FromRole="DUE" ToRole="PROCESSOS" />
+          <NavigationProperty Name="RECIALFA" Relationship="WEBSATELModel.FK_DUE_RECINTO_DESPACHO" FromRole="DUE" ToRole="RECIALFA" />
+          <NavigationProperty Name="RECIALFA1" Relationship="WEBSATELModel.FK_DUE_RECINTO_EMBARQUE" FromRole="DUE" ToRole="RECIALFA" />
+          <NavigationProperty Name="UNIDRF" Relationship="WEBSATELModel.FK_DUE_UNIDRF_DESPACHO" FromRole="DUE" ToRole="UNIDRF" />
+          <NavigationProperty Name="UNIDRF1" Relationship="WEBSATELModel.FK_DUE_UNIDRF_EMBARQUE" FromRole="DUE" ToRole="UNIDRF" />
+          <NavigationProperty Name="PROCESSO_LOTE" Relationship="WEBSATELModel.FK_PROCESSOS_DUE" FromRole="DUE" ToRole="PROCESSO_LOTE" />
+        </EntityType>
+        <Association Name="FK_DUE_EXPORTADOR">
+          <End Type="WEBSATELModel.ENTIDADE" Role="ENTIDADE" Multiplicity="0..1" />
+          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ENTIDADE">
+              <PropertyRef Name="CD_ENTIDADE" />
+            </Principal>
+            <Dependent Role="DUE">
+              <PropertyRef Name="CD_EXPORTADOR" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DUE_NF_DUE">
+          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="0..1" />
+          <End Type="WEBSATELModel.DUE_NF" Role="DUE_NF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DUE">
+              <PropertyRef Name="CD_DUE" />
+            </Principal>
+            <Dependent Role="DUE_NF">
+              <PropertyRef Name="CD_DUE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DUE_NF_ITEM_DUE">
+          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="1" />
+          <End Type="WEBSATELModel.DUE_NF_ITEM" Role="DUE_NF_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DUE">
+              <PropertyRef Name="CD_DUE" />
+            </Principal>
+            <Dependent Role="DUE_NF_ITEM">
+              <PropertyRef Name="CD_DUE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DUE_PROCESSOS">
+          <End Type="WEBSATELModel.PROCESSOS" Role="PROCESSOS" Multiplicity="0..1" />
+          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PROCESSOS">
+              <PropertyRef Name="CD_PROCESSO" />
+            </Principal>
+            <Dependent Role="DUE">
+              <PropertyRef Name="CD_PROCESSO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DUE_RECINTO_DESPACHO">
+          <End Type="WEBSATELModel.RECIALFA" Role="RECIALFA" Multiplicity="0..1" />
+          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RECIALFA">
+              <PropertyRef Name="STR_CODIGORECIALFA" />
+            </Principal>
+            <Dependent Role="DUE">
+              <PropertyRef Name="CD_RECINTO_DESPACHO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DUE_RECINTO_EMBARQUE">
+          <End Type="WEBSATELModel.RECIALFA" Role="RECIALFA" Multiplicity="0..1" />
+          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RECIALFA">
+              <PropertyRef Name="STR_CODIGORECIALFA" />
+            </Principal>
+            <Dependent Role="DUE">
+              <PropertyRef Name="CD_RECINTO_EMBARQUE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DUE_UNIDRF_DESPACHO">
+          <End Type="WEBSATELModel.UNIDRF" Role="UNIDRF" Multiplicity="0..1" />
+          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UNIDRF">
+              <PropertyRef Name="STR_CODIGOUNIDADERF" />
+            </Principal>
+            <Dependent Role="DUE">
+              <PropertyRef Name="STR_CODIGOUNIDADERF_DESPACHO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DUE_UNIDRF_EMBARQUE">
+          <End Type="WEBSATELModel.UNIDRF" Role="UNIDRF" Multiplicity="0..1" />
+          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UNIDRF">
+              <PropertyRef Name="STR_CODIGOUNIDADERF" />
+            </Principal>
+            <Dependent Role="DUE">
+              <PropertyRef Name="STR_CODIGOUNIDADERF_EMBARQUE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PROCESSOS_DUE">
+          <End Type="WEBSATELModel.DUE" Role="DUE" Multiplicity="0..1" />
+          <End Type="WEBSATELModel.PROCESSO_LOTE" Role="PROCESSO_LOTE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DUE">
+              <PropertyRef Name="CD_DUE" />
+            </Principal>
+            <Dependent Role="PROCESSO_LOTE">
+              <PropertyRef Name="CD_DUE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5269,76 +5269,6 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
                 <ScalarProperty Name="CD_USUARIO_DESTINATARIO" ColumnName="CD_USUARIO_DESTINATARIO" />
                 <ScalarProperty Name="CD_GRUPO" ColumnName="CD_GRUPO" />
                 <ScalarProperty Name="CD_USUARIO_CONSULTA_TERMINAL" ColumnName="CD_USUARIO_CONSULTA_TERMINAL" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DUE">
-            <EntityTypeMapping TypeName="WEBSATELModel.DUE">
-              <MappingFragment StoreEntitySet="DUE">
-                <ScalarProperty Name="IC_LOCAL_EMBARQUE_TRANSPOSICAO_FRONTEIRA" ColumnName="IC_LOCAL_EMBARQUE_TRANSPOSICAO_FRONTEIRA" />
-                <ScalarProperty Name="DT_ENVIO_EXTRATO_AVERBADA_FTP" ColumnName="DT_ENVIO_EXTRATO_AVERBADA_FTP" />
-                <ScalarProperty Name="DT_ENVIO_EXTRATO_REGISTRADA_FTP" ColumnName="DT_ENVIO_EXTRATO_REGISTRADA_FTP" />
-                <ScalarProperty Name="DT_ENVIO_EXTRATO_AVERBADA_SPED" ColumnName="DT_ENVIO_EXTRATO_AVERBADA_SPED" />
-                <ScalarProperty Name="DT_ENVIO_EXTRATO_DIARIA_AVERBADA" ColumnName="DT_ENVIO_EXTRATO_DIARIA_AVERBADA" />
-                <ScalarProperty Name="IC_GERADO_EXTRATO_DUE_AVERBADA" ColumnName="IC_GERADO_EXTRATO_DUE_AVERBADA" />
-                <ScalarProperty Name="IC_GERADO_EXTRATO_DUE_REGISTRADA" ColumnName="IC_GERADO_EXTRATO_DUE_REGISTRADA" />
-                <ScalarProperty Name="DT_ENVIO_EXTRATO_AVERBADA" ColumnName="DT_ENVIO_EXTRATO_AVERBADA" />
-                <ScalarProperty Name="DT_ENVIO_EXTRATO_REGISTRADA" ColumnName="DT_ENVIO_EXTRATO_REGISTRADA" />
-                <ScalarProperty Name="DT_ENVIO_MENSAL_REGISTRO" ColumnName="DT_ENVIO_MENSAL_REGISTRO" />
-                <ScalarProperty Name="CD_STATUS_HISTORICO" ColumnName="CD_STATUS_HISTORICO" />
-                <ScalarProperty Name="NR_CHAVE_NF" ColumnName="NR_CHAVE_NF" />
-                <ScalarProperty Name="DT_ENVIO_AVERBADO" ColumnName="DT_ENVIO_AVERBADO" />
-                <ScalarProperty Name="DT_ENVIO_REGISTRO" ColumnName="DT_ENVIO_REGISTRO" />
-                <ScalarProperty Name="NR_CNPJ" ColumnName="NR_CNPJ" />
-                <ScalarProperty Name="CD_MOTIVO_DISPENSA_NF" ColumnName="CD_MOTIVO_DISPENSA_NF" />
-                <ScalarProperty Name="SG_TIPO_DUE_ANT" ColumnName="SG_TIPO_DUE_ANT" />
-                <ScalarProperty Name="DT_ABERBADO" ColumnName="DT_ABERBADO" />
-                <ScalarProperty Name="CD_CHAVE_ACESSO" ColumnName="CD_CHAVE_ACESSO" />
-                <ScalarProperty Name="CD_USUARIO_ENVIO_TERMINAL_EMBARQUE" ColumnName="CD_USUARIO_ENVIO_TERMINAL_EMBARQUE" />
-                <ScalarProperty Name="DT_EXPIRACAO_PRAZO" ColumnName="DT_EXPIRACAO_PRAZO" />
-                <ScalarProperty Name="DT_ANALISE_FISCAL" ColumnName="DT_ANALISE_FISCAL" />
-                <ScalarProperty Name="DT_DIVERGENCIA_RECINTO" ColumnName="DT_DIVERGENCIA_RECINTO" />
-                <ScalarProperty Name="DT_DEPOSITADO" ColumnName="DT_DEPOSITADO" />
-                <ScalarProperty Name="IC_SITUACAO_CARGA" ColumnName="IC_SITUACAO_CARGA" />
-                <ScalarProperty Name="IC_CONTROLE_ADM" ColumnName="IC_CONTROLE_ADM" />
-                <ScalarProperty Name="IC_BLOQUEIO" ColumnName="IC_BLOQUEIO" />
-                <ScalarProperty Name="DT_BLOQUEIO_ADM" ColumnName="DT_BLOQUEIO_ADM" />
-                <ScalarProperty Name="DT_ENTREGA_DESPACHO" ColumnName="DT_ENTREGA_DESPACHO" />
-                <ScalarProperty Name="DT_CANAL_VERMELHO" ColumnName="DT_CANAL_VERMELHO" />
-                <ScalarProperty Name="CD_USUARIO_CANCELOU" ColumnName="CD_USUARIO_CANCELOU" />
-                <ScalarProperty Name="DT_CANCELADO" ColumnName="DT_CANCELADO" />
-                <ScalarProperty Name="DS_ARQUIVO_XML" ColumnName="DS_ARQUIVO_XML" />
-                <ScalarProperty Name="CD_USUARIO_RETIRICAR" ColumnName="CD_USUARIO_RETIRICAR" />
-                <ScalarProperty Name="DS_REFERENCIA" ColumnName="DS_REFERENCIA" />
-                <ScalarProperty Name="SG_TIPO_DUE" ColumnName="SG_TIPO_DUE" />
-                <ScalarProperty Name="DT_DESEMBARACO" ColumnName="DT_DESEMBARACO" />
-                <ScalarProperty Name="CD_USUARIO_TRANSMISSAO" ColumnName="CD_USUARIO_TRANSMISSAO" />
-                <ScalarProperty Name="DT_TRANSMISSAO" ColumnName="DT_TRANSMISSAO" />
-                <ScalarProperty Name="VL_SEGURO" ColumnName="VL_SEGURO" />
-                <ScalarProperty Name="SG_SEGURO_INTERNACIONAL_EMBUTIDO" ColumnName="SG_SEGURO_INTERNACIONAL_EMBUTIDO" />
-                <ScalarProperty Name="SG_FRETE_INTERNACIONAL_EMBUTIDO" ColumnName="SG_FRETE_INTERNACIONAL_EMBUTIDO" />
-                <ScalarProperty Name="IC_STATUS_PARA_ENVIO_TRANSMISSAO" ColumnName="IC_STATUS_PARA_ENVIO_TRANSMISSAO" />
-                <ScalarProperty Name="VL_DESCONTO" ColumnName="VL_DESCONTO" />
-                <ScalarProperty Name="CD_USUARIO_DUE" ColumnName="CD_USUARIO_DUE" />
-                <ScalarProperty Name="VL_FRETE_INTERNACIONAL" ColumnName="VL_FRETE_INTERNACIONAL" />
-                <ScalarProperty Name="CD_VIA_TRANSPORTE_ESPECIAL" ColumnName="CD_VIA_TRANSPORTE_ESPECIAL" />
-                <ScalarProperty Name="DS_INFORMACOES_COMPLEMENTARES" ColumnName="DS_INFORMACOES_COMPLEMENTARES" />
-                <ScalarProperty Name="DS_REFERENCIA_ENDERECO" ColumnName="DS_REFERENCIA_ENDERECO" />
-                <ScalarProperty Name="IC_RECINTO_ADUANEIRO_EMBARQUE" ColumnName="IC_RECINTO_ADUANEIRO_EMBARQUE" />
-                <ScalarProperty Name="CD_RECINTO_EMBARQUE" ColumnName="CD_RECINTO_EMBARQUE" />
-                <ScalarProperty Name="STR_CODIGOUNIDADERF_EMBARQUE" ColumnName="STR_CODIGOUNIDADERF_EMBARQUE" />
-                <ScalarProperty Name="IC_RECINTO_ADUANEIRO_DESPACHO" ColumnName="IC_RECINTO_ADUANEIRO_DESPACHO" />
-                <ScalarProperty Name="CD_RECINTO_DESPACHO" ColumnName="CD_RECINTO_DESPACHO" />
-                <ScalarProperty Name="STR_CODIGOUNIDADERF_DESPACHO" ColumnName="STR_CODIGOUNIDADERF_DESPACHO" />
-                <ScalarProperty Name="CD_FORMA_EXPORTACAO" ColumnName="CD_FORMA_EXPORTACAO" />
-                <ScalarProperty Name="CD_EXPORTADOR" ColumnName="CD_EXPORTADOR" />
-                <ScalarProperty Name="DS_SITUACAO" ColumnName="DS_SITUACAO" />
-                <ScalarProperty Name="STR_CODIGOMOEDA" ColumnName="STR_CODIGOMOEDA" />
-                <ScalarProperty Name="CD_NUMERO_RUC" ColumnName="CD_NUMERO_RUC" />
-                <ScalarProperty Name="CD_NUMERO_DUE" ColumnName="CD_NUMERO_DUE" />
-                <ScalarProperty Name="DT_DUE" ColumnName="DT_DUE" />
-                <ScalarProperty Name="CD_PROCESSO" ColumnName="CD_PROCESSO" />
-                <ScalarProperty Name="CD_DUE" ColumnName="CD_DUE" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6449,6 +6379,76 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="DUE">
+            <EntityTypeMapping TypeName="WEBSATELModel.DUE">
+              <MappingFragment StoreEntitySet="DUE">
+                <ScalarProperty Name="IC_LOCAL_EMBARQUE_TRANSPOSICAO_FRONTEIRA" ColumnName="IC_LOCAL_EMBARQUE_TRANSPOSICAO_FRONTEIRA" />
+                <ScalarProperty Name="DT_ENVIO_EXTRATO_AVERBADA_FTP" ColumnName="DT_ENVIO_EXTRATO_AVERBADA_FTP" />
+                <ScalarProperty Name="DT_ENVIO_EXTRATO_REGISTRADA_FTP" ColumnName="DT_ENVIO_EXTRATO_REGISTRADA_FTP" />
+                <ScalarProperty Name="DT_ENVIO_EXTRATO_AVERBADA_SPED" ColumnName="DT_ENVIO_EXTRATO_AVERBADA_SPED" />
+                <ScalarProperty Name="DT_ENVIO_EXTRATO_DIARIA_AVERBADA" ColumnName="DT_ENVIO_EXTRATO_DIARIA_AVERBADA" />
+                <ScalarProperty Name="IC_GERADO_EXTRATO_DUE_AVERBADA" ColumnName="IC_GERADO_EXTRATO_DUE_AVERBADA" />
+                <ScalarProperty Name="IC_GERADO_EXTRATO_DUE_REGISTRADA" ColumnName="IC_GERADO_EXTRATO_DUE_REGISTRADA" />
+                <ScalarProperty Name="DT_ENVIO_EXTRATO_AVERBADA" ColumnName="DT_ENVIO_EXTRATO_AVERBADA" />
+                <ScalarProperty Name="DT_ENVIO_EXTRATO_REGISTRADA" ColumnName="DT_ENVIO_EXTRATO_REGISTRADA" />
+                <ScalarProperty Name="DT_ENVIO_MENSAL_REGISTRO" ColumnName="DT_ENVIO_MENSAL_REGISTRO" />
+                <ScalarProperty Name="CD_STATUS_HISTORICO" ColumnName="CD_STATUS_HISTORICO" />
+                <ScalarProperty Name="NR_CHAVE_NF" ColumnName="NR_CHAVE_NF" />
+                <ScalarProperty Name="DT_ENVIO_AVERBADO" ColumnName="DT_ENVIO_AVERBADO" />
+                <ScalarProperty Name="DT_ENVIO_REGISTRO" ColumnName="DT_ENVIO_REGISTRO" />
+                <ScalarProperty Name="NR_CNPJ" ColumnName="NR_CNPJ" />
+                <ScalarProperty Name="CD_MOTIVO_DISPENSA_NF" ColumnName="CD_MOTIVO_DISPENSA_NF" />
+                <ScalarProperty Name="SG_TIPO_DUE_ANT" ColumnName="SG_TIPO_DUE_ANT" />
+                <ScalarProperty Name="DT_ABERBADO" ColumnName="DT_ABERBADO" />
+                <ScalarProperty Name="CD_CHAVE_ACESSO" ColumnName="CD_CHAVE_ACESSO" />
+                <ScalarProperty Name="CD_USUARIO_ENVIO_TERMINAL_EMBARQUE" ColumnName="CD_USUARIO_ENVIO_TERMINAL_EMBARQUE" />
+                <ScalarProperty Name="DT_EXPIRACAO_PRAZO" ColumnName="DT_EXPIRACAO_PRAZO" />
+                <ScalarProperty Name="DT_ANALISE_FISCAL" ColumnName="DT_ANALISE_FISCAL" />
+                <ScalarProperty Name="DT_DIVERGENCIA_RECINTO" ColumnName="DT_DIVERGENCIA_RECINTO" />
+                <ScalarProperty Name="DT_DEPOSITADO" ColumnName="DT_DEPOSITADO" />
+                <ScalarProperty Name="IC_SITUACAO_CARGA" ColumnName="IC_SITUACAO_CARGA" />
+                <ScalarProperty Name="IC_CONTROLE_ADM" ColumnName="IC_CONTROLE_ADM" />
+                <ScalarProperty Name="IC_BLOQUEIO" ColumnName="IC_BLOQUEIO" />
+                <ScalarProperty Name="DT_BLOQUEIO_ADM" ColumnName="DT_BLOQUEIO_ADM" />
+                <ScalarProperty Name="DT_ENTREGA_DESPACHO" ColumnName="DT_ENTREGA_DESPACHO" />
+                <ScalarProperty Name="DT_CANAL_VERMELHO" ColumnName="DT_CANAL_VERMELHO" />
+                <ScalarProperty Name="CD_USUARIO_CANCELOU" ColumnName="CD_USUARIO_CANCELOU" />
+                <ScalarProperty Name="DT_CANCELADO" ColumnName="DT_CANCELADO" />
+                <ScalarProperty Name="DS_ARQUIVO_XML" ColumnName="DS_ARQUIVO_XML" />
+                <ScalarProperty Name="CD_USUARIO_RETIRICAR" ColumnName="CD_USUARIO_RETIRICAR" />
+                <ScalarProperty Name="DS_REFERENCIA" ColumnName="DS_REFERENCIA" />
+                <ScalarProperty Name="SG_TIPO_DUE" ColumnName="SG_TIPO_DUE" />
+                <ScalarProperty Name="DT_DESEMBARACO" ColumnName="DT_DESEMBARACO" />
+                <ScalarProperty Name="CD_USUARIO_TRANSMISSAO" ColumnName="CD_USUARIO_TRANSMISSAO" />
+                <ScalarProperty Name="DT_TRANSMISSAO" ColumnName="DT_TRANSMISSAO" />
+                <ScalarProperty Name="VL_SEGURO" ColumnName="VL_SEGURO" />
+                <ScalarProperty Name="SG_SEGURO_INTERNACIONAL_EMBUTIDO" ColumnName="SG_SEGURO_INTERNACIONAL_EMBUTIDO" />
+                <ScalarProperty Name="SG_FRETE_INTERNACIONAL_EMBUTIDO" ColumnName="SG_FRETE_INTERNACIONAL_EMBUTIDO" />
+                <ScalarProperty Name="IC_STATUS_PARA_ENVIO_TRANSMISSAO" ColumnName="IC_STATUS_PARA_ENVIO_TRANSMISSAO" />
+                <ScalarProperty Name="VL_DESCONTO" ColumnName="VL_DESCONTO" />
+                <ScalarProperty Name="CD_USUARIO_DUE" ColumnName="CD_USUARIO_DUE" />
+                <ScalarProperty Name="VL_FRETE_INTERNACIONAL" ColumnName="VL_FRETE_INTERNACIONAL" />
+                <ScalarProperty Name="CD_VIA_TRANSPORTE_ESPECIAL" ColumnName="CD_VIA_TRANSPORTE_ESPECIAL" />
+                <ScalarProperty Name="DS_INFORMACOES_COMPLEMENTARES" ColumnName="DS_INFORMACOES_COMPLEMENTARES" />
+                <ScalarProperty Name="DS_REFERENCIA_ENDERECO" ColumnName="DS_REFERENCIA_ENDERECO" />
+                <ScalarProperty Name="IC_RECINTO_ADUANEIRO_EMBARQUE" ColumnName="IC_RECINTO_ADUANEIRO_EMBARQUE" />
+                <ScalarProperty Name="CD_RECINTO_EMBARQUE" ColumnName="CD_RECINTO_EMBARQUE" />
+                <ScalarProperty Name="STR_CODIGOUNIDADERF_EMBARQUE" ColumnName="STR_CODIGOUNIDADERF_EMBARQUE" />
+                <ScalarProperty Name="IC_RECINTO_ADUANEIRO_DESPACHO" ColumnName="IC_RECINTO_ADUANEIRO_DESPACHO" />
+                <ScalarProperty Name="CD_RECINTO_DESPACHO" ColumnName="CD_RECINTO_DESPACHO" />
+                <ScalarProperty Name="STR_CODIGOUNIDADERF_DESPACHO" ColumnName="STR_CODIGOUNIDADERF_DESPACHO" />
+                <ScalarProperty Name="CD_FORMA_EXPORTACAO" ColumnName="CD_FORMA_EXPORTACAO" />
+                <ScalarProperty Name="CD_EXPORTADOR" ColumnName="CD_EXPORTADOR" />
+                <ScalarProperty Name="DS_SITUACAO" ColumnName="DS_SITUACAO" />
+                <ScalarProperty Name="STR_CODIGOMOEDA" ColumnName="STR_CODIGOMOEDA" />
+                <ScalarProperty Name="CD_NUMERO_RUC" ColumnName="CD_NUMERO_RUC" />
+                <ScalarProperty Name="CD_NUMERO_DUE" ColumnName="CD_NUMERO_DUE" />
+                <ScalarProperty Name="DT_DUE" ColumnName="DT_DUE" />
+                <ScalarProperty Name="CD_PROCESSO" ColumnName="CD_PROCESSO" />
+                <ScalarProperty Name="CD_DUE" ColumnName="CD_DUE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

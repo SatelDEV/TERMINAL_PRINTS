@@ -16,9 +16,9 @@ namespace TerminalRobo.DataBase
     {
         public DUE()
         {
-            this.PROCESSO_LOTE = new HashSet<PROCESSO_LOTE>();
-            this.DUE_NF_ITEM = new HashSet<DUE_NF_ITEM>();
             this.DUE_NF = new HashSet<DUE_NF>();
+            this.DUE_NF_ITEM = new HashSet<DUE_NF_ITEM>();
+            this.PROCESSO_LOTE = new HashSet<PROCESSO_LOTE>();
         }
     
         public int CD_DUE { get; set; }
@@ -86,14 +86,14 @@ namespace TerminalRobo.DataBase
         public Nullable<System.DateTime> DT_ENVIO_EXTRATO_AVERBADA_FTP { get; set; }
         public Nullable<bool> IC_LOCAL_EMBARQUE_TRANSPOSICAO_FRONTEIRA { get; set; }
     
+        public virtual ENTIDADE ENTIDADE { get; set; }
+        public virtual ICollection<DUE_NF> DUE_NF { get; set; }
+        public virtual ICollection<DUE_NF_ITEM> DUE_NF_ITEM { get; set; }
         public virtual PROCESSOS PROCESSOS { get; set; }
-        public virtual ICollection<PROCESSO_LOTE> PROCESSO_LOTE { get; set; }
-        public virtual UNIDRF UNIDRF { get; set; }
-        public virtual UNIDRF UNIDRF1 { get; set; }
         public virtual RECIALFA RECIALFA { get; set; }
         public virtual RECIALFA RECIALFA1 { get; set; }
-        public virtual ENTIDADE ENTIDADE { get; set; }
-        public virtual ICollection<DUE_NF_ITEM> DUE_NF_ITEM { get; set; }
-        public virtual ICollection<DUE_NF> DUE_NF { get; set; }
+        public virtual UNIDRF UNIDRF { get; set; }
+        public virtual UNIDRF UNIDRF1 { get; set; }
+        public virtual ICollection<PROCESSO_LOTE> PROCESSO_LOTE { get; set; }
     }
 }
