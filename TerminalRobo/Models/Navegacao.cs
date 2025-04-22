@@ -1325,28 +1325,14 @@ namespace TerminalRobo.Models
 
 
 
-
+                bCarregado = false;
                 chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('login_').value = '" + sUsuarioSB + "';");
-
-
-
-                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('senha_').value = '" + sSenhaSB + "';");
-
-
-                //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("log_act();");
+                chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('senha_').value = '" + sSenhaSB + "';");             
                 chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('g-recaptcha')[0].click();");
-                //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('foption').options[1].selected = 'selected';");
-                //Thread.Sleep(1000);
-                //Application.DoEvents();
-                //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('btnForm').click();");
-
-                //chromeBrowser.ExecuteScriptAsync("document.getElementById('login_').value = '" + sUsuarioSB + "';");
-                //chromeBrowser.ExecuteScriptAsync("document.getElementById('senha_').value = '" + sSenhaSB + "';");
-                //chromeBrowser.ExecuteScriptAsync("log_act();");
-                //bCarregado = AguardaPaginaCarregar();
+         
 
                 Application.DoEvents();
-                Thread.Sleep(2000);
+                Thread.Sleep(4000);
             }
             catch
             {
@@ -1578,7 +1564,7 @@ namespace TerminalRobo.Models
                 {
                     bCarregado = false;
 
-                    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteVilaConde + "';");                    
+                    chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.location ='" + siteVilaConde + "';");                    
                     bCarregado = AguardaPaginaCarregar();
 
                     //Verifica se conseguiu acessar a página.
@@ -1617,10 +1603,13 @@ namespace TerminalRobo.Models
         public bool ConsultarContainerVilaConde(ListaDeCampos conteudo)
         {
 
+
+            Application.DoEvents();
+            Thread.Sleep(2000);
+
             dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "VILA DO CONDE", DateTime.Now, "INICIANDO CONSULTA", novoDado);
             bCarregado = false;
-
-
+           
             chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('container cntr')[0].value = '" + conteudo.NR_CONTAINER + "';");
 
      
@@ -1686,9 +1675,9 @@ namespace TerminalRobo.Models
             sDataDeposito += " for(var i=0;i< li.length;i++){";
             sDataDeposito += " if (li[i].getElementsByTagName('label').length > 0){";
             sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText == 'Entr. terminal'){";
-            sDataDeposito += " conteudo[0] = li[i].getElementsByTagName('span')[0].innerText;}";                                // DATA DE DEPÓSITO NO TERMINAL
+            sDataDeposito += " conteudo[0] = li[i].getElementsByTagName('span')[0].innerText;}";                                // -- DATA DE DEPÓSITO NO TERMINAL
             sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText == 'Embarque'){";
-            sDataDeposito += " conteudo[4] = li[i] != null ? li[i].getElementsByTagName('span')[0].innerText : '';}}";          // DATA DE EMBARQUE
+            sDataDeposito += " conteudo[4] = li[i] != null ? li[i].getElementsByTagName('span')[0].innerText : '';}}";          // -- DATA DE EMBARQUE
             sDataDeposito += " if (li[i].getElementsByTagName('label').length > 0){";
             sDataDeposito += " if (li[i].getElementsByTagName('label')[0].innerText == 'Booking'){";
             sDataDeposito += " conteudo[2] = li[i].getElementsByTagName('span')[0].innerText;}}";
