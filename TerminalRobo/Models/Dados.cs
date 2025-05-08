@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TerminalRobo.DataBase;
 using System.Configuration;
 using roboEDI.Model;
+using System.Data;
 namespace TerminalRobo.Models
 {
 
@@ -1177,9 +1178,9 @@ namespace TerminalRobo.Models
 
                     if (cdStatus2 == 11)
                     {
-                        PROCESSORESERVACONTAINER editarProcessoRC = db.PROCESSORESERVACONTAINER.Single(x => x.CD_PROCESSORESERVACONTAINER == cdProcessoReservaContainer);
-
+                        PROCESSORESERVACONTAINER editarProcessoRC = db.PROCESSORESERVACONTAINER.SingleOrDefault(x => x.CD_PROCESSORESERVACONTAINER == cdProcessoReservaContainer);
                         editarProcessoRC.CD_STATUS_CONTAINER2 = null;
+                        db.Entry(editarProcessoRC).State = EntityState.Modified;
                         db.SaveChanges();
                     }
 
