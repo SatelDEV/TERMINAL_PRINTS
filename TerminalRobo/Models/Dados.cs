@@ -1180,7 +1180,7 @@ namespace TerminalRobo.Models
                     {
                         PROCESSORESERVACONTAINER editarProcessoRC = db.PROCESSORESERVACONTAINER.SingleOrDefault(x => x.CD_PROCESSORESERVACONTAINER == cdProcessoReservaContainer);
                         editarProcessoRC.CD_STATUS_CONTAINER2 = null;
-                        db.Entry(editarProcessoRC).State = EntityState.Modified;
+                        db.Entry(editarProcessoRC).Property(p => p.CD_STATUS_CONTAINER2).IsModified = true;
                         db.SaveChanges();
                     }
 
