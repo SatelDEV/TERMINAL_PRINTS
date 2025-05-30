@@ -179,16 +179,16 @@ namespace TerminalRobo
 
             bool confirmaEmbarq = chbConfirma.Checked;
             tmrConsulta.Enabled = false;
-            if (IniciarConsultaItapoa(confirmaEmbarq))
-            {
-                if (icEnviarEmailAnalista == "S")
-                {
-                    //Verifica se existe divergências para enviar aos analistas do trafego
-                    navegar.GerarPlanilhaExcelCliente(icrobo);
-                    //Antes de iniciar a consulta limpa a tabela temporária
-                    dados.LimparTabelatemporaria(true);
-                }
-            }
+            //if (IniciarConsultaItapoa(confirmaEmbarq))
+            //{
+            //    if (icEnviarEmailAnalista == "S")
+            //    {
+            //        //Verifica se existe divergências para enviar aos analistas do trafego
+            //        navegar.GerarPlanilhaExcelCliente(icrobo);
+            //        //Antes de iniciar a consulta limpa a tabela temporária
+            //        dados.LimparTabelatemporaria(true);
+            //    }
+            //}
             tmrConsulta.Enabled = true;
         }
 
@@ -235,6 +235,7 @@ namespace TerminalRobo
                 Application.DoEvents();
                 bCarregado = navegar.EntrarPaginaSantosBrasil();
                 tsTerminal.Text = "Consultando Container Santos Brasil";
+                Thread.Sleep(2000);
                 Application.DoEvents();
                 if (bCarregado)
                 {
@@ -252,7 +253,7 @@ namespace TerminalRobo
                                 lstReconsulta.Add(conteudo);
                                 //Caso de algum erro na consulta tenta logar novamente no site
                                 navegar.deslogandoSantosBrasil();
-                                Thread.Sleep(300);
+                                Thread.Sleep(1000);
                                 Application.DoEvents();
                                 bCarregado = navegar.EntrarPaginaSantosBrasil();
                                 if (!bCarregado)
@@ -266,7 +267,7 @@ namespace TerminalRobo
                                 lstReconsulta.Add(conteudo);
                                 //Caso de algum erro na consulta tenta logar novamente no site
                                 navegar.deslogandoSantosBrasil();
-                                Thread.Sleep(300);
+                                Thread.Sleep(1000);
                                 Application.DoEvents();
                                 bCarregado = navegar.EntrarPaginaSantosBrasil();
                                 if (!bCarregado)
@@ -288,7 +289,7 @@ namespace TerminalRobo
                             lstReconsulta2.Add(item);
                             //Caso de algum erro na consulta tenta logar novamente no site
                             navegar.deslogandoSantosBrasil();
-                            Thread.Sleep(300);
+                            Thread.Sleep(1000);
                             Application.DoEvents();
                             bCarregado = navegar.EntrarPaginaSantosBrasil();
                             if (!bCarregado)
@@ -307,7 +308,7 @@ namespace TerminalRobo
                             navegar.AdicionarNaoEncontrado(item, "SANTOS BRASIL");
                             //Caso de algum erro na consulta tenta logar novamente no site
                             navegar.deslogandoSantosBrasil();
-                            Thread.Sleep(300);
+                            Thread.Sleep(1000);
                             Application.DoEvents();
                             bCarregado = navegar.EntrarPaginaSantosBrasil();
                             if (!bCarregado)
@@ -407,7 +408,7 @@ namespace TerminalRobo
            
         }
 
-        private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
+        private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = true)
         {
 
             string Grupo = ConfigurationManager.AppSettings["Grupo"].ToString();
@@ -534,6 +535,7 @@ namespace TerminalRobo
                 Application.DoEvents();
                 bCarregado = navegar.EntrarPaginaVilaConde();
                 tsTerminal.Text = "Consultando Container Vila do Conde";
+                Thread.Sleep(2000);
                 Application.DoEvents();
                 if (bCarregado)
                 {
@@ -542,7 +544,7 @@ namespace TerminalRobo
                     foreach (var conteudo in lstConsulta)
                     {
                         tsContainer.Text = i + " de " + (lstConsulta.Count + lstReconsulta.Count) + " CONTAINERS";
-                        Thread.Sleep(300);
+                        Thread.Sleep(1000);
                         Application.DoEvents();
                         if (DivergenciaLacre)
                         {
@@ -551,7 +553,7 @@ namespace TerminalRobo
                                 lstReconsulta.Add(conteudo);
                                 //Caso de algum erro na consulta tenta logar novamente no site
                                 navegar.deslogandoVilaConde();
-                                Thread.Sleep(300);
+                                Thread.Sleep(1000);
                                 Application.DoEvents();
                                 bCarregado = navegar.EntrarPaginaVilaConde();
                                 if (!bCarregado)
@@ -684,55 +686,55 @@ namespace TerminalRobo
             return bCarregado;
         }
 
-        private bool IniciarConsultaItapoa(bool confirmarEmbarque, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
-        {
-            bool bCarregado = false;
+        //private bool IniciarConsultaItapoa(bool confirmarEmbarque, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
+        //{
+        //    bool bCarregado = false;
 
-            List<ListaDeCampos> lstConsulta = new List<ListaDeCampos>();
-            List<int> lstVA = new List<int>();
+        //    List<ListaDeCampos> lstConsulta = new List<ListaDeCampos>();
+        //    List<int> lstVA = new List<int>();
 
-            if (confirmarEmbarque)
-                lstConsulta = dados.ConsultaContainerEmbarcados(idTermItapoa, txtContainer.Text == "" ? null : txtContainer.Text);
-            else
-            {
-                if (EmbarqueAntesPrevisto)
-                    lstConsulta = dados.ConsultaContainerTerminalEmbarque(idTermItapoa, txtContainer.Text == "" ? null : txtContainer.Text);
-                else
-                    lstConsulta = dados.ConsultaContainerDeadLineDia(idTermItapoa, txtContainer.Text == "" ? null : txtContainer.Text);
-            }
+        //    if (confirmarEmbarque)
+        //        lstConsulta = dados.ConsultaContainerEmbarcados(idTermItapoa, txtContainer.Text == "" ? null : txtContainer.Text);
+        //    else
+        //    {
+        //        if (EmbarqueAntesPrevisto)
+        //            lstConsulta = dados.ConsultaContainerTerminalEmbarque(idTermItapoa, txtContainer.Text == "" ? null : txtContainer.Text);
+        //        else
+        //            lstConsulta = dados.ConsultaContainerDeadLineDia(idTermItapoa, txtContainer.Text == "" ? null : txtContainer.Text);
+        //    }
 
-            if (lstConsulta.Count > 0)
-            {
-                tsContainer.Text = "0 de " + lstConsulta.Count + " CONTAINERS";
-                //Loga na página
-                bCarregado = navegar.EntrarPaginaItapoa();
-                if (bCarregado)
-                {
-                    //Consulta o Container
-                    bool bPrimeiraConsulta = false;
-                    int i = 1;
-                    foreach (var conteudo in lstConsulta)
-                    {
-                        tsContainer.Text = i + " de " + lstConsulta.Count + " CONTAINERS";
-                        Thread.Sleep(300);
-                        Application.DoEvents();
-                        if (!navegar.ConsultarContainerItapoa(conteudo, !bPrimeiraConsulta))
-                        {
-                            //Caso de algum erro na consulta tenta logar novamente no site
-                            navegar.EntrarPaginaItapoa();
-                        }
-                        bPrimeiraConsulta = true;
-                        if (confirmarEmbarque)
-                            lstVA.Add(conteudo.CD_VIAGEM_ARMADOR);
-                        i++;
-                    }
-                    tsContainer.Text = "AGUARDANDO";
-                    navegar.deslogandoItapoa();
-                    dados.EmbarqueConfirmado(lstVA);
-                }
-            }
-            return bCarregado;
-        }
+        //    if (lstConsulta.Count > 0)
+        //    {
+        //        tsContainer.Text = "0 de " + lstConsulta.Count + " CONTAINERS";
+        //        //Loga na página
+        //        bCarregado = navegar.EntrarPaginaItapoa();
+        //        if (bCarregado)
+        //        {
+        //            //Consulta o Container
+        //            bool bPrimeiraConsulta = false;
+        //            int i = 1;
+        //            foreach (var conteudo in lstConsulta)
+        //            {
+        //                tsContainer.Text = i + " de " + lstConsulta.Count + " CONTAINERS";
+        //                Thread.Sleep(300);
+        //                Application.DoEvents();
+        //                if (!navegar.ConsultarContainerItapoa(conteudo, !bPrimeiraConsulta))
+        //                {
+        //                    //Caso de algum erro na consulta tenta logar novamente no site
+        //                    navegar.EntrarPaginaItapoa();
+        //                }
+        //                bPrimeiraConsulta = true;
+        //                if (confirmarEmbarque)
+        //                    lstVA.Add(conteudo.CD_VIAGEM_ARMADOR);
+        //                i++;
+        //            }
+        //            tsContainer.Text = "AGUARDANDO";
+        //            navegar.deslogandoItapoa();
+        //            dados.EmbarqueConfirmado(lstVA);
+        //        }
+        //    }
+        //    return bCarregado;
+        //}
 
         private bool IniciarConsultaParanagua(bool confirmarEmbarque, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
         {

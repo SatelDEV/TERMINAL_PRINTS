@@ -42,5 +42,7 @@ namespace TerminalRobo.DataBase
         public Nullable<int> CD_GRUPO { get; set; }
         public Nullable<bool> IC_LEGALIZADO { get; set; }
         public Nullable<int> IC_MERCOSUL { get; set; }
+        public Nullable<System.DateTime> DT_CANCELAMENTO { get; set; }
+        public Nullable<int> CD_USUARIO_CANCELAMENTO { get; set; }
     }
 }

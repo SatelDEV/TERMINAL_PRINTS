@@ -440,6 +440,17 @@ warning 6002: The table/view 'WEBSATEL.dbo.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DE
           <Property Name="CD_USUARIO_DESTINATARIO" Type="int" />
           <Property Name="CD_USUARIO" Type="int" />
         </EntityType>
+        <EntityType Name="GRUPOS_EMAIL">
+          <Key>
+            <PropertyRef Name="CD_GRUPO_EMAIL" />
+          </Key>
+          <Property Name="CD_GRUPO_EMAIL" Type="int" Nullable="false" />
+          <Property Name="CD_TIPO_GRUPO" Type="int" />
+          <Property Name="CD_GRUPO" Type="int" />
+          <Property Name="CD_USUARIO" Type="int" />
+          <Property Name="CD_ENTIDADE_USUARIO" Type="int" />
+          <Property Name="DS_EMAIL" Type="varchar" MaxLength="255" />
+        </EntityType>
         <EntityType Name="HIST_CONSULTA_DEPOSITO">
           <Key>
             <PropertyRef Name="CD_CONSULTA_DEPOSITO" />
@@ -520,6 +531,21 @@ warning 6002: The table/view 'WEBSATEL.dbo.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DE
           <Property Name="DS_LACRE_SIF" Type="varchar" MaxLength="150" />
           <Property Name="DS_LACRE_SIF_TERMINAL" Type="varchar" MaxLength="150" />
           <Property Name="DT_LOG" Type="datetime" />
+        </EntityType>
+        <EntityType Name="LOG_EMAILS_ENVIADOS">
+          <Key>
+            <PropertyRef Name="CD_LOG_EMAIL" />
+          </Key>
+          <Property Name="CD_LOG_EMAIL" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DS_EMAIL_DESTINO" Type="varchar" MaxLength="2000" />
+          <Property Name="DS_ASSUNTO" Type="varchar" MaxLength="500" />
+          <Property Name="DS_MENSAGEM" Type="varchar(max)" />
+          <Property Name="DT_ENVIO" Type="datetime" />
+          <Property Name="CD_USUARIO" Type="int" />
+          <Property Name="NM_AREA_ENVIO" Type="varchar" MaxLength="150" />
+          <Property Name="IC_ENVIO" Type="bit" />
+          <Property Name="DS_ERRO_ENVIO" Type="varchar" MaxLength="2000" />
+          <Property Name="CD_PROCESSO" Type="int" />
         </EntityType>
         <EntityType Name="LOG_ENVIO_MINERVA">
           <Key>
@@ -617,6 +643,8 @@ warning 6002: The table/view 'WEBSATEL.dbo.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DE
           <Property Name="CD_GRUPO" Type="int" />
           <Property Name="IC_LEGALIZADO" Type="bit" />
           <Property Name="IC_MERCOSUL" Type="int" />
+          <Property Name="DT_CANCELAMENTO" Type="datetime" />
+          <Property Name="CD_USUARIO_CANCELAMENTO" Type="int" />
         </EntityType>
         <EntityType Name="PARAMETRO">
           <Key>
@@ -1131,6 +1159,7 @@ warning 6002: The table/view 'WEBSATEL.dbo.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DE
           <Property Name="IC_REVENDA" Type="bit" />
           <Property Name="DS_BUYER" Type="varchar(max)" />
           <Property Name="DT_SUSPENSO" Type="datetime" />
+          <Property Name="DT_LIBEROU_CAMBIO" Type="datetime" />
         </EntityType>
         <EntityType Name="RECIALFA">
           <Key>
@@ -1998,11 +2027,13 @@ warning 6002: The table/view 'WEBSATEL.dbo.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DE
           <EntitySet Name="FORMA_EXPORTACAO_DUE" EntityType="Self.FORMA_EXPORTACAO_DUE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GRUPOCLI" EntityType="Self.GRUPOCLI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GRUPOCLI_ENTIDADE" EntityType="Self.GRUPOCLI_ENTIDADE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GRUPOS_EMAIL" EntityType="Self.GRUPOS_EMAIL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HIST_CONSULTA_DEPOSITO" EntityType="Self.HIST_CONSULTA_DEPOSITO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LOCAIS" EntityType="Self.LOCAIS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LOG_CONSULTA_NAVIO" EntityType="Self.LOG_CONSULTA_NAVIO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LOG_CONSULTA_TERMINAL" EntityType="Self.LOG_CONSULTA_TERMINAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LOG_DIVERGENCIA_LACRE" EntityType="Self.LOG_DIVERGENCIA_LACRE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LOG_EMAILS_ENVIADOS" EntityType="Self.LOG_EMAILS_ENVIADOS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LOG_ENVIO_MINERVA" EntityType="Self.LOG_ENVIO_MINERVA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LOG_NOTIFICACAO_RECINTO" EntityType="Self.LOG_NOTIFICACAO_RECINTO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAVIOS" EntityType="Self.NAVIOS" Schema="dbo" store:Type="Tables" />
@@ -2481,6 +2512,8 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
             <End Role="DUE" EntitySet="DUE" />
             <End Role="PROCESSO_LOTE" EntitySet="PROCESSO_LOTE" />
           </AssociationSet>
+          <EntitySet Name="GRUPOS_EMAIL" EntityType="WEBSATELModel.GRUPOS_EMAIL" />
+          <EntitySet Name="LOG_EMAILS_ENVIADOS" EntityType="WEBSATELModel.LOG_EMAILS_ENVIADOS" />
         </EntityContainer>
         <EntityType Name="PROCESSORESERVA">
           <Key>
@@ -2745,6 +2778,7 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Name="DS_BUYER" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="DT_SUSPENSO" Type="DateTime" Precision="3" />
           <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_PROCESSOS" FromRole="PROCESSOS" ToRole="DUE" />
+          <Property Name="DT_LIBEROU_CAMBIO" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_PROCESSORESERVA_PROCESSOS">
           <End Role="PROCESSOS" Type="WEBSATELModel.PROCESSOS" Multiplicity="1" />
@@ -3577,6 +3611,8 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Type="Int32" Name="CD_GRUPO" />
           <Property Type="Boolean" Name="IC_LEGALIZADO" />
           <Property Name="IC_MERCOSUL" Type="Int32" />
+          <Property Name="DT_CANCELAMENTO" Type="DateTime" Precision="3" />
+          <Property Name="CD_USUARIO_CANCELAMENTO" Type="Int32" />
         </EntityType>
         <EntityType Name="VIAGEMARMADOR">
           <Key>
@@ -4733,6 +4769,32 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="GRUPOS_EMAIL">
+          <Key>
+            <PropertyRef Name="CD_GRUPO_EMAIL" />
+          </Key>
+          <Property Name="CD_GRUPO_EMAIL" Type="Int32" Nullable="false" />
+          <Property Name="CD_TIPO_GRUPO" Type="Int32" />
+          <Property Name="CD_GRUPO" Type="Int32" />
+          <Property Name="CD_USUARIO" Type="Int32" />
+          <Property Name="CD_ENTIDADE_USUARIO" Type="Int32" />
+          <Property Name="DS_EMAIL" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="LOG_EMAILS_ENVIADOS">
+          <Key>
+            <PropertyRef Name="CD_LOG_EMAIL" />
+          </Key>
+          <Property Name="CD_LOG_EMAIL" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DS_EMAIL_DESTINO" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="DS_ASSUNTO" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DS_MENSAGEM" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DT_ENVIO" Type="DateTime" Precision="3" />
+          <Property Name="CD_USUARIO" Type="Int32" />
+          <Property Name="NM_AREA_ENVIO" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="IC_ENVIO" Type="Boolean" />
+          <Property Name="DS_ERRO_ENVIO" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="CD_PROCESSO" Type="Int32" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4755,6 +4817,7 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <EntitySetMapping Name="PROCESSOS">
             <EntityTypeMapping TypeName="WEBSATELModel.PROCESSOS">
               <MappingFragment StoreEntitySet="PROCESSOS">
+                <ScalarProperty Name="DT_LIBEROU_CAMBIO" ColumnName="DT_LIBEROU_CAMBIO" />
                 <ScalarProperty Name="DT_SUSPENSO" ColumnName="DT_SUSPENSO" />
                 <ScalarProperty Name="DS_BUYER" ColumnName="DS_BUYER" />
                 <ScalarProperty Name="IC_REVENDA" ColumnName="IC_REVENDA" />
@@ -5608,6 +5671,8 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <EntitySetMapping Name="PAIS">
             <EntityTypeMapping TypeName="WEBSATELModel.PAIS">
               <MappingFragment StoreEntitySet="PAIS">
+                <ScalarProperty Name="CD_USUARIO_CANCELAMENTO" ColumnName="CD_USUARIO_CANCELAMENTO" />
+                <ScalarProperty Name="DT_CANCELAMENTO" ColumnName="DT_CANCELAMENTO" />
                 <ScalarProperty Name="IC_MERCOSUL" ColumnName="IC_MERCOSUL" />
                 <ScalarProperty Name="IC_LEGALIZADO" ColumnName="IC_LEGALIZADO" />
                 <ScalarProperty Name="CD_GRUPO" ColumnName="CD_GRUPO" />
@@ -6446,6 +6511,34 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
                 <ScalarProperty Name="DT_DUE" ColumnName="DT_DUE" />
                 <ScalarProperty Name="CD_PROCESSO" ColumnName="CD_PROCESSO" />
                 <ScalarProperty Name="CD_DUE" ColumnName="CD_DUE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GRUPOS_EMAIL">
+            <EntityTypeMapping TypeName="WEBSATELModel.GRUPOS_EMAIL">
+              <MappingFragment StoreEntitySet="GRUPOS_EMAIL">
+                <ScalarProperty Name="DS_EMAIL" ColumnName="DS_EMAIL" />
+                <ScalarProperty Name="CD_ENTIDADE_USUARIO" ColumnName="CD_ENTIDADE_USUARIO" />
+                <ScalarProperty Name="CD_USUARIO" ColumnName="CD_USUARIO" />
+                <ScalarProperty Name="CD_GRUPO" ColumnName="CD_GRUPO" />
+                <ScalarProperty Name="CD_TIPO_GRUPO" ColumnName="CD_TIPO_GRUPO" />
+                <ScalarProperty Name="CD_GRUPO_EMAIL" ColumnName="CD_GRUPO_EMAIL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LOG_EMAILS_ENVIADOS">
+            <EntityTypeMapping TypeName="WEBSATELModel.LOG_EMAILS_ENVIADOS">
+              <MappingFragment StoreEntitySet="LOG_EMAILS_ENVIADOS">
+                <ScalarProperty Name="CD_PROCESSO" ColumnName="CD_PROCESSO" />
+                <ScalarProperty Name="DS_ERRO_ENVIO" ColumnName="DS_ERRO_ENVIO" />
+                <ScalarProperty Name="IC_ENVIO" ColumnName="IC_ENVIO" />
+                <ScalarProperty Name="NM_AREA_ENVIO" ColumnName="NM_AREA_ENVIO" />
+                <ScalarProperty Name="CD_USUARIO" ColumnName="CD_USUARIO" />
+                <ScalarProperty Name="DT_ENVIO" ColumnName="DT_ENVIO" />
+                <ScalarProperty Name="DS_MENSAGEM" ColumnName="DS_MENSAGEM" />
+                <ScalarProperty Name="DS_ASSUNTO" ColumnName="DS_ASSUNTO" />
+                <ScalarProperty Name="DS_EMAIL_DESTINO" ColumnName="DS_EMAIL_DESTINO" />
+                <ScalarProperty Name="CD_LOG_EMAIL" ColumnName="CD_LOG_EMAIL" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

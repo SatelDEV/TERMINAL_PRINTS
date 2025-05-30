@@ -179,7 +179,7 @@ namespace TerminalRobo.Models
         const string deslogaSantosBrasil = "https://www.santosbrasil.com.br/desloga.asp";
 
         const string siteItajai = "https://itajai.apmterminals.com.br/portal#/booking";
-        const string siteItapoa = "https://clientes.portoitapoa.com/#/relatorios/booking";
+       
         string sUsuarioSB = ConfigurationManager.AppSettings["usuarioSB"].ToString();
         string sSenhaSB = ConfigurationManager.AppSettings["senhaSB"].ToString();
 
@@ -195,8 +195,7 @@ namespace TerminalRobo.Models
         string sUsuarioItajai = ConfigurationManager.AppSettings["usuarioItajai"].ToString();
         string sSenhaItajai = ConfigurationManager.AppSettings["senhaItajai"].ToString();
 
-        string sUsuarioItapoa = ConfigurationManager.AppSettings["usuarioItapoa"].ToString();
-        string sSenhaItapoa = ConfigurationManager.AppSettings["senhaItapoa"].ToString();
+        
 
 
 
@@ -1315,7 +1314,7 @@ namespace TerminalRobo.Models
                     url = chromeBrowser.Address;
                     icontador++;
 
-                } while (url != siteSantosBrasil && !bCarregado && icontador < 3);
+                } while (url != siteSantosBrasil && !bCarregado && icontador < 5);
 
                 Application.DoEvents();
                 Thread.Sleep(2000);
@@ -1325,7 +1324,7 @@ namespace TerminalRobo.Models
 
 
 
-                bCarregado = false;
+                
                 chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('login_').value = '" + sUsuarioSB + "';");
                 chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('senha_').value = '" + sSenhaSB + "';");             
                 chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('g-recaptcha')[0].click();");
@@ -1357,7 +1356,7 @@ namespace TerminalRobo.Models
             chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('container cntr')[0].value = '" + conteudo.NR_CONTAINER + "';");
 
             Application.DoEvents();
-            Thread.Sleep(1000);
+            Thread.Sleep(3000);
 
             chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('Export')[0].click();");
             //AguardaPaginaCarregar(ref tsStatus);
@@ -1385,7 +1384,7 @@ namespace TerminalRobo.Models
 
                 }
                 Application.DoEvents();
-                Thread.Sleep(750);
+                Thread.Sleep(2000);
                 tentativa++;
             } while ((!bOk && tentativa < 40) && (!bAlert));
             if (tentativa >= 40)
@@ -1503,13 +1502,13 @@ namespace TerminalRobo.Models
 
                 bCarregado = false;
 
-                Thread.Sleep(300);
+                Thread.Sleep(1000);
                 Application.DoEvents();
                 tentativa++;
-            } while (!retorno && tentativa < 100);
+            } while (!retorno && tentativa < 50);
             //Caso ocorra algum erro na consulta, desloga do site e envia false para tentar novamente.
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('btnFecha close')[2].click();");
-            if (tentativa >= 100)
+            if (tentativa >= 50)
             {
                 dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "SANTOS BRASIL", DateTime.Now, "ESGOTADO TENTATIVAS (2) - 2. DESLOGANDO E PARANDO", novoDado);
                 deslogandoSantosBrasil();
@@ -1583,11 +1582,11 @@ namespace TerminalRobo.Models
                 chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('senha_').value = '" + sSenhaVilaConde + "';");
                 chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('g-recaptcha')[0].click();");
 
-              
-              //  bCarregado = AguardaPaginaCarregar();
 
                 Application.DoEvents();
                 Thread.Sleep(4000);
+
+
             }
             catch
             {
@@ -1601,30 +1600,26 @@ namespace TerminalRobo.Models
         }
 
         public bool ConsultarContainerVilaConde(ListaDeCampos conteudo)
-        {
-
-
-            Application.DoEvents();
-            Thread.Sleep(2000);
+        {          
 
             dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "VILA DO CONDE", DateTime.Now, "INICIANDO CONSULTA", novoDado);
             bCarregado = false;
+
+
            
+
+
+
+
             chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('container cntr')[0].value = '" + conteudo.NR_CONTAINER + "';");
 
-     
+            Application.DoEvents();
+            Thread.Sleep(3000);
 
             chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementsByClassName('Export')[0].click();");
-            //AguardaPaginaCarregar(ref tsStatus);
 
-            Application.DoEvents();
-            Thread.Sleep(1000);
+       
 
-
-            //Pegar se o container foi depositado no terminal de embarque
-
-
-            //Verificar se a janela com informações do container já foi carregada
 
             string sJanelaCarregada = "var j = document.getElementsByClassName('infConteiner janela')[0];";
             sJanelaCarregada += " if (j != null) { true} else {false}";
@@ -1642,8 +1637,8 @@ namespace TerminalRobo.Models
                     bOk = response.Result.ToString() == "True";
 
                 }
+                Thread.Sleep(2000);
                 Application.DoEvents();
-                Thread.Sleep(750);
                 tentativa++;
             } while ((!bOk && tentativa < 40) && (!bAlert));
             if (tentativa >= 40)
@@ -1730,15 +1725,17 @@ namespace TerminalRobo.Models
 
                 bCarregado = false;
 
-                Thread.Sleep(300);
+                Thread.Sleep(1000);
                 Application.DoEvents();
                 tentativa++;
-            } while (!retorno && tentativa < 100);
+            } while (!retorno && tentativa < 50);
             //Caso ocorra algum erro na consulta, desloga do site e envia false para tentar novamente.
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('btnFecha close')[2].click();");
-            if (tentativa >= 100)
+            if (tentativa >= 50)
             {
-                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "VILA DO CONDE", DateTime.Now, "ESGOTADO TENTATIVAS (2) - 2. DESLOGANDO E PARANDO", novoDado);           
+                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "VILA DO CONDE", DateTime.Now, "ESGOTADO TENTATIVAS (2) - 2. DESLOGANDO E PARANDO", novoDado);
+                deslogandoVilaConde();
+                bCarregado = false;
                 return false;
             }
             bCarregado = false;
@@ -1941,254 +1938,10 @@ namespace TerminalRobo.Models
         #endregion
 
         #region Metodo Itapoa
-        public bool EntrarPaginaItapoa()
-        {
-            bCarregado = false;
-            try
-            {
-                string url = "";
-                int icontador = 0;
-                do
-                {
-                    bCarregado = false;
-
-                    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteItapoa + "';");
-                    //chromeBrowser.Load("document.location ='" + siteItapoa + "';");
-                    bCarregado = AguardaPaginaCarregar();
-
-                    //Verifica se conseguiu acessar a página.
-                    url = chromeBrowser.Address;
-                    icontador++;
-
-                } while (url != siteItapoa && !bCarregado && icontador < 3);
-
-                string urlAtual = "";
-                int i = 0;
-                do
-                {
-                    bCarregado = false;
-                    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByTagName('input')[0].value = '" + sUsuarioItapoa + "';");
-                    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByTagName('input')[1].value = '" + sSenhaItapoa + "';");
-                    System.Threading.Thread.Sleep(100);
-
-                    System.Drawing.Point p = new System.Drawing.Point();
-                    p.X = 5000;//100;
-                    p.Y = 160;//100;
-                    Form1.LeftMouseClick(p);
-                    Application.DoEvents();
-                    p.X = 5000;//1100;
-                    p.Y = 260;//270;
-                    Form1.LeftMouseClick(p);
-                    Application.DoEvents();
-                    p.X = 5000;//1100;
-                    p.Y = 320;//330;
-                    Form1.LeftMouseClick(p);
-                    Thread.Sleep(200);
-                    Application.DoEvents();
-                    p.X = 5000;//100;
-                    p.Y = 160;//100;
-                    Form1.LeftMouseClick(p);
-                    Thread.Sleep(200);
-                    Application.DoEvents();
-                    /* ambiente de teste
-                    p.X = 100;
-                    p.Y = 100;
-                    Form1.LeftMouseClick(p);
-                    Application.DoEvents();
-                    p.X = 1100;
-                    p.Y = 270;
-                    Form1.LeftMouseClick(p);
-                    Application.DoEvents();
-                    p.X = 1100;
-                    p.Y = 330;
-                    Form1.LeftMouseClick(p);
-                    Thread.Sleep(200);
-                    Application.DoEvents();
-                    p.X = 100;
-                    p.Y = 100;
-                    Form1.LeftMouseClick(p);
-                    Thread.Sleep(200);
-                    Application.DoEvents();*/
-
-                    Thread.Sleep(500);
-                    Application.DoEvents();
-                    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('kt_submit').click();");
-                    bCarregado = AguardaPaginaCarregar();
-                    urlAtual = chromeBrowser.Address;
-                    i++;
-
-                } while (urlAtual != "https://clientes.portoitapoa.com/#/dashboard" && i <= 4);
-
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteItapoa + "';");
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('kt-menu__link-text')[5].click()");
-                Thread.Sleep(500);
-                Application.DoEvents();
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("var g = document.getElementsByClassName('porto-menu')[0]; g.getElementsByTagName('a')[0].click(); ");
-                bCarregado = false;
-                AguardaPaginaCarregar();
-                Thread.Sleep(1000);
-                Application.DoEvents();
-            }
-            catch
-            {
-                bCarregado = false;
-            }
-            return bCarregado;
-        }
-
-        public bool ConsultarContainerItapoa(ListaDeCampos conteudo, bool bPrimeiraVez)
-        {
-            dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "ITAPOA", DateTime.Now, "INICIANDO CONSULTA", novoDado);
-            //if (bPrimeiraVez)
-            //{
-            bCarregado = false;
-            Thread.Sleep(1000);
-            //chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("$('.menuFilho')[7].click();");
-
-            bool Encontrado = false;
-            int tentativas = 0;
-
-            do
-            {
-                System.Drawing.Point p = new System.Drawing.Point();
-                p.X = 4420;
-                p.Y = 370;
-                Form1.LeftMouseClick(p);
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByTagName('input')[0].value = '" + conteudo.NR_BOOKING + "';");
-                Application.DoEvents();
-                Thread.Sleep(1000);
-                Application.DoEvents();
-                chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByTagName('button')[5].click()");
-                Application.DoEvents();
-                Thread.Sleep(1000);
-                Application.DoEvents();
-                var taskErro = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('swal2-container swal2-center swal2-backdrop-show')[0] == null");
-                taskErro.Wait();
-                if (taskErro.Result.Result.ToString() != "True")
-                {
-                    var taskEncontrado = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('swal2-content').innerText == 'Booking não encontrado!'");
-                    taskEncontrado.Wait();
-                    if (taskEncontrado.Result.Result.ToString() == "True")
-                    {
-                        dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "ITAPOA", DateTime.Now, "NÃO ENCONTROU CONTAINER", novoDado);
-                        return true;
-                    }
-                    else
-                    {
-                        Encontrado = false;
-                    }
-                    chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('swal2-confirm swal2-styled')[0].click();");
-                }
-                else
-                {
-                    Encontrado = true;
-                }
-                tentativas++;
-            } while (!Encontrado && tentativas < 3);
-            //Application.DoEvents();
-            //bCarregado = false;
-            //AguardaPaginaCarregar();
-            //bool Encontrado = VerificaJanelaAjaxCarregada("swal2-container swal2-center swal2-backdrop-show", "class");
-
-            Thread.Sleep(1000);
-            if (Encontrado)
-            {
-                //Verifica se já carregou os dados na tela
-                //=======================================================
-                /*int j = 1;
-                do
-                {
-                    var taskCntr = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByTagName('td')[" + j.ToString() + "] == null");
-                    taskCntr.Wait();
-
-                    if (taskCntr.Result.Result.ToString() == "True")
-                    {
-                        dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "ITAPOA", DateTime.Now, "NÃO ENCONTROU CONTAINER", novoDado);
-                        return true;
-                    }
-                    Thread.Sleep(500);
-
-                    var taskCntr2 = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByTagName('td')[" + j.ToString() + "].innerText == '" + conteudo.NR_CONTAINER + "';");
-                    taskCntr2.Wait();
-
-                    if (taskCntr2.Result.Result.ToString() == "True")
-                        break;
-
-                    j += 19;
-                } while (true);
-                Thread.Sleep(500);*/
-
-                bool carregaDados = VerificaJanelaAjaxCarregada("v-overlay__scrim", "class-opacity");
-
-                string sJanelaCarregada = "var conteudo = [];";
-                sJanelaCarregada += "var g = document.getElementsByTagName('tr');";
-                sJanelaCarregada += "for(var i = 1; i < g.length; i++) { ";
-                sJanelaCarregada += "var f = g[i].getElementsByTagName('td')[1];";
-                sJanelaCarregada += "if (f.innerText == '" + conteudo.NR_CONTAINER + "') {";
-                sJanelaCarregada += "conteudo[0] = g[i].getElementsByTagName('td')[12].innerText;";
-                sJanelaCarregada += "conteudo[1] = g[i].getElementsByTagName('td')[11].innerText;";
-                sJanelaCarregada += "conteudo[2] = '" + conteudo.NR_BOOKING + "';";
-                sJanelaCarregada += "conteudo[3] = '" + conteudo.NM_NAVIO + "';";
-                sJanelaCarregada += "conteudo[4] = g[i].getElementsByTagName('td')[13].innerText; } }";
-                sJanelaCarregada += "conteudo;";
 
 
-                try
-                {
-                    bool resultn = false;
-                    tentativa = 0;
-                    do
-                    {
-
-                        var task1 = chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync(sJanelaCarregada);
-                        task1.Wait();
-                        var response1 = task1.Result;
-
-                        resultn = ValidarSituacaoContainer(idTermItapoa, conteudo, task1);
-
-                        bCarregado = false;
-
-                        Thread.Sleep(600);
-                        Application.DoEvents();
-                        tentativa++;
-                    } while (!resultn && tentativa < 20);
-                    //Caso ocorra algum erro na consulta, desloga do site e envia false para tentar novamente.
-                    if (tentativa >= 20)
-                    {
-                        dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "ITAPOA", DateTime.Now, "TENTATIVAS ESGOTADAS (20). TENTANDO NOVAMENTE.", novoDado);
-                        deslogandoItajai();
-                        return false;
-                    }
-
-                    bCarregado = false;
-                }
-                catch (Exception e)
-                {
-                    dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "ITAPOA", DateTime.Now, "ERRO INESPERADO. " + e.Message, novoDado);
-                    return false;
-                }
-
-            }
-            else
-            {
-                dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "ITAPOA", DateTime.Now, "NÃO ENCONTROU CONTAINER", novoDado);
-            }
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByTagName('button')[5].click();");
-            return true;
-        }
-        //======================================================================
-        public void deslogandoItapoa()
-        {
-            exibirMensagem("T", "Deslogando Itapoa");
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('btn btn - label btn - label - brand btn - sm btn - bold')[0].click()");
-            exibirMensagem("S", "Saindo da página...");
-
-            bCarregado = false;
-            AguardaPaginaCarregar();
-            chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='https://www.sateldespachos.com.br';");
-
-        }
         #endregion
+
 
         public bool ConsultarContainerParanagua(List<ListaDeCampos> ListaContainers, ref List<int> lstVA)
         {
@@ -4668,12 +4421,14 @@ namespace TerminalRobo.Models
 
                         d.GeraLogLacreDivergente(dados, cdEntidade);
 
+                        Email envioEmail = new Email();
+                        bool Enviado = envioEmail.DisparaEmailDraft(corpo, cdEntidade, dados.CD_PROCESSO, "LACRE DIVERGENTE NO TERMINAL - " + dados.DS_REFERENCIA_CLIENTE + " - " + d.retornaPaisDestino(dados.CD_PROCESSO));
 
                         string to = "";
                         if (cdMinerva.FirstOrDefault(x => x == cdEntidade) != 0 && cdEntidade != 9620)
-                            to = "sophia.mendonca@sateldespachos.com.br";
+                            to = ConfigurationManager.AppSettings["EmailMinervaDivergencia"].ToString();
                         else
-                            to = "sophia.mendonca@sateldespachos.com.br"; //"suporte@sateldespachos.com.br";
+                            to = "suporte@sateldespachos.com.br"; //"suporte@sateldespachos.com.br";
                         Email e = new Email();
                         e.EnviaEmailDUE(to, "", "LACRE DIVERGENTE NO TERMINAL - " + dados.DS_REFERENCIA_CLIENTE + " - " + d.retornaPaisDestino(dados.CD_PROCESSO), corpo);
                     }
