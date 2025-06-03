@@ -248,19 +248,19 @@
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\ModelTerminal.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>ModelTerminal.Context.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="DataBase\ModelTerminal.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>ModelTerminal.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="DataBase\ModelTerminal.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>ModelTerminal.edmx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="DataBase\NAVIOS.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
@@ -304,9 +304,6 @@
     <Compile Include="DataBase\RESERVAS.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataBase\SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO_Result.cs">
-      <DependentUpon>ModelTerminal.tt</DependentUpon>
-    </Compile>
     <Compile Include="DataBase\SP_CONSULTA_DEPOSITO_USUARIO_Result.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
@@ -343,6 +340,7 @@
     <Compile Include="DataBase\TMP_CONSULTA_NAVIO.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
+    <Compile Include="DataBase\TMP_MINERVA2.cs" />
     <Compile Include="DataBase\UNIDRF.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
@@ -397,13 +395,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EntityDeploy Include="DataBase\ModelTerminal.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ModelTerminal.Designer.cs</LastGenOutput>
-    </EntityDeploy>
     <None Include="DataBase\ModelTerminal.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ModelTerminal.edmx</DependentUpon>
+      <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ModelTerminal.Context.cs</LastGenOutput>
     </None>
     <None Include="DataBase\ModelTerminal.edmx.diagram">
@@ -411,8 +405,8 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="DataBase\ModelTerminal.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ModelTerminal.edmx</DependentUpon>
+      <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ModelTerminal.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
@@ -544,6 +538,12 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="DataBase\ModelTerminal.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ModelTerminal.Designer.cs</LastGenOutput>
+    </EntityDeploy>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\CefSharp.Common.75.1.143\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.75.1.143\build\CefSharp.Common.targets')" />

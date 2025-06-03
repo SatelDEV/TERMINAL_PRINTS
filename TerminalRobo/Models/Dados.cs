@@ -1041,7 +1041,13 @@ namespace TerminalRobo.Models
                                                    where e.CD_ENTIDADE == cdTerminal
                                                    select r.STR_CODIGORECIALFA).FirstOrDefault();
 
-                        if (alteracao == "embarque")
+                        int? cdTerminalCabotagem = (from pr in db.PROCESSORESERVA
+                                                    join r in db.RESERVAS on pr.CD_RESERVA equals r.CD_RESERVA
+                                                    join va in db.VIAGEMARMADOR on r.CD_VIAGEM_ARMADOR equals va.CD_VIAGEM_ARMADOR
+                                                    where pr.CD_PROCESSORESERVA == cdProcessoReserva
+                                                    select va.CD_TERMINAL_CABOTAGEM).FirstOrDefault();
+
+                        if (alteracao == "embarque" && (cdTerminalCabotagem == null || cdTerminalCabotagem == 0))
                         {
                             if (d.CD_RECINTO_EMBARQUE != strCodigoRecinto)
                             {
@@ -1069,13 +1075,16 @@ namespace TerminalRobo.Models
                         }
                         else if (alteracao == "desembaraço")
                         {
-                            cdTerminal = (from pr in db.PROCESSORESERVA
+                            if (cdTerminalCabotagem == null || cdTerminalCabotagem == 0)
+                                cdTerminal = (from pr in db.PROCESSORESERVA
                                           join r in db.RESERVAS on pr.CD_RESERVA equals r.CD_RESERVA into leftr
                                           from orir in leftr.DefaultIfEmpty()
                                           join va in db.VIAGEMARMADOR on orir.CD_VIAGEM_ARMADOR equals va.CD_VIAGEM_ARMADOR into leftva
                                           from oriva in leftva.DefaultIfEmpty()
                                           where pr.CD_PROCESSORESERVA == cdProcessoReserva
                                           select oriva.CD_TERMINAL_ATRACACAO).FirstOrDefault();
+                            else
+                                cdTerminal = cdTerminalCabotagem;
 
                             if (cdTerminal != null && cdTerminal != 0)
                             {
@@ -1352,94 +1361,114 @@ namespace TerminalRobo.Models
                 return;
 
             DataBase.DUE d = db.DUE.FirstOrDefault(x => x.CD_DUE == cdDue);
+            string container = "";
+            ListaAlertaRecinto lst = new ListaAlertaRecinto();
 
-                ListaAlertaRecinto lst = (from pr in db.PROCESSORESERVA
-                                          join p in db.PROCESSOS on pr.CD_PROCESSO equals p.CD_PROCESSO
-                                          join res in db.RESERVAS on pr.CD_RESERVA equals res.CD_RESERVA into resLeft
-                                          from resOri in resLeft.DefaultIfEmpty()
-                                          join via in db.VIAGEMARMADOR on resOri.CD_VIAGEM_ARMADOR equals via.CD_VIAGEM_ARMADOR into viaLeft
-                                          from viaOri in viaLeft.DefaultIfEmpty()
-                                          join viagem in db.VIAGEM on viaOri.CD_VIAGEM equals viagem.CD_VIAGEM into viagemLeft
-                                          from viagemOri in viagemLeft.DefaultIfEmpty()
-                                          join nav in db.NAVIOS on viagemOri.CD_NAVIO equals nav.CD_NAVIO into navLeft
-                                          from navOri in navLeft.DefaultIfEmpty()
-                                          join en in db.ENTIDADE on p.CD_CLIENTE equals en.CD_ENTIDADE
-                                          where pr.CD_PROCESSORESERVA == cdPr
-                                          select new ListaAlertaRecinto
-                                          {
-                                              NR_PROCESSO = "E-" + p.CD_NUMERO_PROCESSO.Substring(2, 6) + "/" + p.CD_NUMERO_PROCESSO.Substring(0, 2),
-                                              DS_REFERENCIA = p.DS_REFERENCIA_CLIENTE,
-                                              CD_PROCESSORESERVA = pr.CD_PROCESSORESERVA,
-                                              CD_PROCESSO = p.CD_PROCESSO,
-                                              NM_ENTIDADE = en.NM_FANTASIA_ENTIDADE,
-                                              NM_NAVIO = navOri.NM_NAVIO,
-                                              CD_CLIENTE = p.CD_CLIENTE
-                                          }).FirstOrDefault();
+            if (cdPr != null)
+            {
+                lst = (from pr in db.PROCESSORESERVA
+                        join p in db.PROCESSOS on pr.CD_PROCESSO equals p.CD_PROCESSO
+                        join res in db.RESERVAS on pr.CD_RESERVA equals res.CD_RESERVA into resLeft
+                        from resOri in resLeft.DefaultIfEmpty()
+                        join via in db.VIAGEMARMADOR on resOri.CD_VIAGEM_ARMADOR equals via.CD_VIAGEM_ARMADOR into viaLeft
+                        from viaOri in viaLeft.DefaultIfEmpty()
+                        join viagem in db.VIAGEM on viaOri.CD_VIAGEM equals viagem.CD_VIAGEM into viagemLeft
+                        from viagemOri in viagemLeft.DefaultIfEmpty()
+                        join nav in db.NAVIOS on viagemOri.CD_NAVIO equals nav.CD_NAVIO into navLeft
+                        from navOri in navLeft.DefaultIfEmpty()
+                        join en in db.ENTIDADE on p.CD_CLIENTE equals en.CD_ENTIDADE
+                        where pr.CD_PROCESSORESERVA == cdPr
+                        select new ListaAlertaRecinto
+                        {
+                            NR_PROCESSO = "E-" + p.CD_NUMERO_PROCESSO.Substring(2, 6) + "/" + p.CD_NUMERO_PROCESSO.Substring(0, 2),
+                            DS_REFERENCIA = p.DS_REFERENCIA_CLIENTE,
+                            CD_PROCESSORESERVA = pr.CD_PROCESSORESERVA,
+                            CD_PROCESSO = p.CD_PROCESSO,
+                            NM_ENTIDADE = en.NM_FANTASIA_ENTIDADE,
+                            NM_NAVIO = navOri.NM_NAVIO,
+                            CD_CLIENTE = p.CD_CLIENTE
+                        }).FirstOrDefault();
 
                 string[] Containers = (from p in db.PROCESSOS
-                                       join pr in db.PROCESSORESERVA on p.CD_PROCESSO equals pr.CD_PROCESSO into prLeft
-                                       from prOri in prLeft.DefaultIfEmpty()
-                                       join prc in db.PROCESSORESERVACONTAINER on prOri.CD_PROCESSORESERVA equals prc.CD_PROCESSORESERVA into prcLeft
-                                       from prcOri in prcLeft.DefaultIfEmpty()
-                                       join c in db.CONTAINER on prcOri.CD_CONTAINER equals c.CD_CONTAINER into cLeft
-                                       from cOri in cLeft.DefaultIfEmpty()
-                                       where p.CD_PROCESSO == lst.CD_PROCESSO
-                                       select cOri.CD_NUMERO_CONTAINER).ToArray();
+                                        join pr in db.PROCESSORESERVA on p.CD_PROCESSO equals pr.CD_PROCESSO into prLeft
+                                        from prOri in prLeft.DefaultIfEmpty()
+                                        join prc in db.PROCESSORESERVACONTAINER on prOri.CD_PROCESSORESERVA equals prc.CD_PROCESSORESERVA into prcLeft
+                                        from prcOri in prcLeft.DefaultIfEmpty()
+                                        join c in db.CONTAINER on prcOri.CD_CONTAINER equals c.CD_CONTAINER into cLeft
+                                        from cOri in cLeft.DefaultIfEmpty()
+                                        where p.CD_PROCESSO == lst.CD_PROCESSO
+                                           select cOri.CD_NUMERO_CONTAINER).ToArray();
 
-                string container = Containers[0];
+                container = Containers[0];
                 for (int i = 1; i < Containers.Length; i++)
                 {
                     container += " / " + Containers[i];
                 }
+            }
+            else
+            {
+                lst = (from due in db.DUE
+                       join p in db.PROCESSOS on due.CD_PROCESSO equals p.CD_PROCESSO
+                       join en in db.ENTIDADE on p.CD_CLIENTE equals en.CD_ENTIDADE
+                       where due.CD_DUE == cdDue
+                       select new ListaAlertaRecinto
+                       {
+                           NR_PROCESSO = "E-" + p.CD_NUMERO_PROCESSO.Substring(2, 6) + "/" + p.CD_NUMERO_PROCESSO.Substring(0, 2),
+                           DS_REFERENCIA = p.DS_REFERENCIA_CLIENTE,
+                           CD_PROCESSO = p.CD_PROCESSO,
+                           NM_ENTIDADE = en.NM_FANTASIA_ENTIDADE,
+                           NM_NAVIO = ".",
+                           CD_CLIENTE = p.CD_CLIENTE
+                       }).FirstOrDefault();
+            }
 
-                string nmUsuario = (from u in db.USUARIO_CA where u.CD_USUARIO == idUsuario select u.NM_LOGIN).FirstOrDefault();
+            string nmUsuario = (from u in db.USUARIO_CA where u.CD_USUARIO == idUsuario select u.NM_LOGIN).FirstOrDefault();
 
-                string recintoEAnt = (from r in db.RECIALFA where r.STR_CODIGORECIALFA == strRecintoEAnt select r.STR_CODIGORECIALFA + " - " + r.STR_DESCRICAO).FirstOrDefault();
-                string recintoE = (from r in db.RECIALFA where r.STR_CODIGORECIALFA == strRecintoE select r.STR_CODIGORECIALFA + " - " + r.STR_DESCRICAO).FirstOrDefault();
+            string recintoEAnt = (from r in db.RECIALFA where r.STR_CODIGORECIALFA == strRecintoEAnt select r.STR_CODIGORECIALFA + " - " + r.STR_DESCRICAO).FirstOrDefault();
+            string recintoE = (from r in db.RECIALFA where r.STR_CODIGORECIALFA == strRecintoE select r.STR_CODIGORECIALFA + " - " + r.STR_DESCRICAO).FirstOrDefault();
 
-                string recintoDAnt = (from r in db.RECIALFA where r.STR_CODIGORECIALFA == strRecintoDAnt select r.STR_CODIGORECIALFA + " - " + r.STR_DESCRICAO).FirstOrDefault();
-                string recintoD = (from r in db.RECIALFA where r.STR_CODIGORECIALFA == strRecintoD select r.STR_CODIGORECIALFA + " - " + r.STR_DESCRICAO).FirstOrDefault();
+            string recintoDAnt = (from r in db.RECIALFA where r.STR_CODIGORECIALFA == strRecintoDAnt select r.STR_CODIGORECIALFA + " - " + r.STR_DESCRICAO).FirstOrDefault();
+            string recintoD = (from r in db.RECIALFA where r.STR_CODIGORECIALFA == strRecintoD select r.STR_CODIGORECIALFA + " - " + r.STR_DESCRICAO).FirstOrDefault();
 
-                string alteracao = "";
+            string alteracao = "";
 
-                if (string.IsNullOrEmpty(lst.NM_NAVIO))
-                    lst.NM_NAVIO = "Navio não definido";
+            if (string.IsNullOrEmpty(lst.NM_NAVIO))
+                lst.NM_NAVIO = "Navio não definido";
 
-                string dsCorpo = "Alterar DUE e retificar no SISCOMEX:<br>";
-                dsCorpo += "<b>" + lst.NR_PROCESSO + "</b>";
-                dsCorpo += "<br><b>Referência:</b> " + lst.DS_REFERENCIA;
-                dsCorpo += "<br><b>Container(s):</b> " + container;
-                dsCorpo += "<br><b>DUE:</b> " + d.CD_NUMERO_DUE;
-                dsCorpo += "<br><b>Id DUE:</b> " + cdDue;
+            string dsCorpo = "Alterar DUE e retificar no SISCOMEX:<br>";
+            dsCorpo += "<b>" + lst.NR_PROCESSO + "</b>";
+            dsCorpo += "<br><b>Referência:</b> " + lst.DS_REFERENCIA;
+            dsCorpo += "<br><b>Container(s):</b> " + container;
+            dsCorpo += "<br><b>DUE:</b> " + d.CD_NUMERO_DUE;
+            dsCorpo += "<br><b>Id DUE:</b> " + cdDue;
             if ((recintoDAnt != recintoD) && (d.IC_LOCAL_EMBARQUE_TRANSPOSICAO_FRONTEIRA == null || d.IC_LOCAL_EMBARQUE_TRANSPOSICAO_FRONTEIRA == false))
             {
                 dsCorpo += "<br><b>Recinto Despacho:</b> " + recintoDAnt + " <b>=></b> " + recintoD;
                 alteracao = "desembaraço";
             }
             if (recintoEAnt != recintoE)
-                {
-                    dsCorpo += "<br><b>Recinto Embarque:</b> " + recintoEAnt + " <b>=></b> " + recintoE;
+            {
+                dsCorpo += "<br><b>Recinto Embarque:</b> " + recintoEAnt + " <b>=></b> " + recintoE;
 
-                    if (alteracao == "")
-                        alteracao = "embarque";
-                    else
-                        alteracao = "desembaraço/embarque";
+                if (alteracao == "")
+                    alteracao = "embarque";
+                else
+                    alteracao = "desembaraço/embarque";
+            }
+            dsCorpo += "<br><b>Alterado por:</b> " + nmUsuario;
+
+            string dsAssunto = "Alteração recinto " + alteracao + " – " + lst.NM_NAVIO + " - " + lst.NM_ENTIDADE;
+
+            string dsEmails = ConfigurationManager.AppSettings["emailDUERecinto"].ToString();
+
+            if (embarque)
+            {
+                int? cdUsuarioResp = (from ge in db.GRUPOCLI_ENTIDADE join g in db.GRUPOCLI on ge.CD_GRUPOCLI equals g.CD_GRUPOCLI where ge.CD_ENTIDADE == lst.CD_CLIENTE && g.SG_ANALISTA == true && g.SG_SETOR == "T" select g.CD_USUARIO).FirstOrDefault();
+                if (cdUsuarioResp != null && cdUsuarioResp != 0)
+                {
+                    string emailResp = (from u in db.USUARIO_CA join en in db.ENTIDADE on u.CD_ENTIDADE equals en.CD_ENTIDADE where u.CD_USUARIO == cdUsuarioResp select en.EMAIL_ENTIDADE).FirstOrDefault();
+                    dsEmails += ";" + emailResp;
                 }
-                dsCorpo += "<br><b>Alterado por:</b> " + nmUsuario;
-
-                string dsAssunto = "Alteração recinto " + alteracao + " – " + lst.NM_NAVIO + " - " + lst.NM_ENTIDADE;
-
-                string dsEmails = ConfigurationManager.AppSettings["emailDUERecinto"].ToString();
-
-                if (embarque)
-                {
-
-                    int? cdUsuarioResp = (from ge in db.GRUPOCLI_ENTIDADE join g in db.GRUPOCLI on ge.CD_GRUPOCLI equals g.CD_GRUPOCLI where ge.CD_ENTIDADE == lst.CD_CLIENTE && g.SG_ANALISTA == true && g.SG_SETOR == "T" select g.CD_USUARIO).FirstOrDefault();
-                    if (cdUsuarioResp != null && cdUsuarioResp != 0)
-                    {
-                        string emailResp = (from u in db.USUARIO_CA join en in db.ENTIDADE on u.CD_ENTIDADE equals en.CD_ENTIDADE where u.CD_USUARIO == cdUsuarioResp select en.EMAIL_ENTIDADE).FirstOrDefault();
-                        dsEmails += ";" + emailResp;
-                    }
 
                 string emailAlterou = (from u in db.USUARIO_CA join en in db.ENTIDADE on u.CD_ENTIDADE equals en.CD_ENTIDADE where u.CD_USUARIO == idUsuario select en.EMAIL_ENTIDADE).FirstOrDefault();
                 dsEmails += ";" + emailAlterou;
@@ -1451,13 +1480,12 @@ namespace TerminalRobo.Models
                 {
                     dsEmails += ";erika@sateldespachos.com.br;victormoreira@sateldespachos.com.br";
                 }
-
             }
 
-                Email email2 = new Email();
-                email2.EnviaEmailDUE(dsEmails, "", dsAssunto, dsCorpo);
+            Email email2 = new Email();
+            email2.EnviaEmailDUE(dsEmails, "", dsAssunto, dsCorpo);
 
-                enviado = true;
+            enviado = true;
 
             LOG_NOTIFICACAO_RECINTO Insertlog = new LOG_NOTIFICACAO_RECINTO();
             Insertlog.CD_DUE = cdDue;
