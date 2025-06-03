@@ -68,6 +68,8 @@ namespace TerminalRobo.DataBase
         public DbSet<BTP_IMPORTAR_EXCEL> BTP_IMPORTAR_EXCEL { get; set; }
         public DbSet<PARAMETRO_WEB> PARAMETRO_WEB { get; set; }
         public DbSet<DUE> DUE { get; set; }
+        public DbSet<GRUPOS_EMAIL> GRUPOS_EMAIL { get; set; }
+        public DbSet<LOG_EMAILS_ENVIADOS> LOG_EMAILS_ENVIADOS { get; set; }
     
         public virtual ObjectResult<Nullable<int>> SP_RETORNA_TERMINAL_DUE(Nullable<int> cD_PROCESSORESERVA)
         {

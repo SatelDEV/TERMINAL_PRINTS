@@ -8,19 +8,89 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Exchange.WebServices.Data;
+using TerminalRobo.DataBase;
 
 namespace roboEDI.Model
 {
     class Email
     {
-
+        WEBSATELEntities db = new WEBSATELEntities();
 
         private string dsAssunto;
         private string dsCorpoEmail;
         private List<string> anexos = new List<string>();
         public string From;
 
+        public bool DisparaEmailDraft(string ConteudoEmail, int? cliente, int? cdProcesso, string dsAssunto)
+        {
+            try
+            {
+                List<string> EmailResp;
+                string EmailResponsaveis;
+             
+                    int? cdGrupo = (from p in db.PROCESSOS
+                                    join u in db.USUARIO_CA on p.CD_RESPONSAVEL_BL equals u.CD_USUARIO into uLeft
+                                    from uOri in uLeft.DefaultIfEmpty()
+                                    join e in db.GRUPOS_EMAIL on uOri.CD_USUARIO equals e.CD_USUARIO into eLeft
+                                    from eOri in eLeft.DefaultIfEmpty()
+                                    where p.CD_PROCESSO == cdProcesso
+                                    select eOri.CD_GRUPO).FirstOrDefault();
 
+                    if (cdGrupo == null)
+                    {
+                        int? Usuariox = (from g in db.GRUPOCLI
+                                         join ge in db.GRUPOCLI_ENTIDADE on g.CD_GRUPOCLI equals ge.CD_GRUPOCLI
+                                         where ge.CD_ENTIDADE == cliente && g.SG_ANALISTA == true && g.SG_SETOR == "B"
+                                         select g.CD_USUARIO).FirstOrDefault();
+
+                        cdGrupo = (from gp in db.GRUPOS_EMAIL where gp.CD_USUARIO == Usuariox select gp.CD_GRUPO).FirstOrDefault();
+
+                    }
+
+
+                    
+
+
+                    EmailResp = (from g in db.GRUPOS_EMAIL
+                                 where g.CD_TIPO_GRUPO == 1 && g.CD_GRUPO == cdGrupo
+                                 select g.DS_EMAIL).ToList();
+
+
+                    if (EmailResp.Count == 0)
+                    {
+                        EmailResponsaveis = "suporte@sateldespachos.com.br;thyagosantos@sateldespachos.com.br;draftblminerva@sateldespachos.com.br";
+                        ConteudoEmail += "<br><br>Não foi possível encontrar o e-mail do responsável do processo em questão.";
+                    }
+                    else
+                    {
+                        EmailResponsaveis = string.Join(";", EmailResp);
+                    }
+
+
+                    LOG_EMAILS_ENVIADOS insertLog = new LOG_EMAILS_ENVIADOS();
+                    insertLog.DS_ASSUNTO = dsAssunto;
+                    insertLog.DS_MENSAGEM = ConteudoEmail;
+                    insertLog.DT_ENVIO = DateTime.Now;              
+                    insertLog.DS_EMAIL_DESTINO = EmailResponsaveis;
+                    db.LOG_EMAILS_ENVIADOS.Add(insertLog);
+                    db.SaveChanges();
+                
+                Email EnviaEmail = new Email();
+                EnviaEmail.EnviaEmailDUE(EmailResponsaveis,"", dsAssunto, ConteudoEmail);
+                return true;
+            }
+            catch (Exception)
+            {
+                LOG_EMAILS_ENVIADOS insertLog = new LOG_EMAILS_ENVIADOS();
+                insertLog.DS_ASSUNTO = "FALHA NO ENVIO: " + dsAssunto;
+                insertLog.DS_MENSAGEM = ConteudoEmail;
+                insertLog.DT_ENVIO = DateTime.Now;              
+                db.LOG_EMAILS_ENVIADOS.Add(insertLog);
+                db.SaveChanges();
+                return false;
+            }
+
+        }
         public void EnviaEmailDUE(string to, string copiaEmail, string sAssunto, string dsMsg)
         {
             dsAssunto = sAssunto;
@@ -32,6 +102,7 @@ namespace roboEDI.Model
             EnviarEmailComAnexo(to, copiaEmail);
         }
 
+       
         public void EnviaEmailEDI(string to,string copiaEmail, string sAssunto, string dsMsg, string arquivo)
         {
             dsAssunto = sAssunto;

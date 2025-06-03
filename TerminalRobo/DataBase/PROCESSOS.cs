@@ -249,6 +249,7 @@ namespace TerminalRobo.DataBase
         public Nullable<bool> IC_REVENDA { get; set; }
         public string DS_BUYER { get; set; }
         public Nullable<System.DateTime> DT_SUSPENSO { get; set; }
+        public Nullable<System.DateTime> DT_LIBEROU_CAMBIO { get; set; }
     
         public virtual ICollection<PROCESSORESERVA> PROCESSORESERVA { get; set; }
         public virtual LOCAIS LOCAIS { get; set; }

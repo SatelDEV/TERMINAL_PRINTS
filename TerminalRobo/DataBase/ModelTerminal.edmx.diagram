@@ -89,6 +89,8 @@
         <AssociationConnector Association="WEBSATELModel.FK_DUE_UNIDRF_DESPACHO" />
         <AssociationConnector Association="WEBSATELModel.FK_DUE_UNIDRF_EMBARQUE" />
         <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_DUE" />
+        <EntityTypeShape EntityType="WEBSATELModel.GRUPOS_EMAIL" Width="1.5" PointX="17.375" PointY="3.75" />
+        <EntityTypeShape EntityType="WEBSATELModel.LOG_EMAILS_ENVIADOS" Width="1.5" PointX="19.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
