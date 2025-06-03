@@ -1160,6 +1160,7 @@ warning 6002: The table/view 'WEBSATEL.dbo.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DE
           <Property Name="DS_BUYER" Type="varchar(max)" />
           <Property Name="DT_SUSPENSO" Type="datetime" />
           <Property Name="DT_LIBEROU_CAMBIO" Type="datetime" />
+          <Property Name="DT_ENVIO_EDI_NUMERO_BL" Type="datetime" />
         </EntityType>
         <EntityType Name="RECIALFA">
           <Key>
@@ -2779,6 +2780,7 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Name="DT_SUSPENSO" Type="DateTime" Precision="3" />
           <NavigationProperty Name="DUE" Relationship="WEBSATELModel.FK_DUE_PROCESSOS" FromRole="PROCESSOS" ToRole="DUE" />
           <Property Name="DT_LIBEROU_CAMBIO" Type="DateTime" Precision="3" />
+          <Property Name="DT_ENVIO_EDI_NUMERO_BL" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_PROCESSORESERVA_PROCESSOS">
           <End Role="PROCESSOS" Type="WEBSATELModel.PROCESSOS" Multiplicity="1" />
@@ -4817,6 +4819,7 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <EntitySetMapping Name="PROCESSOS">
             <EntityTypeMapping TypeName="WEBSATELModel.PROCESSOS">
               <MappingFragment StoreEntitySet="PROCESSOS">
+                <ScalarProperty Name="DT_ENVIO_EDI_NUMERO_BL" ColumnName="DT_ENVIO_EDI_NUMERO_BL" />
                 <ScalarProperty Name="DT_LIBEROU_CAMBIO" ColumnName="DT_LIBEROU_CAMBIO" />
                 <ScalarProperty Name="DT_SUSPENSO" ColumnName="DT_SUSPENSO" />
                 <ScalarProperty Name="DS_BUYER" ColumnName="DS_BUYER" />

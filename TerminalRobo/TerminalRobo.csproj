@@ -5,10 +5,7 @@
   <Import Project="packages\CefSharp.Common.131.3.50\build\CefSharp.Common.props" Condition="Exists('packages\CefSharp.Common.131.3.50\build\CefSharp.Common.props')" />
   <Import Project="packages\chromiumembeddedframework.runtime.win-x86.131.3.5\build\chromiumembeddedframework.runtime.win-x86.props" Condition="Exists('packages\chromiumembeddedframework.runtime.win-x86.131.3.5\build\chromiumembeddedframework.runtime.win-x86.props')" />
   <Import Project="packages\chromiumembeddedframework.runtime.win-x64.131.3.5\build\chromiumembeddedframework.runtime.win-x64.props" Condition="Exists('packages\chromiumembeddedframework.runtime.win-x64.131.3.5\build\chromiumembeddedframework.runtime.win-x64.props')" />
-  <Import Project="..\packages\CefSharp.WinForms.75.1.143\build\CefSharp.WinForms.props" Condition="Exists('..\packages\CefSharp.WinForms.75.1.143\build\CefSharp.WinForms.props')" />
-  <Import Project="..\packages\CefSharp.Common.75.1.143\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.75.1.143\build\CefSharp.Common.props')" />
-  <Import Project="..\packages\cef.redist.x64.75.1.14\build\cef.redist.x64.props" Condition="Exists('..\packages\cef.redist.x64.75.1.14\build\cef.redist.x64.props')" />
-  <Import Project="..\packages\cef.redist.x86.75.1.14\build\cef.redist.x86.props" Condition="Exists('..\packages\cef.redist.x86.75.1.14\build\cef.redist.x86.props')" />
+  <Import Project="..\packages\CefSharp.WinForms.131.3.50\build\CefSharp.WinForms.props" Condition="Exists('..\packages\CefSharp.WinForms.131.3.50\build\CefSharp.WinForms.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -105,12 +102,10 @@
       <HintPath>packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.WebServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.WebServices.Auth, Version=15.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.Auth.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.Auth.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -282,6 +277,9 @@
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\RESERVAS.cs">
+      <DependentUpon>ModelTerminal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\SP_CONSULTA_DEPOSITO_USUARIO_IC_ROBO_Result.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\SP_CONSULTA_DEPOSITO_USUARIO_Result.cs">
@@ -530,21 +528,15 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\cef.redist.x86.75.1.14\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.75.1.14\build\cef.redist.x86.props'))" />
-    <Error Condition="!Exists('..\packages\cef.redist.x64.75.1.14\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.75.1.14\build\cef.redist.x64.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Common.75.1.143\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.75.1.143\build\CefSharp.Common.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Common.75.1.143\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.75.1.143\build\CefSharp.Common.targets'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.WinForms.75.1.143\build\CefSharp.WinForms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.WinForms.75.1.143\build\CefSharp.WinForms.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.WinForms.75.1.143\build\CefSharp.WinForms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.WinForms.75.1.143\build\CefSharp.WinForms.targets'))" />
+    <Error Condition="!Exists('packages\cef.redist.x64.120.2.7\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\cef.redist.x64.120.2.7\build\cef.redist.x64.props'))" />
+    <Error Condition="!Exists('packages\cef.redist.x86.120.2.7\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\cef.redist.x86.120.2.7\build\cef.redist.x86.props'))" />
     <Error Condition="!Exists('packages\chromiumembeddedframework.runtime.win-x64.131.3.5\build\chromiumembeddedframework.runtime.win-x64.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\chromiumembeddedframework.runtime.win-x64.131.3.5\build\chromiumembeddedframework.runtime.win-x64.props'))" />
     <Error Condition="!Exists('packages\chromiumembeddedframework.runtime.win-x86.131.3.5\build\chromiumembeddedframework.runtime.win-x86.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\chromiumembeddedframework.runtime.win-x86.131.3.5\build\chromiumembeddedframework.runtime.win-x86.props'))" />
     <Error Condition="!Exists('packages\CefSharp.Common.131.3.50\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CefSharp.Common.131.3.50\build\CefSharp.Common.props'))" />
     <Error Condition="!Exists('packages\CefSharp.Common.131.3.50\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CefSharp.Common.131.3.50\build\CefSharp.Common.targets'))" />
-    <Error Condition="!Exists('packages\cef.redist.x64.120.2.7\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\cef.redist.x64.120.2.7\build\cef.redist.x64.props'))" />
-    <Error Condition="!Exists('packages\cef.redist.x86.120.2.7\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\cef.redist.x86.120.2.7\build\cef.redist.x86.props'))" />
   </Target>
-  <Import Project="..\packages\CefSharp.Common.75.1.143\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.75.1.143\build\CefSharp.Common.targets')" />
-  <Import Project="..\packages\CefSharp.WinForms.75.1.143\build\CefSharp.WinForms.targets" Condition="Exists('..\packages\CefSharp.WinForms.75.1.143\build\CefSharp.WinForms.targets')" />
+  <Import Project="..\packages\CefSharp.Common.131.3.50\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.131.3.50\build\CefSharp.Common.targets')" />
+  <Import Project="..\packages\CefSharp.WinForms.131.3.50\build\CefSharp.WinForms.targets" Condition="Exists('..\packages\CefSharp.WinForms.131.3.50\build\CefSharp.WinForms.targets')" />
   <Import Project="packages\CefSharp.Common.131.3.50\build\CefSharp.Common.targets" Condition="Exists('packages\CefSharp.Common.131.3.50\build\CefSharp.Common.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
