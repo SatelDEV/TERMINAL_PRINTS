@@ -21,6 +21,7 @@ using System.Net.Http;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using static TerminalRobo.Models.ItapoaAPI;
 
 namespace TerminalRobo.Models
 {
@@ -41,13 +42,6 @@ namespace TerminalRobo.Models
         }
 
 
-        /*
-        public bool OnSelectClientCertificate(IWebBrowser browserControl, IBrowser browser, bool isProxy, string host, int port, X509Certificate2Collection certificates, ISelectClientCertificateCallback callback)
-        {
-            callback.Dispose();
-            return false;
-        }
-        */
         public bool OnBeforeUnloadDialog(IWebBrowser browserControl, IBrowser browser, string message, bool isReload, IJsDialogCallback callback)
         {
             return true;
@@ -62,24 +56,7 @@ namespace TerminalRobo.Models
         {
 
         }
-        /*
-        public bool OnSelectClientCertificate(IWebBrowser browserControl, IBrowser browser, bool isProxy, string host, int port, X509Certificate2Collection certificates, ISelectClientCertificateCallback callback)
-        {
-
-            var control = (Control)browserControl;
-
-            control.InvokeOnUiThreadIfRequired(delegate ()
-            {
-                var selectedCertificateCollection = X509Certificate2UI.SelectFromCollection(certificates, "Certificates Dialog", "Select Certificate for authentication", X509SelectionFlag.SingleSelection);
-
-                //X509Certificate2UI.SelectFromCollection returns a collection, we've used SingleSelection, so just take the first
-                //The underlying CEF implementation only accepts a single certificate
-                callback.Select(selectedCertificateCollection[0]);
-            });
-
-            return true;
-        }
-        */
+   
     }
 
     public class CookieVisitor : ICookieVisitor
@@ -105,28 +82,6 @@ namespace TerminalRobo.Models
             // Nada a limpar
         }
     }
-
-    /*
-    public class WinFormsRequestHandler : RequestHandler
-    {
-        public bool OnSelectClientCertificate(IWebBrowser browserControl, IBrowser browser, bool isProxy, string host, int port, X509Certificate2Collection certificates, ISelectClientCertificateCallback callback)
-        {
-            
-            var control = (Control)browserControl;
-
-            control.InvokeOnUiThreadIfRequired(delegate()
-            {
-                var selectedCertificateCollection = X509Certificate2UI.SelectFromCollection(certificates, "Certificates Dialog", "Select Certificate for authentication", X509SelectionFlag.SingleSelection);
-
-                //X509Certificate2UI.SelectFromCollection returns a collection, we've used SingleSelection, so just take the first
-                //The underlying CEF implementation only accepts a single certificate
-                callback.Select(selectedCertificateCollection[0]);
-            });
-            
-            return false;
-        }
-       
-    }*/
 
     class Navegacao
     {
@@ -394,35 +349,11 @@ namespace TerminalRobo.Models
             try
             {
                 do
-                {
-                    /*
-                    chromeBrowser.RenderProcessMessageHandler = new RenderProcessMessageHandler();
+                {               
 
-                    //Wait for the page to finish loading (all resources will have been loaded, rendering is likely still happening)
-                    chromeBrowser.LoadingStateChanged += (sender, args) =>
-                    {
-                        //Wait for the Page to finish loading
-                        if (args.IsLoading == false)
-                        {
-                            chromeBrowser.ExecuteScriptAsync("alert('All Resources Have Loaded');");
-                        }
-                    };
-
-                    //Wait for the MainFrame to finish loading
-                    chromeBrowser.FrameLoadEnd += (sender, args) =>
-                    {
-                        //Wait for the MainFrame to finish loading
-                        if (args.Frame.IsMain)
-                        {
-                            args.Frame.ExecuteJavaScriptAsync("alert('MainFrame finished loading');");
-                        }
-                    };
-                     */
-
-                    //chromeBrowser.ExecuteScriptAsync("document.location ='" + siteEmbraport + "';");
+                
                     chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='" + siteEmbraport + "';");
-                    //chromeBrowser.Load("document.location ='" + siteEmbraport + "';");
-                    //chromeBrowser.Load(siteEmbraport);
+               
                     bCarregado = false;
                     bCarregado = AguardaPaginaCarregar();
                     //Verifica se conseguiu acessar a página.
@@ -443,11 +374,7 @@ namespace TerminalRobo.Models
                     chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('UserName').value = '" + sUsuarioEmbraport + "';");
                     chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('Password').value = '" + sSenhaEmbraport + "';");
                     chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementById('btn-login').click();");
-
-
-                    //chromeBrowser.ExecuteScriptAsync("document.getElementById('UserName').value = '" + sUsuarioEmbraport + "';");
-                    //chromeBrowser.ExecuteScriptAsync("document.getElementById('Password').value = '" + sSenhaEmbraport + "';");
-                    //chromeBrowser.ExecuteScriptAsync("document.getElementById('btn-login').click();");
+               
                     bCarregado = AguardaPaginaCarregar();
                     int tmp = 0;
                     while (tmp < 25)
@@ -761,26 +688,7 @@ namespace TerminalRobo.Models
             chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.location ='https://www.sateldespachos.com.br';");
         }
         #endregion
-        /*
-        public bool EntrarSite(int val) {
-            if (val == (int)site.Santosbrasil) {
-                SantosBrasil santosbrasil = new SantosBrasil();
-                santosbrasil.EntrarPagina(ref tsStatus, ref chromeBrowser, false);
-            }
-
-            return true;
-        }
-        public bool ConsultarContainer(string nrContainer, int val) {
-
-            if (val == (int)site.Santosbrasil)
-            {
-                SantosBrasil santosbrasil = new SantosBrasil();
-                santosbrasil.ConsultarContainer(nrContainer, ref tsStatus, ref chromeBrowser, false);
-            }
-
-            return true;
-        } 
-        */
+     
         #region Metodos BTP
 
 
@@ -798,8 +706,15 @@ namespace TerminalRobo.Models
             bCarregado = false;
             string url = "";
 
+            string cookieParametro = ConfigurationManager.AppSettings["CookieLoginBTP"].ToString();
 
-            string cookieValor = ConfigurationManager.AppSettings["CookieLoginBTP"].ToString();
+
+            var da = new Dados();
+
+            string cookieValor = da.ParametroCookieBTP(int.Parse(cookieParametro));
+
+
+
 
             var cookieManager = Cef.GetGlobalCookieManager();
             CefSharp.Cookie idpCookie = new CefSharp.Cookie // <== Especificando CefSharp.Cookie
@@ -846,9 +761,8 @@ namespace TerminalRobo.Models
                 Thread.Sleep(12000);
                 Application.DoEvents();
             }
-
-   
-
+             
+            
 
 
 
@@ -861,7 +775,6 @@ namespace TerminalRobo.Models
             Application.DoEvents();
 
             chromeBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.querySelectorAll('mat-dialog-container button.mat-button .mat-button-wrapper')[0].click();");
-
 
 
 
@@ -1393,19 +1306,7 @@ namespace TerminalRobo.Models
                 dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "SANTOS BRASIL", DateTime.Now, "ESGOTADO TENTATIVAS (20). CONTAINER NÃO ENCONTRADO", novoDado);
                 string nrProcesso = "E-" + conteudo.CD_NUMERO_PROCESSO.Substring(2, 6) + "/" + conteudo.CD_NUMERO_PROCESSO.Substring(0, 2);
                 chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('btnFecha close')[2].click();");
-                /*
-                novoDado.NR_CONTAINER = conteudo.NR_CONTAINER;
-                novoDado.DT_CONTAINER = conteudo.DT_CONTAINER;
-                novoDado.DT_CONSULTA = DateTime.Now;
-                novoDado.CD_PROCESSO = conteudo.CD_PROCESSO;
-                novoDado.CD_NUMERO_PROCESSO = nrProcesso;
-                novoDado.DS_STATUS = "NÃO ENCONTROU";
-                novoDado.NM_TERMINAL = "SANTOS BRASIL";
-                novoDado.NM_NAVIO = conteudo.NM_NAVIO;
-                novoDado.NR_BOOKING = conteudo.NR_BOOKING;
-                 
-                dados.InsereConsulta(novoDado);
-                */
+             
                 return false;
             }
             if (bAlert)
@@ -1414,19 +1315,7 @@ namespace TerminalRobo.Models
                 dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, "SANTOS BRASIL", DateTime.Now, "CONTAINER NÃO ENCONTRADO", novoDado);
                 string nrProcesso = "E-" + conteudo.CD_NUMERO_PROCESSO.Substring(2, 6) + "/" + conteudo.CD_NUMERO_PROCESSO.Substring(0, 2);
                 chromeBrowser.GetBrowser().MainFrame.EvaluateScriptAsync("document.getElementsByClassName('btnFecha close')[2].click();");
-                /*
-                novoDado.NR_CONTAINER = conteudo.NR_CONTAINER;
-                novoDado.DT_CONTAINER = conteudo.DT_CONTAINER;
-                novoDado.DT_CONSULTA = DateTime.Now;
-                novoDado.CD_PROCESSO = conteudo.CD_PROCESSO;
-                novoDado.CD_NUMERO_PROCESSO = nrProcesso;
-                novoDado.DS_STATUS = "NÃO ENCONTROU";
-                novoDado.NM_TERMINAL = "SANTOS BRASIL";
-                novoDado.NM_NAVIO = conteudo.NM_NAVIO;
-                novoDado.NR_BOOKING = conteudo.NR_BOOKING;
-                 
-                dados.InsereConsulta(novoDado);
-                */
+          
                 return true;
             }
 
@@ -1937,10 +1826,252 @@ namespace TerminalRobo.Models
         }
         #endregion
 
+
+
+
         #region Metodo Itapoa
+        public bool ConsultarContainerItapoa(List<ListaDeCampos> ListaContainers, ref List<int> lstVA)
+        {
+
+            try
+            {
+
+                var ita = new ItapoaAPI();
+
+                var token = ita.GetBearerToken();
+
+
+                if (!string.IsNullOrEmpty(token))
+                {          
+                    List<Content> containersRetornados = ita.GetAllContainerEmbarcado(token);             
+
+                    if (containersRetornados != null)
+                    {
+                        string nmTerminal = "ITAPOA";
+
+                        foreach (var containerConsultado in containersRetornados)
+                        {
+                            var conteudo = ListaContainers.Where(y => y.NR_CONTAINER == containerConsultado.container).FirstOrDefault();
+                            if (conteudo != null)
+                            {
+                                lstVA.Add(conteudo.CD_VIAGEM_ARMADOR);
+
+
+                                string nrProcesso = "E-" + conteudo.CD_NUMERO_PROCESSO.Substring(2, 6) + "/" + conteudo.CD_NUMERO_PROCESSO.Substring(0, 2);
+                                string terminalSistema = "";
+
+                                if (conteudo.CD_TERMINAL_EMBARQUE == idTermEmbraport)
+                                {
+                                    terminalSistema = "DP WORLD";
+                                }
+                                else if (conteudo.CD_TERMINAL_EMBARQUE == idTermSB)
+                                {
+                                    terminalSistema = "SANTOS BRASIL";
+                                }
+                                else if (conteudo.CD_TERMINAL_EMBARQUE == idBTP)
+                                {
+                                    terminalSistema = "BTP";
+                                }
+                                else if (conteudo.CD_TERMINAL_EMBARQUE == idTermVilaConde)
+                                {
+                                    terminalSistema = "VILA DO CONDE";
+                                }
+                                else if (conteudo.CD_TERMINAL_EMBARQUE == idTermItajai)
+                                {
+                                    terminalSistema = "ITAJAI";
+                                }
+                                else if (conteudo.CD_TERMINAL_EMBARQUE == idTermItapoa)
+                                {
+                                    terminalSistema = "ITAPOA";
+                                }
+                                else if (conteudo.CD_TERMINAL_EMBARQUE == idTermTCP)
+                                {
+                                    terminalSistema = "TCP";
+                                }
+
+                                ListaDeCampos dadosAtualizado = dados.atualizaDados(conteudo.CD_PROCESSORESERVA);
+                                conteudo.NR_BOOKING = dadosAtualizado.NR_BOOKING;
+                                conteudo.NM_NAVIO = dadosAtualizado.NM_NAVIO;
+
+
+
+
+                                if (containerConsultado.bookingNbr.Contains(conteudo.NR_BOOKING) && containerConsultado.vesselObName.ToUpper().Contains(conteudo.NM_NAVIO))
+                                {
+                                    dados.AtualizaDataDeposito(conteudo.CD_PROCESSO, conteudo.CD_PROCESSORESERVA, conteudo.CD_PROCESSORESERVACONTAINER, containerConsultado.timeIn, containerConsultado.timeLoad);
+
+
+                                    if (containerConsultado.timeIn != null)
+                                    {
+                                        if (containerConsultado.timeLoad != null)
+                                        {
+                                            novoDado.CD_PROCESSO = conteudo.CD_PROCESSO;
+                                            novoDado.DT_CONTAINER = conteudo.DT_CONTAINER;
+                                            novoDado.CD_NUMERO_PROCESSO = nrProcesso;
+                                            novoDado.DS_REFERENCIA_CLIENTE = conteudo.DS_REFERENCIA_CLIENTE;
+                                            novoDado.NR_CONTAINER = conteudo.NR_CONTAINER;
+                                            novoDado.NM_TERMINAL = nmTerminal;
+                                            novoDado.NR_BOOKING = conteudo.NR_BOOKING;
+                                            novoDado.NM_NAVIO = conteudo.NM_NAVIO;
+
+                                            novoDado.NR_BOOKING_TERMINAL = containerConsultado.bookingNbr;
+                                            novoDado.NM_NAVIO_TERMINAL = containerConsultado.vesselObName.ToUpper();
+                                            novoDado.NR_DUE = conteudo.NR_DUE;
+                                            novoDado.NR_DUE_TERMINAL = containerConsultado.ddeDesNbr;
+
+                                            novoDado.DT_DEPOSITO = containerConsultado.timeIn;
+                                            novoDado.DT_EMBARQUE = containerConsultado.timeLoad;
+                                            novoDado.DS_STATUS = "EMBARCADO";
+                                            novoDado.NM_TERMINAL_SISTEMA = terminalSistema;
+
+                                            novoDado.NM_PROCESSO_STATUS2 = conteudo.NM_PROCESSO_STATUS2;
+                                            novoDado.IC_TIPO = "E";
+                                            novoDado.DT_ETA = conteudo.DT_ETA;
+
+                                            //novoDado.DS_LACRE_AGENCIA_TERMINAL = containerConsultado.lacreArmadorInsp ?? "";
+                                            novoDado.DS_LACRE_AGENCIA = conteudo.DS_LACRE_AGENCIA ?? "";
+                                            //novoDado.DS_LACRE_SIF_TERMINAL = containerConsultado.lacreSifDecInsp ?? "";
+                                            novoDado.DS_LACRE_SIF = conteudo.DS_LACRE_SIF ?? "";
+
+                                            if (conteudo.IC_TIPO != "C")
+                                                dados.InsereConsulta(novoDado);
+                                            dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, nmTerminal, DateTime.Now, "CONTAINER EMBARCADO", novoDado);
+                                        }
+                                        else
+                                        {
+                                            string status = "OK - " + containerConsultado.ddeDesNbr;
+                                            novoDado.CD_PROCESSO = conteudo.CD_PROCESSO;
+                                            novoDado.DT_CONTAINER = conteudo.DT_CONTAINER;
+                                            novoDado.CD_NUMERO_PROCESSO = nrProcesso;
+                                            novoDado.DS_REFERENCIA_CLIENTE = conteudo.DS_REFERENCIA_CLIENTE;
+                                            novoDado.NR_CONTAINER = conteudo.NR_CONTAINER;
+                                            novoDado.NM_TERMINAL = nmTerminal;
+                                            novoDado.NR_BOOKING = conteudo.NR_BOOKING;
+                                            novoDado.NM_NAVIO = conteudo.NM_NAVIO;
+
+                                            novoDado.NR_BOOKING_TERMINAL = containerConsultado.bookingNbr;
+                                            novoDado.NM_NAVIO_TERMINAL = containerConsultado.vesselObName.ToUpper();
+                                            novoDado.NR_DUE = conteudo.NR_DUE;
+                                            novoDado.NR_DUE_TERMINAL = containerConsultado.ddeDesNbr;
+
+                                            novoDado.DT_DEPOSITO = containerConsultado.timeIn;
+                                            novoDado.DT_EMBARQUE = containerConsultado.timeLoad;
+                                            if (conteudo.CD_TERMINAL_EMBARQUE != 3)
+                                                status = "TERMINAL DIVERGENTE";
+                                            novoDado.DS_STATUS = status;
+                                            novoDado.DT_ETA = conteudo.DT_ETA;
+
+                                            //novoDado.DS_LACRE_AGENCIA_TERMINAL = containerConsultado.LacreArmador ?? "";
+                                            novoDado.DS_LACRE_AGENCIA = conteudo.DS_LACRE_AGENCIA ?? "";
+                                            //novoDado.DS_LACRE_SIF_TERMINAL = containerConsultado.LacreSif ?? "";
+                                            novoDado.DS_LACRE_SIF = conteudo.DS_LACRE_SIF ?? "";
+
+                                            novoDado.NM_PROCESSO_STATUS2 = conteudo.NM_PROCESSO_STATUS2;
+                                            novoDado.NM_TERMINAL_SISTEMA = terminalSistema;
+                                            if (conteudo.IC_TIPO == "D")
+                                                dados.InsereConsulta(novoDado);
+
+                                            if (conteudo.IC_TIPO == "C")
+                                            {
+                                                status = "CONTAINER DESEMBARCADO";
+                                                novoDado.DS_STATUS = status;
+                                                dados.InsereConsulta(novoDado);
+                                            }
+
+                                            dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, nmTerminal, DateTime.Now, status, novoDado);
+                                        }
+                                        //if (!dados.retornaLacreValidado(conteudo.CD_PROCESSORESERVACONTAINER))
+                                        //{
+                                        //    ValidaDivergenciaLacres(novoDado, conteudo.CD_CLIENTE);
+                                        //    dados.AtualizaLacreValidado(conteudo.CD_PROCESSORESERVACONTAINER);
+                                        //}
+                                        LimpaDados();
+                                    }
+                                    else
+                                    {
+                                        dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, nmTerminal, DateTime.Now, "DADOS OK, MAS NÃO DEPOSITOU" + containerConsultado.ddeDesNbr, novoDado);
+                                    }
+
+
+                                }
+                                else
+                                {
+                                    string status = "DADOS DIVERGENTE";
+
+                                    novoDado.CD_PROCESSO = conteudo.CD_PROCESSO;
+                                    novoDado.DT_CONTAINER = conteudo.DT_CONTAINER;
+                                    novoDado.CD_NUMERO_PROCESSO = nrProcesso;
+                                    novoDado.DS_REFERENCIA_CLIENTE = conteudo.DS_REFERENCIA_CLIENTE;
+                                    novoDado.NR_CONTAINER = conteudo.NR_CONTAINER;
+                                    novoDado.NM_TERMINAL = nmTerminal;
+                                    novoDado.NR_BOOKING = conteudo.NR_BOOKING;
+                                    novoDado.NM_NAVIO = conteudo.NM_NAVIO;
+
+                                    novoDado.NR_BOOKING_TERMINAL = containerConsultado.bookingNbr;
+                                    novoDado.NM_NAVIO_TERMINAL = containerConsultado.vesselObName.ToUpper();
+                                    novoDado.NR_DUE = conteudo.NR_DUE;
+                                    novoDado.NR_DUE_TERMINAL = containerConsultado.ddeDesNbr;
+
+                                    novoDado.DT_EMBARQUE = containerConsultado.timeLoad;
+                                    novoDado.DT_DEPOSITO = containerConsultado.timeIn;
+                                    novoDado.DS_STATUS = status + " - " + containerConsultado.ddeDesNbr;
+                                    if (conteudo.CD_TERMINAL_EMBARQUE != 220)
+                                    {
+                                        status = "TERMINAL DIVERGENTE";
+                                        novoDado.DS_STATUS = status;
+                                    }
+                                    novoDado.NM_TERMINAL_SISTEMA = terminalSistema;
+                                    novoDado.NM_PROCESSO_STATUS2 = conteudo.NM_PROCESSO_STATUS2;
+                                    novoDado.IC_TIPO = "D";
+
+                                    novoDado.DT_ETA = conteudo.DT_ETA;
+
+                                    //novoDado.DS_LACRE_AGENCIA_TERMINAL = containerConsultado.LacreArmador ?? "";
+                                    novoDado.DS_LACRE_AGENCIA = conteudo.DS_LACRE_AGENCIA ?? "";
+                                    //novoDado.DS_LACRE_SIF_TERMINAL = containerConsultado.LacreSif ?? "";
+                                    novoDado.DS_LACRE_SIF = conteudo.DS_LACRE_SIF ?? "";
+
+                                    if (conteudo.IC_TIPO == "C" && containerConsultado.timeLoad == null)
+                                    {
+                                        status = "CONTAINER DESEMBARCADO E DADOS DIVERGENTE";
+                                        novoDado.DS_STATUS = status;
+                                        //dados.InsereConsulta(novoDado);
+                                    }
+                                    dados.InsereConsulta(novoDado);
+                                    /*if (conteudo.IC_TIPO != "C")
+                                        dados.InsereConsulta(novoDado);*/
+                                    dados.AtualizaDataDeposito(conteudo.CD_PROCESSO, conteudo.CD_PROCESSORESERVA, conteudo.CD_PROCESSORESERVACONTAINER, containerConsultado.timeIn, containerConsultado.timeLoad);
+                                    dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, nmTerminal, DateTime.Now, status + " - " + containerConsultado.ddeDesNbr, novoDado);
+                                    //if (!dados.retornaLacreValidado(conteudo.CD_PROCESSORESERVACONTAINER))
+                                    //{
+                                    //    ValidaDivergenciaLacres(novoDado, conteudo.CD_CLIENTE);
+                                    //    dados.AtualizaLacreValidado(conteudo.CD_PROCESSORESERVACONTAINER);
+                                    //}
+                                    LimpaDados();
+
+                                }
+                            }
+                        }
+                    }
+
+                    }               
+                }
+                catch
+                {
+                    throw;
+                }              
+
+            return true;
+        }
 
 
         #endregion
+
+
+
+
+
+
 
 
         public bool ConsultarContainerParanagua(List<ListaDeCampos> ListaContainers, ref List<int> lstVA)
@@ -2128,19 +2259,7 @@ namespace TerminalRobo.Models
                                     }
                                 }
                                 else
-                                {
-                                    //if (containerConsultado.DataChegada != null) COMENTADO PARA PARANAGUA
-                                    {
-                                        //if (containerConsultado.DataChegada > conteudo.DT_ABERTURA.Value.AddDays(-7) || containerConsultado.Booking.Contains(conteudo.NR_BOOKING.Trim())) COMENTADO PARA PARANAGUA
-                                        {
-                                            //    //Não embarcou ainda e os dados estão divergente, então grava os dados para avisar o responsável
-                                            //    if (dtAux != null)
-                                            //    {
-                                            //        //Container consta como depositado no terminal de embarque então grava no sistema que já está ok
-
-                                            //        dados.AtualizaDataDeposito(conteudo.CD_PROCESSO, conteudo.CD_PROCESSORESERVA, conteudo.CD_PROCESSORESERVACONTAINER, dtAux, dtEmbarque);
-                                            //        dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, nmTerminal, DateTime.Now, "DADOS OK PARA PROTOCOLAR", novoDado);
-                                            //    }
+                                {                                   
                                             string status = "DADOS DIVERGENTE";
 
                                             novoDado.CD_PROCESSO = conteudo.CD_PROCESSO;
@@ -2193,12 +2312,7 @@ namespace TerminalRobo.Models
                                                 dados.AtualizaLacreValidado(conteudo.CD_PROCESSORESERVACONTAINER);
                                             }
                                             LimpaDados();
-                                        }
-                                        //else COMENTADO PARA PARANAGUA
-                                        //{
-                                        //    dados.GeraLogContainerConsultado(conteudo.CD_PROCESSO, conteudo.NR_CONTAINER, nmTerminal, DateTime.Now, "NÃO CONFERE COM OS DADOS DO CONTAINER.", novoDado);
-                                        //}
-                                    }
+                                      
                                 }
                             }
                         }
@@ -4422,7 +4536,7 @@ namespace TerminalRobo.Models
                         d.GeraLogLacreDivergente(dados, cdEntidade);
 
                         Email envioEmail = new Email();
-                        bool Enviado = envioEmail.DisparaEmailDraft(corpo, cdEntidade, dados.CD_PROCESSO, "LACRE DIVERGENTE NO TERMINAL - " + dados.DS_REFERENCIA_CLIENTE + " - " + d.retornaPaisDestino(dados.CD_PROCESSO));
+                        //bool Enviado = envioEmail.DisparaEmailDraft(corpo, cdEntidade, dados.CD_PROCESSO, "LACRE DIVERGENTE NO TERMINAL - " + dados.DS_REFERENCIA_CLIENTE + " - " + d.retornaPaisDestino(dados.CD_PROCESSO));
 
                         string to = "";
                         if (cdMinerva.FirstOrDefault(x => x == cdEntidade) != 0 && cdEntidade != 9620)

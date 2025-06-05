@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using TerminalRobo.Models;
 using System.Runtime.InteropServices;
 using System.Configuration;
+using static TerminalRobo.Models.ItapoaAPI;
 
 namespace TerminalRobo
 {
@@ -179,16 +180,16 @@ namespace TerminalRobo
 
             bool confirmaEmbarq = chbConfirma.Checked;
             tmrConsulta.Enabled = false;
-            //if (IniciarConsultaItapoa(confirmaEmbarq))
-            //{
-            //    if (icEnviarEmailAnalista == "S")
-            //    {
-            //        //Verifica se existe divergências para enviar aos analistas do trafego
-            //        navegar.GerarPlanilhaExcelCliente(icrobo);
+            if (IniciarConsultaItapoa(confirmaEmbarq))
+            {
+                if (icEnviarEmailAnalista == "S")
+                {
+                    //Verifica se existe divergências para enviar aos analistas do trafego
+                    navegar.GerarPlanilhaExcelCliente(icrobo);
             //        //Antes de iniciar a consulta limpa a tabela temporária
-            //        dados.LimparTabelatemporaria(true);
-            //    }
-            //}
+                    dados.LimparTabelatemporaria(true);
+                }
+            }
             tmrConsulta.Enabled = true;
         }
 
@@ -408,16 +409,17 @@ namespace TerminalRobo
            
         }
 
-        private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = true)
+        private bool IniciarConsultaBTP(bool confirmarEmbarque, bool TerminalDivergencia = false, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
         {
 
             string Grupo = ConfigurationManager.AppSettings["Grupo"].ToString();
 
-            string GrupoNao = ConfigurationManager.AppSettings["Grupo_Nao"].ToString();   
+            string GrupoNao = ConfigurationManager.AppSettings["Grupo_Nao"].ToString();
 
-            
 
-             bool bCarregado = false;
+          
+
+            bool bCarregado = false;
             List<ListaDeCampos> lstConsulta = new List<ListaDeCampos>();
             List<int> lstVA = new List<int>();
 
@@ -686,55 +688,51 @@ namespace TerminalRobo
             return bCarregado;
         }
 
-        //private bool IniciarConsultaItapoa(bool confirmarEmbarque, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
-        //{
-        //    bool bCarregado = false;
+      
+        private bool IniciarConsultaItapoa(bool confirmarEmbarque, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
+        {
+            bool bCarregado = false;
 
-        //    List<ListaDeCampos> lstConsulta = new List<ListaDeCampos>();
-        //    List<int> lstVA = new List<int>();
+            List<ListaDeCampos> lstConsulta = new List<ListaDeCampos>();
+            List<int> lstVA = new List<int>();
 
-        //    if (confirmarEmbarque)
-        //        lstConsulta = dados.ConsultaContainerEmbarcados(idTermItapoa, txtContainer.Text == "" ? null : txtContainer.Text);
-        //    else
-        //    {
-        //        if (EmbarqueAntesPrevisto)
-        //            lstConsulta = dados.ConsultaContainerTerminalEmbarque(idTermItapoa, txtContainer.Text == "" ? null : txtContainer.Text);
-        //        else
-        //            lstConsulta = dados.ConsultaContainerDeadLineDia(idTermItapoa, txtContainer.Text == "" ? null : txtContainer.Text);
-        //    }
+            if (confirmarEmbarque)
+                lstConsulta = dados.ConsultaContainerEmbarcados(idTermItapoa, txtContainer.Text == "" ? null : txtContainer.Text);
+            else
+            {
+                if (EmbarqueAntesPrevisto)
+                    lstConsulta = dados.ConsultaContainerTerminalEmbarque(idTermItapoa, txtContainer.Text == "" ? null : txtContainer.Text);
+                else
+                    lstConsulta = dados.ConsultaContainerDeadLineDia(idTermItapoa, txtContainer.Text == "" ? null : txtContainer.Text);
+            }
 
-        //    if (lstConsulta.Count > 0)
-        //    {
-        //        tsContainer.Text = "0 de " + lstConsulta.Count + " CONTAINERS";
-        //        //Loga na página
-        //        bCarregado = navegar.EntrarPaginaItapoa();
-        //        if (bCarregado)
-        //        {
-        //            //Consulta o Container
-        //            bool bPrimeiraConsulta = false;
-        //            int i = 1;
-        //            foreach (var conteudo in lstConsulta)
-        //            {
-        //                tsContainer.Text = i + " de " + lstConsulta.Count + " CONTAINERS";
-        //                Thread.Sleep(300);
-        //                Application.DoEvents();
-        //                if (!navegar.ConsultarContainerItapoa(conteudo, !bPrimeiraConsulta))
-        //                {
-        //                    //Caso de algum erro na consulta tenta logar novamente no site
-        //                    navegar.EntrarPaginaItapoa();
-        //                }
-        //                bPrimeiraConsulta = true;
-        //                if (confirmarEmbarque)
-        //                    lstVA.Add(conteudo.CD_VIAGEM_ARMADOR);
-        //                i++;
-        //            }
-        //            tsContainer.Text = "AGUARDANDO";
-        //            navegar.deslogandoItapoa();
-        //            dados.EmbarqueConfirmado(lstVA);
-        //        }
-        //    }
-        //    return bCarregado;
-        //}
+            //int[] cdMinerva = dados.retornaCodigoMinerva();
+            //lstConsulta = lstConsulta.Where(x => cdMinerva.Contains(x.CD_CLIENTE)).ToList();
+
+            if (lstConsulta.Count > 0)
+            {
+                tsContainer.Text = lstConsulta.Count + " CONTAINERS";
+                //Consulta o Container
+
+                Thread.Sleep(300);
+                Application.DoEvents();
+                if (!navegar.ConsultarContainerItapoa(lstConsulta, ref lstVA))
+                {
+
+                }
+                if (!confirmarEmbarque)
+                    lstVA = new List<int>();
+
+                tsContainer.Text = "AGUARDANDO";
+                dados.EmbarqueConfirmado(lstVA);
+            }
+            bCarregado = true;
+
+            return bCarregado;
+        }
+
+
+
 
         private bool IniciarConsultaParanagua(bool confirmarEmbarque, bool EmbarqueAntesPrevisto = false, bool DivergenciaLacre = false)
         {
@@ -854,6 +852,16 @@ namespace TerminalRobo
                         bConsulta = true;
                     }
                 }
+
+                if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa) && (icConsultarItapoa == "S") && QuaisConsultas.Contains(1))
+                {
+                    if (IniciarConsultaItapoa(false))
+                    {
+                        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
+                        bConsulta = true;
+                    }
+                }
+
             }
             #endregion
             #region Segundo Horario
@@ -906,14 +914,14 @@ namespace TerminalRobo
                         bConsulta = true;
                     }
                 }
-                //if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa))
-                //{
-                //    if (IniciarConsultaItapoa(false))
-                //    {
-                //        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
-                //        bConsulta = true;
-                //    }
-                //}
+                if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa) && (icConsultarItapoa == "S") && QuaisConsultas.Contains(2))
+                {
+                    if (IniciarConsultaItapoa(false))
+                    {
+                        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
+                        bConsulta = true;
+                    }
+                }
                 if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermParanagua) && (icConsultarParanagua == "S") && QuaisConsultas.Contains(2))
                 {
                     if (IniciarConsultaParanagua(false))
@@ -974,14 +982,14 @@ namespace TerminalRobo
                         bConsulta = true;
                     }
                 }
-                //if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa))
-                //{
-                //    if (IniciarConsultaItapoa(false))
-                //    {
-                //        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
-                //        bConsulta = true;
-                //    }
-                //}
+                if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa) && (icConsultarItapoa == "S") && QuaisConsultas.Contains(3))
+                {
+                    if (IniciarConsultaItapoa(false))
+                    {
+                        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
+                        bConsulta = true;
+                    }
+                }
                 if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermParanagua) && (icConsultarParanagua == "S") && QuaisConsultas.Contains(3))
                 {
                     if (IniciarConsultaParanagua(false))
@@ -1044,14 +1052,14 @@ namespace TerminalRobo
                         bConsulta = true;
                     }
                 }
-                //if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa))
-                //{
-                //    if (IniciarConsultaItapoa(false))
-                //    {
-                //        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
-                //        bConsulta = true;
-                //    }
-                //}
+                if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa) && (icConsultarItapoa == "S") && QuaisConsultas.Contains(4))
+                {
+                    if (IniciarConsultaItapoa(false))
+                    {
+                        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
+                        bConsulta = true;
+                    }
+                }
                 if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermParanagua) && (icConsultarParanagua == "S") && QuaisConsultas.Contains(4))
                 {
                     if (IniciarConsultaParanagua(false))
@@ -1114,14 +1122,14 @@ namespace TerminalRobo
                         bConsulta = true;
                     }
                 }
-                //if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa))
-                //{
-                //    if (IniciarConsultaItapoa(false))
-                //    {
-                //        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
-                //        bConsulta = true;
-                //    }
-                //}
+                if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa) && (icConsultarItapoa == "S") && QuaisConsultas.Contains(5))
+                {
+                    if (IniciarConsultaItapoa(false))
+                    {
+                        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
+                        bConsulta = true;
+                    }
+                }
                 if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermParanagua) && (icConsultarParanagua == "S") && QuaisConsultas.Contains(5))
                 {
                     if (IniciarConsultaParanagua(false))
@@ -1185,14 +1193,14 @@ namespace TerminalRobo
                         bConsulta = true;
                     }
                 }
-                //if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa))
-                //{
-                //    if (IniciarConsultaItapoa(false))
-                //    {
-                //        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
-                //        bConsulta = true;
-                //    }
-                //}
+                if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa) && (icConsultarItapoa == "S") && QuaisConsultas.Contains(6))
+                {
+                    if (IniciarConsultaItapoa(false))
+                    {
+                        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
+                        bConsulta = true;
+                    }
+                }
                 if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermParanagua) && (icConsultarParanagua == "S") && QuaisConsultas.Contains(6))
                 {
                     if (IniciarConsultaParanagua(false))
@@ -1256,14 +1264,14 @@ namespace TerminalRobo
                         bConsulta = true;
                     }
                 }
-                //if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa))
-                //{
-                //    if (IniciarConsultaItapoa(false))
-                //    {
-                //        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
-                //        bConsulta = true;
-                //    }
-                //}
+                if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa) && (icConsultarItapoa == "S") && QuaisConsultas.Contains(7))
+                {
+                    if (IniciarConsultaItapoa(false))
+                    {
+                        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
+                        bConsulta = true;
+                    }
+                }
                 if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermParanagua) && (icConsultarParanagua == "S") && QuaisConsultas.Contains(7))
                 {
                     if (IniciarConsultaParanagua(false))
@@ -1497,14 +1505,14 @@ namespace TerminalRobo
                         bConsulta = true;
                     }
                 }
-                //if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa))
-                //{
-                //    if (IniciarConsultaItapoa(false, true))
-                //    {
-                //        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
-                //        bConsulta = true;
-                //    }
-                //}
+                if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermItapoa) && (icConsultarItapoa == "S") && QuaisConsultas.Contains(11))
+                {
+                    if (IniciarConsultaItapoa(false,true))
+                    {
+                        dados.inseriHistoricoConsulta(dtHorarioAux, idTermItapoa);
+                        bConsulta = true;
+                    }
+                }
                 if (!dados.retornaHistoricoConsultaDeposito(dtHorarioAux, idTermParanagua) && (icConsultarParanagua == "S") && QuaisConsultas.Contains(11))
                 {
                     if (IniciarConsultaParanagua(false, true))

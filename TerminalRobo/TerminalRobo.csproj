@@ -112,6 +112,9 @@
       <HintPath>..\packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.Auth.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -349,6 +352,7 @@
     <Compile Include="Models\Dados.cs" />
     <Compile Include="Models\DUE.cs" />
     <Compile Include="Models\Email.cs" />
+    <Compile Include="Models\ItapoaAPI.cs" />
     <Compile Include="Models\Navegacao.cs" />
     <Compile Include="Models\SantosBrasil.cs" />
     <Compile Include="Models\WSMinerva.cs" />

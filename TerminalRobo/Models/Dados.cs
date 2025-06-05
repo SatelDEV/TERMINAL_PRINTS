@@ -8,6 +8,8 @@ using TerminalRobo.DataBase;
 using System.Configuration;
 using roboEDI.Model;
 using System.Data;
+
+
 namespace TerminalRobo.Models
 {
 
@@ -407,86 +409,7 @@ namespace TerminalRobo.Models
                                    DS_LACRE_AGENCIA = s.DS_LACRE_AGENCIA,
                                    DS_LACRE_SIF = s.DS_LACRE_SIF
                                });
-            /*
-            int idgrupocliente = 0;
-            DateTime data = DateTime.Now.AddDays(-1);
-
-            var lstProcesso = (from p in db.PROCESSOS
-
-                               join pr in db.PROCESSORESERVA on p.CD_PROCESSO equals pr.CD_PROCESSO
-                               join res in db.RESERVAS on pr.CD_RESERVA equals res.CD_RESERVA
-                               join prc in db.PROCESSORESERVACONTAINER on pr.CD_PROCESSORESERVA equals prc.CD_PROCESSORESERVA
-                               join c in db.CONTAINER on prc.CD_CONTAINER equals c.CD_CONTAINER
-                               join via in db.VIAGEMARMADOR on res.CD_VIAGEM_ARMADOR equals via.CD_VIAGEM_ARMADOR into viaLeft
-                               from viaOri in viaLeft.DefaultIfEmpty()
-                               join arm in db.ENTIDADE on viaOri.CD_ARMADOR equals arm.CD_ENTIDADE into armLeft
-                               from armOri in armLeft.DefaultIfEmpty()
-                               join term in db.ENTIDADE on viaOri.CD_TERMINAL_ATRACACAO equals term.CD_ENTIDADE into termLeft
-                               from termOri in termLeft.DefaultIfEmpty()
-                               join transp in db.ENTIDADE on prc.CD_TRANSPORTADORA equals transp.CD_ENTIDADE into transpLeft
-                               from transpOri in transpLeft.DefaultIfEmpty()
-                               join termR in db.ENTIDADE on prc.CD_TERMINAL_REDEX equals termR.CD_ENTIDADE into termRLeft
-                               from termROri in termRLeft.DefaultIfEmpty()
-                               join ArmR in db.ENTIDADE on prc.CD_ARMAZEM equals ArmR.CD_ENTIDADE into ArmRLeft
-                               from ArmROri in ArmRLeft.DefaultIfEmpty()
-                               join viagem in db.VIAGEM on viaOri.CD_VIAGEM equals viagem.CD_VIAGEM into viagemLeft
-                               from viagemOri in viagemLeft.DefaultIfEmpty()
-                               join nav in db.NAVIOS on viagemOri.CD_NAVIO equals nav.CD_NAVIO into navLeft
-                               from navOri in navLeft.DefaultIfEmpty()
-                               join portolocal in db.LOCAIS on res.CD_PORTO_ORIGEM equals portolocal.CD_LOCAL into portolocalLeft
-                               from portolocalOri in portolocalLeft.DefaultIfEmpty()
-                               join paisDestino in db.PAIS on p.CD_PAIS_RESERVA equals paisDestino.CD_PAIS into paisDestinoLeft
-                               from paisDestinoOri in paisDestinoLeft.DefaultIfEmpty()
-                               join portodestino in db.LOCAIS on res.CD_PORTO_DESTINO equals portodestino.CD_LOCAL into portodestinoLeft
-                               from portodestinoOri in portodestinoLeft.DefaultIfEmpty()
-                               join status in db.STATUS_PROCESSO on prc.CD_STATUS_CONTAINER equals status.CD_STATUS_PROCESSO into statusLeft
-                               from statusOri in statusLeft.DefaultIfEmpty()
-                               join status2 in db.STATUS_PROCESSO on prc.CD_STATUS_CONTAINER2 equals status2.CD_STATUS_PROCESSO into status2Left
-                               from status2Ori in status2Left.DefaultIfEmpty()
-                               where (p.IC_CANCELADO == false) && (p.CD_SERVICO_PROCESSO != 2) && (((prc.DT_DEPOSITO_TERM_EMBARQUE == null || prc.DT_DESPACHO_PROTOCOLADO == null) || viagemOri.DT_ETA < data) && (prc.DT_EMBARQUE == null)) &&
-                               
-                               //((prc.CD_STATUS_CONTAINER2 != 9 && prc.CD_STATUS_CONTAINER2 != 3 && prc.CD_STATUS_CONTAINER2 != 7) || prc.CD_STATUS_CONTAINER2 == null) &&
-                               (p.IC_ATIVO == true && (p.IC_ENCERRADO == false || p.IC_ENCERRADO == null))
-
-                               //&& (c.CD_NUMERO_CONTAINER == "TTNU8214748" || c.CD_NUMERO_CONTAINER == "MEDU9829628")
-
-                               select new ListaDeCampos
-                               {
-                                   CD_PROCESSO = p.CD_PROCESSO,
-                                   CD_CLIENTE = p.CD_CLIENTE,
-                                   CD_PROCESSORESERVA = pr.CD_PROCESSORESERVA,
-                                   CD_PROCESSORESERVACONTAINER = prc.CD_PROCESSORESERVACONTAINER,
-                                   CD_NUMERO_PROCESSO = p.CD_NUMERO_PROCESSO,
-                                   NR_CONTAINER = c.CD_NUMERO_CONTAINER,
-                                   CD_TERMINAL_EMBARQUE = viaOri.CD_TERMINAL_ATRACACAO,
-                                   NR_BOOKING = res.CD_NUMERO_RESERVA,
-                                   NM_NAVIO = navOri.NM_NAVIO,
-                                   DT_CONTAINER = viaOri.DT_DEAD_LINE_CONTAINER,
-                                   NR_DUE = FN_RETORNA_DUE_PROCESSO(p.CD_PROCESSO, prc.CD_PROCESSORESERVACONTAINER),
-                                   NM_PROCESSO_STATUS2 = status2Ori.NM_STATUS_PROCESSO,
-                                   DT_ABERTURA = p.DT_ABERTURA_PROCESSO,
-                                   DT_DEPOSITO = prc.DT_DEPOSITO_TERM_EMBARQUE,
-                                   IC_TIPO = prc.DT_DEPOSITO_TERM_EMBARQUE != null && prc.DT_DESPACHO_PROTOCOLADO != null ? "E" : "D"
-                               });
-
-            if (idTerminal != null)
-            {
-                lstProcesso = lstProcesso.Where(x => x.CD_TERMINAL_EMBARQUE == idTerminal);
-            }
-            
-            if (nrContainer != null) {
-                lstProcesso = lstProcesso.Where(x => x.NR_CONTAINER == nrContainer);
-            }
-            
-            if (idgrupocliente != 0)
-            {
-                List<int> lstCliente = (from gru in db.GRUPOCLI_ENTIDADE
-                                        where gru.CD_GRUPOCLI == idgrupocliente
-                                        select gru.CD_ENTIDADE).ToList();
-
-                lstProcesso = lstProcesso.Where(x => lstCliente.Contains(x.CD_CLIENTE));
-                //lstProcesso = lstProcesso.Where(x => x.CD_GRUPO_CLIENTE == idgrupocliente);
-            }*/
+           
 
             return lstProcesso.OrderByDescending(x=>x.NR_CONTAINER).ToList();
         }
@@ -1623,6 +1546,13 @@ namespace TerminalRobo.Models
 
         }
 
+        public string ParametroCookieBTP(int valor)
+        {
+            return (from v in db.PARAMETRO
+                    where v.CD_PARAMETRO == valor
+                    select v.VR_PARAMETRO).FirstOrDefault();
+
+        }
 
 
     }
