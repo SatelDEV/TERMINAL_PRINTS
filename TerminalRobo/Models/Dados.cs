@@ -8,6 +8,8 @@ using TerminalRobo.DataBase;
 using System.Configuration;
 using roboEDI.Model;
 using System.Data;
+using Newtonsoft.Json;
+
 
 
 namespace TerminalRobo.Models
@@ -1582,6 +1584,66 @@ namespace TerminalRobo.Models
 
         }
 
+
+        public int GravarRegistroTerminal(string terminal, int cdTerminal)
+        {
+            REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL reg = new REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL();
+
+            reg.HORARIO_REGISTRO = DateTime.Now;
+            reg.NM_TERMINAL = terminal;
+            reg.CD_TERMINAL = cdTerminal;
+            db.REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL.Add(reg);
+            db.SaveChanges();
+
+
+            return reg.CD_REGISTRO;
+
+        }
+
+        public Boolean GravarRegistroTerminalPrint(int cdRegistro,string NMarquivo,string CaminhoArquivo)
+        {
+
+            try
+            {
+                PRINTS_TERMINAL print = new PRINTS_TERMINAL();
+
+                print.CD_REGISTRO = cdRegistro;
+                print.NM_ARQUIVO = NMarquivo;
+                print.DS_URL_CAMINHO = CaminhoArquivo;
+                print.DT_ARQUIVO = DateTime.Now;
+
+                db.PRINTS_TERMINAL.Add(print);
+                db.SaveChanges();
+
+                return true;
+            }catch  { return false; }
+
+
+
+        }
+
+
+        public void GravaProgramacaoGate(List<ProgramacaoGate> lista)
+        {
+            foreach (var item in lista)
+            {
+                REGISTRO_PROGRAMACAO_NAVIOS_GATE registro = new REGISTRO_PROGRAMACAO_NAVIOS_GATE();
+
+                registro.CD_REGISTRO = item.CD_REGISTRO;
+                registro.NM_NAVIO = item.NM_NAVIO;
+                registro.NR_VIAGEM = item.NR_VIAGEM;
+                registro.DT_PREVISAO_GATE = item.DT_PREVISAO_GATE;
+                registro.DT_PREVISAO_GATE_DRY = item.DT_PREVISAO_GATE_DRY;
+                registro.DT_PREVISAO_GATE_REFEER = item.DT_PREVISAO_GATE_REEFER;
+                registro.DT_GATE = item.DT_GATE;
+                registro.DT_GATE_DRY = item.DT_GATE_DRY;
+                registro.DT_GATE_REFEER = item.DT_GATE_REEFER;
+
+                db.REGISTRO_PROGRAMACAO_NAVIOS_GATE.Add(registro);
+            }
+
+            db.SaveChanges();
+        }
 
     }
 }

@@ -70,6 +70,9 @@ namespace TerminalRobo.DataBase
         public DbSet<DUE> DUE { get; set; }
         public DbSet<GRUPOS_EMAIL> GRUPOS_EMAIL { get; set; }
         public DbSet<LOG_EMAILS_ENVIADOS> LOG_EMAILS_ENVIADOS { get; set; }
+        public DbSet<PRINTS_TERMINAL> PRINTS_TERMINAL { get; set; }
+        public DbSet<REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL> REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL { get; set; }
+        public DbSet<REGISTRO_PROGRAMACAO_NAVIOS_GATE> REGISTRO_PROGRAMACAO_NAVIOS_GATE { get; set; }
     
         public virtual ObjectResult<Nullable<int>> SP_RETORNA_TERMINAL_DUE(Nullable<int> cD_PROCESSORESERVA)
         {

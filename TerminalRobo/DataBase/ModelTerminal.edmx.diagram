@@ -91,6 +91,11 @@
         <AssociationConnector Association="WEBSATELModel.FK_PROCESSOS_DUE" />
         <EntityTypeShape EntityType="WEBSATELModel.GRUPOS_EMAIL" Width="1.5" PointX="17.375" PointY="3.75" />
         <EntityTypeShape EntityType="WEBSATELModel.LOG_EMAILS_ENVIADOS" Width="1.5" PointX="19.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WEBSATELModel.PRINTS_TERMINAL" Width="1.5" PointX="21.625" PointY="5" />
+        <EntityTypeShape EntityType="WEBSATELModel.REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" Width="1.5" PointX="19.375" PointY="37.125" />
+        <AssociationConnector Association="WEBSATELModel.FK_PRINTS_TERMINAL_REGISTRO" />
+        <EntityTypeShape EntityType="WEBSATELModel.REGISTRO_PROGRAMACAO_NAVIOS_GATE" Width="1.5" PointX="21.625" PointY="36.75" />
+        <AssociationConnector Association="WEBSATELModel.FK_REGISTRO_PROGRAMACAO_NAVIOS__TERMINAL" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

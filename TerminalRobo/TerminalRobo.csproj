@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\CefSharp.Common.137.0.100\build\CefSharp.Common.props" Condition="Exists('packages\CefSharp.Common.137.0.100\build\CefSharp.Common.props')" />
+  <Import Project="packages\chromiumembeddedframework.runtime.win-x86.137.0.10\build\chromiumembeddedframework.runtime.win-x86.props" Condition="Exists('packages\chromiumembeddedframework.runtime.win-x86.137.0.10\build\chromiumembeddedframework.runtime.win-x86.props')" />
+  <Import Project="packages\chromiumembeddedframework.runtime.win-x64.137.0.10\build\chromiumembeddedframework.runtime.win-x64.props" Condition="Exists('packages\chromiumembeddedframework.runtime.win-x64.137.0.10\build\chromiumembeddedframework.runtime.win-x64.props')" />
   <Import Project="packages\cef.redist.x86.120.2.7\build\cef.redist.x86.props" Condition="Exists('packages\cef.redist.x86.120.2.7\build\cef.redist.x86.props')" />
   <Import Project="packages\cef.redist.x64.120.2.7\build\cef.redist.x64.props" Condition="Exists('packages\cef.redist.x64.120.2.7\build\cef.redist.x64.props')" />
-  <Import Project="packages\CefSharp.Common.131.3.50\build\CefSharp.Common.props" Condition="Exists('packages\CefSharp.Common.131.3.50\build\CefSharp.Common.props')" />
-  <Import Project="packages\chromiumembeddedframework.runtime.win-x86.131.3.5\build\chromiumembeddedframework.runtime.win-x86.props" Condition="Exists('packages\chromiumembeddedframework.runtime.win-x86.131.3.5\build\chromiumembeddedframework.runtime.win-x86.props')" />
-  <Import Project="packages\chromiumembeddedframework.runtime.win-x64.131.3.5\build\chromiumembeddedframework.runtime.win-x64.props" Condition="Exists('packages\chromiumembeddedframework.runtime.win-x64.131.3.5\build\chromiumembeddedframework.runtime.win-x64.props')" />
   <Import Project="..\packages\CefSharp.WinForms.131.3.50\build\CefSharp.WinForms.props" Condition="Exists('..\packages\CefSharp.WinForms.131.3.50\build\CefSharp.WinForms.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -89,17 +89,23 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CefSharp, Version=131.3.50.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
-      <HintPath>packages\CefSharp.Common.131.3.50\lib\net462\CefSharp.dll</HintPath>
+    <Reference Include="CefSharp, Version=137.0.100.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>packages\CefSharp.Common.137.0.100\lib\net462\CefSharp.dll</HintPath>
     </Reference>
-    <Reference Include="CefSharp.Core, Version=131.3.50.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
-      <HintPath>packages\CefSharp.Common.131.3.50\lib\net462\CefSharp.Core.dll</HintPath>
+    <Reference Include="CefSharp.Core, Version=137.0.100.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>packages\CefSharp.Common.137.0.100\lib\net462\CefSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="CefSharp.WinForms, Version=131.3.50.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
-      <HintPath>packages\CefSharp.WinForms.131.3.50\lib\net462\CefSharp.WinForms.dll</HintPath>
+    <Reference Include="CefSharp.OffScreen, Version=137.0.100.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>packages\CefSharp.OffScreen.137.0.100\lib\net462\CefSharp.OffScreen.dll</HintPath>
+    </Reference>
+    <Reference Include="CefSharp.WinForms, Version=137.0.100.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>packages\CefSharp.WinForms.137.0.100\lib\net462\CefSharp.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.12.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>packages\HtmlAgilityPack.1.12.1\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.WebServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.dll</HintPath>
@@ -255,6 +261,9 @@
     <Compile Include="DataBase\PRE_PROCESSOS.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
+    <Compile Include="DataBase\PRINTS_TERMINAL.cs">
+      <DependentUpon>ModelTerminal.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataBase\PROCESSOEVENTO.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
@@ -271,6 +280,12 @@
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\RECIALFA.cs">
+      <DependentUpon>ModelTerminal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\REGISTRO_PROGRAMACAO_NAVIOS_GATE.cs">
+      <DependentUpon>ModelTerminal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\RELACIONAMENTOENTIDADE.cs">
@@ -321,7 +336,6 @@
     <Compile Include="DataBase\TMP_CONSULTA_NAVIO.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataBase\TMP_MINERVA2.cs" />
     <Compile Include="DataBase\UNIDRF.cs">
       <DependentUpon>ModelTerminal.tt</DependentUpon>
     </Compile>
@@ -348,8 +362,10 @@
     <Compile Include="Models\Dados.cs" />
     <Compile Include="Models\DUE.cs" />
     <Compile Include="Models\Email.cs" />
+    <Compile Include="Models\ImpersonateUser.cs" />
     <Compile Include="Models\ItapoaAPI.cs" />
     <Compile Include="Models\Navegacao.cs" />
+    <Compile Include="Models\PrevisaoChegada.cs" />
     <Compile Include="Models\SantosBrasil.cs" />
     <Compile Include="Models\WSMinerva.cs" />
     <Compile Include="Program.cs" />
@@ -534,14 +550,14 @@
     </PropertyGroup>
     <Error Condition="!Exists('packages\cef.redist.x64.120.2.7\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\cef.redist.x64.120.2.7\build\cef.redist.x64.props'))" />
     <Error Condition="!Exists('packages\cef.redist.x86.120.2.7\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\cef.redist.x86.120.2.7\build\cef.redist.x86.props'))" />
-    <Error Condition="!Exists('packages\chromiumembeddedframework.runtime.win-x64.131.3.5\build\chromiumembeddedframework.runtime.win-x64.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\chromiumembeddedframework.runtime.win-x64.131.3.5\build\chromiumembeddedframework.runtime.win-x64.props'))" />
-    <Error Condition="!Exists('packages\chromiumembeddedframework.runtime.win-x86.131.3.5\build\chromiumembeddedframework.runtime.win-x86.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\chromiumembeddedframework.runtime.win-x86.131.3.5\build\chromiumembeddedframework.runtime.win-x86.props'))" />
-    <Error Condition="!Exists('packages\CefSharp.Common.131.3.50\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CefSharp.Common.131.3.50\build\CefSharp.Common.props'))" />
-    <Error Condition="!Exists('packages\CefSharp.Common.131.3.50\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CefSharp.Common.131.3.50\build\CefSharp.Common.targets'))" />
+    <Error Condition="!Exists('packages\chromiumembeddedframework.runtime.win-x64.137.0.10\build\chromiumembeddedframework.runtime.win-x64.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\chromiumembeddedframework.runtime.win-x64.137.0.10\build\chromiumembeddedframework.runtime.win-x64.props'))" />
+    <Error Condition="!Exists('packages\chromiumembeddedframework.runtime.win-x86.137.0.10\build\chromiumembeddedframework.runtime.win-x86.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\chromiumembeddedframework.runtime.win-x86.137.0.10\build\chromiumembeddedframework.runtime.win-x86.props'))" />
+    <Error Condition="!Exists('packages\CefSharp.Common.137.0.100\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CefSharp.Common.137.0.100\build\CefSharp.Common.props'))" />
+    <Error Condition="!Exists('packages\CefSharp.Common.137.0.100\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CefSharp.Common.137.0.100\build\CefSharp.Common.targets'))" />
   </Target>
   <Import Project="..\packages\CefSharp.Common.131.3.50\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.131.3.50\build\CefSharp.Common.targets')" />
   <Import Project="..\packages\CefSharp.WinForms.131.3.50\build\CefSharp.WinForms.targets" Condition="Exists('..\packages\CefSharp.WinForms.131.3.50\build\CefSharp.WinForms.targets')" />
-  <Import Project="packages\CefSharp.Common.131.3.50\build\CefSharp.Common.targets" Condition="Exists('packages\CefSharp.Common.131.3.50\build\CefSharp.Common.targets')" />
+  <Import Project="packages\CefSharp.Common.137.0.100\build\CefSharp.Common.targets" Condition="Exists('packages\CefSharp.Common.137.0.100\build\CefSharp.Common.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

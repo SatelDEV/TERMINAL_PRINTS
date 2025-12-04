@@ -40,9 +40,9 @@
           <Property Name="QT_TARA" Type="numeric" Precision="15" Scale="3" />
           <Property Name="QT_PESO_BRUTO" Type="numeric" Precision="15" Scale="3" />
           <Property Name="DS_LACRE_AGENCIA" Type="varchar" MaxLength="25" />
-          <Property Name="DS_LACRE_SIF" Type="varchar" MaxLength="25" />
+          <Property Name="DS_LACRE_SIF" Type="varchar" MaxLength="80" />
           <Property Name="DS_LACRE_3" Type="varchar" MaxLength="25" />
-          <Property Name="DS_LACRE_4" Type="varchar" MaxLength="25" />
+          <Property Name="DS_LACRE_4" Type="varchar" MaxLength="80" />
           <Property Name="QT_PESO_LIQUIDO" Type="numeric" Precision="15" Scale="3" />
           <Property Name="QT_VOLUME" Type="int" />
           <Property Name="DS_TEMPERATURA" Type="varchar" MaxLength="50" />
@@ -61,7 +61,7 @@
           <Property Name="DT_REDEX" Type="datetime" />
           <Property Name="DT_DEPOSITO_TERM_EMBARQUE" Type="datetime" />
           <Property Name="DS_LACRE_AGENCIA_BL" Type="varchar" MaxLength="25" />
-          <Property Name="DS_LACRE_SIF_BL" Type="varchar" MaxLength="25" />
+          <Property Name="DS_LACRE_SIF_BL" Type="varchar" MaxLength="80" />
           <Property Name="DS_LACRE_3_BL" Type="varchar" MaxLength="25" />
           <Property Name="DS_LACRE_4_BL" Type="varchar" MaxLength="25" />
           <Property Name="CD_PROCESSORESERVACONTAINER_ULTIMO" Type="int" />
@@ -841,6 +841,17 @@ warning 6002: The table/view 'WEBSATEL.dbo.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DE
           <Property Name="PRE_PAGAMENTO" Type="varchar" MaxLength="50" />
           <Property Name="SHIPPING_MARK" Type="varchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="PRINTS_TERMINAL">
+          <Key>
+            <PropertyRef Name="ID_PRINT" />
+          </Key>
+          <Property Name="ID_PRINT" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CD_REGISTRO" Type="int" Nullable="false" />
+          <Property Name="DS_URL_CAMINHO" Type="varchar(max)" Nullable="false" />
+          <Property Name="NM_ARQUIVO" Type="varchar(max)" Nullable="false" />
+          <Property Name="DT_ARQUIVO" Type="datetime" Nullable="false" />
+          <Property Name="DS_OBSERVACAO" Type="varchar(max)" />
+        </EntityType>
         <EntityType Name="PROCESSO_LOTE">
           <Key>
             <PropertyRef Name="CD_PROCESSO_LOTE" />
@@ -1173,6 +1184,31 @@ warning 6002: The table/view 'WEBSATEL.dbo.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DE
           <Property Name="CD_ENTIDADE" Type="int" />
           <Property Name="CD_FILIAL" Type="int" />
           <Property Name="DS_EMAIL_RECINTO" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="REGISTRO_PROGRAMACAO_NAVIOS_GATE">
+          <Key>
+            <PropertyRef Name="CD_PROG_NAVIO" />
+          </Key>
+          <Property Name="CD_PROG_NAVIO" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CD_REGISTRO" Type="int" Nullable="false" />
+          <Property Name="NM_NAVIO" Type="varchar(max)" />
+          <Property Name="NR_VIAGEM" Type="varchar" MaxLength="250" />
+          <Property Name="DT_PREVISAO_GATE" Type="datetime" />
+          <Property Name="DT_PREVISAO_GATE_DRY" Type="datetime" />
+          <Property Name="DT_PREVISAO_GATE_REFEER" Type="datetime" />
+          <Property Name="DT_GATE" Type="datetime" />
+          <Property Name="DT_GATE_DRY" Type="datetime" />
+          <Property Name="DT_GATE_REFEER" Type="datetime" />
+        </EntityType>
+        <EntityType Name="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL">
+          <Key>
+            <PropertyRef Name="CD_REGISTRO" />
+          </Key>
+          <Property Name="CD_REGISTRO" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HORARIO_REGISTRO" Type="datetime" />
+          <Property Name="NM_TERMINAL" Type="varchar" MaxLength="200" />
+          <Property Name="DS_OBSERVACAO" Type="varchar(max)" />
+          <Property Name="CD_TERMINAL" Type="int" />
         </EntityType>
         <EntityType Name="RELAC_EXPORTADOR">
           <Key>
@@ -1600,6 +1636,18 @@ warning 6002: The table/view 'WEBSATEL.dbo.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DE
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PRINTS_TERMINAL_REGISTRO">
+          <End Role="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" Type="Self.REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" Multiplicity="1" />
+          <End Role="PRINTS_TERMINAL" Type="Self.PRINTS_TERMINAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL">
+              <PropertyRef Name="CD_REGISTRO" />
+            </Principal>
+            <Dependent Role="PRINTS_TERMINAL">
+              <PropertyRef Name="CD_REGISTRO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PROCESSOEVENTO_PROCESSOS">
           <End Role="PROCESSOS" Type="Self.PROCESSOS" Multiplicity="0..1" />
           <End Role="PROCESSOEVENTO" Type="Self.PROCESSOEVENTO" Multiplicity="*" />
@@ -1856,6 +1904,20 @@ warning 6002: The table/view 'WEBSATEL.dbo.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DE
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_REGISTRO_PROGRAMACAO_NAVIOS__TERMINAL">
+          <End Role="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" Type="Self.REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="REGISTRO_PROGRAMACAO_NAVIOS_GATE" Type="Self.REGISTRO_PROGRAMACAO_NAVIOS_GATE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL">
+              <PropertyRef Name="CD_REGISTRO" />
+            </Principal>
+            <Dependent Role="REGISTRO_PROGRAMACAO_NAVIOS_GATE">
+              <PropertyRef Name="CD_REGISTRO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_RELAC_EXPORTADOR_ENTIDADE">
           <End Role="ENTIDADE" Type="Self.ENTIDADE" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2042,12 +2104,15 @@ warning 6002: The table/view 'WEBSATEL.dbo.GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DE
           <EntitySet Name="PARAMETRO" EntityType="Self.PARAMETRO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PARAMETRO_WEB" EntityType="Self.PARAMETRO_WEB" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRE_PROCESSOS" EntityType="Self.PRE_PROCESSOS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRINTS_TERMINAL" EntityType="Self.PRINTS_TERMINAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PROCESSO_LOTE" EntityType="Self.PROCESSO_LOTE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PROCESSOEVENTO" EntityType="Self.PROCESSOEVENTO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PROCESSORESERVA" EntityType="Self.PROCESSORESERVA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PROCESSORESERVACONTAINER" EntityType="Self.PROCESSORESERVACONTAINER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PROCESSOS" EntityType="Self.PROCESSOS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RECIALFA" EntityType="Self.RECIALFA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="REGISTRO_PROGRAMACAO_NAVIOS_GATE" EntityType="Self.REGISTRO_PROGRAMACAO_NAVIOS_GATE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" EntityType="Self.REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RELAC_EXPORTADOR" EntityType="Self.RELAC_EXPORTADOR" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RELACIONAMENTOENTIDADE" EntityType="Self.RELACIONAMENTOENTIDADE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RESERVAS" EntityType="Self.RESERVAS" Schema="dbo" store:Type="Tables" />
@@ -2129,6 +2194,10 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <AssociationSet Name="FK_GRUPOCLI_ENTIDADE_GRUPOCLI" Association="Self.FK_GRUPOCLI_ENTIDADE_GRUPOCLI">
             <End Role="GRUPOCLI" EntitySet="GRUPOCLI" />
             <End Role="GRUPOCLI_ENTIDADE" EntitySet="GRUPOCLI_ENTIDADE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PRINTS_TERMINAL_REGISTRO" Association="Self.FK_PRINTS_TERMINAL_REGISTRO">
+            <End Role="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" EntitySet="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" />
+            <End Role="PRINTS_TERMINAL" EntitySet="PRINTS_TERMINAL" />
           </AssociationSet>
           <AssociationSet Name="FK_PROCESSOEVENTO_PROCESSOS" Association="Self.FK_PROCESSOEVENTO_PROCESSOS">
             <End Role="PROCESSOS" EntitySet="PROCESSOS" />
@@ -2213,6 +2282,10 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <AssociationSet Name="FK_PROCESSOS_UNIDADE_NEGOCIO" Association="Self.FK_PROCESSOS_UNIDADE_NEGOCIO">
             <End Role="ENTIDADE" EntitySet="ENTIDADE" />
             <End Role="PROCESSOS" EntitySet="PROCESSOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_REGISTRO_PROGRAMACAO_NAVIOS__TERMINAL" Association="Self.FK_REGISTRO_PROGRAMACAO_NAVIOS__TERMINAL">
+            <End Role="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" EntitySet="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" />
+            <End Role="REGISTRO_PROGRAMACAO_NAVIOS_GATE" EntitySet="REGISTRO_PROGRAMACAO_NAVIOS_GATE" />
           </AssociationSet>
           <AssociationSet Name="FK_RELAC_EXPORTADOR_ENTIDADE" Association="Self.FK_RELAC_EXPORTADOR_ENTIDADE">
             <End Role="ENTIDADE" EntitySet="ENTIDADE" />
@@ -2515,6 +2588,17 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           </AssociationSet>
           <EntitySet Name="GRUPOS_EMAIL" EntityType="WEBSATELModel.GRUPOS_EMAIL" />
           <EntitySet Name="LOG_EMAILS_ENVIADOS" EntityType="WEBSATELModel.LOG_EMAILS_ENVIADOS" />
+          <EntitySet Name="PRINTS_TERMINAL" EntityType="WEBSATELModel.PRINTS_TERMINAL" />
+          <EntitySet Name="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" EntityType="WEBSATELModel.REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" />
+          <AssociationSet Name="FK_PRINTS_TERMINAL_REGISTRO" Association="WEBSATELModel.FK_PRINTS_TERMINAL_REGISTRO">
+            <End Role="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" EntitySet="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" />
+            <End Role="PRINTS_TERMINAL" EntitySet="PRINTS_TERMINAL" />
+          </AssociationSet>
+          <EntitySet Name="REGISTRO_PROGRAMACAO_NAVIOS_GATE" EntityType="WEBSATELModel.REGISTRO_PROGRAMACAO_NAVIOS_GATE" />
+          <AssociationSet Name="FK_REGISTRO_PROGRAMACAO_NAVIOS__TERMINAL" Association="WEBSATELModel.FK_REGISTRO_PROGRAMACAO_NAVIOS__TERMINAL">
+            <End Role="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" EntitySet="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" />
+            <End Role="REGISTRO_PROGRAMACAO_NAVIOS_GATE" EntitySet="REGISTRO_PROGRAMACAO_NAVIOS_GATE" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="PROCESSORESERVA">
           <Key>
@@ -2834,9 +2918,9 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Type="Decimal" Name="QT_TARA" Precision="15" Scale="3" />
           <Property Type="Decimal" Name="QT_PESO_BRUTO" Precision="15" Scale="3" />
           <Property Type="String" Name="DS_LACRE_AGENCIA" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="DS_LACRE_SIF" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DS_LACRE_SIF" MaxLength="80" FixedLength="false" Unicode="false" />
           <Property Type="String" Name="DS_LACRE_3" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="DS_LACRE_4" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DS_LACRE_4" MaxLength="80" FixedLength="false" Unicode="false" />
           <Property Type="Decimal" Name="QT_PESO_LIQUIDO" Precision="15" Scale="3" />
           <Property Type="Int32" Name="QT_VOLUME" />
           <Property Type="String" Name="DS_TEMPERATURA" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -2855,7 +2939,7 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Type="DateTime" Name="DT_REDEX" Precision="3" />
           <Property Type="DateTime" Name="DT_DEPOSITO_TERM_EMBARQUE" Precision="3" />
           <Property Type="String" Name="DS_LACRE_AGENCIA_BL" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="DS_LACRE_SIF_BL" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DS_LACRE_SIF_BL" MaxLength="80" FixedLength="false" Unicode="false" />
           <Property Type="String" Name="DS_LACRE_3_BL" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Type="String" Name="DS_LACRE_4_BL" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Type="Int32" Name="CD_PROCESSORESERVACONTAINER_ULTIMO" />
@@ -4797,6 +4881,72 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
           <Property Name="DS_ERRO_ENVIO" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="CD_PROCESSO" Type="Int32" />
         </EntityType>
+        <EntityType Name="PRINTS_TERMINAL">
+          <Key>
+            <PropertyRef Name="ID_PRINT" />
+          </Key>
+          <Property Name="ID_PRINT" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CD_REGISTRO" Type="Int32" Nullable="false" />
+          <Property Name="DS_URL_CAMINHO" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="NM_ARQUIVO" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DT_ARQUIVO" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DS_OBSERVACAO" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" Relationship="WEBSATELModel.FK_PRINTS_TERMINAL_REGISTRO" FromRole="PRINTS_TERMINAL" ToRole="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" />
+        </EntityType>
+        <EntityType Name="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL">
+          <Key>
+            <PropertyRef Name="CD_REGISTRO" />
+          </Key>
+          <Property Name="CD_REGISTRO" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HORARIO_REGISTRO" Type="DateTime" Precision="3" />
+          <Property Name="NM_TERMINAL" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="DS_OBSERVACAO" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CD_TERMINAL" Type="Int32" />
+          <NavigationProperty Name="PRINTS_TERMINAL" Relationship="WEBSATELModel.FK_PRINTS_TERMINAL_REGISTRO" FromRole="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" ToRole="PRINTS_TERMINAL" />
+          <NavigationProperty Name="REGISTRO_PROGRAMACAO_NAVIOS_GATE" Relationship="WEBSATELModel.FK_REGISTRO_PROGRAMACAO_NAVIOS__TERMINAL" FromRole="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" ToRole="REGISTRO_PROGRAMACAO_NAVIOS_GATE" />
+        </EntityType>
+        <Association Name="FK_PRINTS_TERMINAL_REGISTRO">
+          <End Type="WEBSATELModel.REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" Role="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" Multiplicity="1" />
+          <End Type="WEBSATELModel.PRINTS_TERMINAL" Role="PRINTS_TERMINAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL">
+              <PropertyRef Name="CD_REGISTRO" />
+            </Principal>
+            <Dependent Role="PRINTS_TERMINAL">
+              <PropertyRef Name="CD_REGISTRO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="REGISTRO_PROGRAMACAO_NAVIOS_GATE">
+          <Key>
+            <PropertyRef Name="CD_PROG_NAVIO" />
+          </Key>
+          <Property Name="CD_PROG_NAVIO" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CD_REGISTRO" Type="Int32" Nullable="false" />
+          <Property Name="NM_NAVIO" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="NR_VIAGEM" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="DT_PREVISAO_GATE" Type="DateTime" Precision="3" />
+          <Property Name="DT_PREVISAO_GATE_DRY" Type="DateTime" Precision="3" />
+          <Property Name="DT_PREVISAO_GATE_REFEER" Type="DateTime" Precision="3" />
+          <Property Name="DT_GATE" Type="DateTime" Precision="3" />
+          <Property Name="DT_GATE_DRY" Type="DateTime" Precision="3" />
+          <Property Name="DT_GATE_REFEER" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" Relationship="WEBSATELModel.FK_REGISTRO_PROGRAMACAO_NAVIOS__TERMINAL" FromRole="REGISTRO_PROGRAMACAO_NAVIOS_GATE" ToRole="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" />
+        </EntityType>
+        <Association Name="FK_REGISTRO_PROGRAMACAO_NAVIOS__TERMINAL">
+          <End Type="WEBSATELModel.REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" Role="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WEBSATELModel.REGISTRO_PROGRAMACAO_NAVIOS_GATE" Role="REGISTRO_PROGRAMACAO_NAVIOS_GATE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL">
+              <PropertyRef Name="CD_REGISTRO" />
+            </Principal>
+            <Dependent Role="REGISTRO_PROGRAMACAO_NAVIOS_GATE">
+              <PropertyRef Name="CD_REGISTRO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6542,6 +6692,45 @@ FROM [dbo].[GRUPOCLI_TERMINAL_CONSULTA_USUARIO_DESTINATARIO] AS [GRUPOCLI_TERMIN
                 <ScalarProperty Name="DS_ASSUNTO" ColumnName="DS_ASSUNTO" />
                 <ScalarProperty Name="DS_EMAIL_DESTINO" ColumnName="DS_EMAIL_DESTINO" />
                 <ScalarProperty Name="CD_LOG_EMAIL" ColumnName="CD_LOG_EMAIL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRINTS_TERMINAL">
+            <EntityTypeMapping TypeName="WEBSATELModel.PRINTS_TERMINAL">
+              <MappingFragment StoreEntitySet="PRINTS_TERMINAL">
+                <ScalarProperty Name="DS_OBSERVACAO" ColumnName="DS_OBSERVACAO" />
+                <ScalarProperty Name="DT_ARQUIVO" ColumnName="DT_ARQUIVO" />
+                <ScalarProperty Name="NM_ARQUIVO" ColumnName="NM_ARQUIVO" />
+                <ScalarProperty Name="DS_URL_CAMINHO" ColumnName="DS_URL_CAMINHO" />
+                <ScalarProperty Name="CD_REGISTRO" ColumnName="CD_REGISTRO" />
+                <ScalarProperty Name="ID_PRINT" ColumnName="ID_PRINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL">
+            <EntityTypeMapping TypeName="WEBSATELModel.REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL">
+              <MappingFragment StoreEntitySet="REGISTRO_PROGRAMACAO_NAVIOS_TERMINAL">
+                <ScalarProperty Name="CD_TERMINAL" ColumnName="CD_TERMINAL" />
+                <ScalarProperty Name="DS_OBSERVACAO" ColumnName="DS_OBSERVACAO" />
+                <ScalarProperty Name="NM_TERMINAL" ColumnName="NM_TERMINAL" />
+                <ScalarProperty Name="HORARIO_REGISTRO" ColumnName="HORARIO_REGISTRO" />
+                <ScalarProperty Name="CD_REGISTRO" ColumnName="CD_REGISTRO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="REGISTRO_PROGRAMACAO_NAVIOS_GATE">
+            <EntityTypeMapping TypeName="WEBSATELModel.REGISTRO_PROGRAMACAO_NAVIOS_GATE">
+              <MappingFragment StoreEntitySet="REGISTRO_PROGRAMACAO_NAVIOS_GATE">
+                <ScalarProperty Name="DT_GATE_REFEER" ColumnName="DT_GATE_REFEER" />
+                <ScalarProperty Name="DT_GATE_DRY" ColumnName="DT_GATE_DRY" />
+                <ScalarProperty Name="DT_GATE" ColumnName="DT_GATE" />
+                <ScalarProperty Name="DT_PREVISAO_GATE_REFEER" ColumnName="DT_PREVISAO_GATE_REFEER" />
+                <ScalarProperty Name="DT_PREVISAO_GATE_DRY" ColumnName="DT_PREVISAO_GATE_DRY" />
+                <ScalarProperty Name="DT_PREVISAO_GATE" ColumnName="DT_PREVISAO_GATE" />
+                <ScalarProperty Name="NR_VIAGEM" ColumnName="NR_VIAGEM" />
+                <ScalarProperty Name="NM_NAVIO" ColumnName="NM_NAVIO" />
+                <ScalarProperty Name="CD_REGISTRO" ColumnName="CD_REGISTRO" />
+                <ScalarProperty Name="CD_PROG_NAVIO" ColumnName="CD_PROG_NAVIO" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
